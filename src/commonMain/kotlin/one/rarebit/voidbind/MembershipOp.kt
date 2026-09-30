@@ -96,6 +96,9 @@ data class MembershipOp(
     class OpException(val failure: Failure, message: String, cause: Throwable? = null) :
         IllegalArgumentException(message, cause)
 
+    // The companion is the op's whole wire API (sign/verify/hash/user plus the
+    // ADR-0008 cosig primitives), mirroring voidbind-go's enrolment op functions.
+    @Suppress("TooManyFunctions")
     companion object {
         /** The version prefixing an op payload; v1 and v2 are certs and are reinterpreted. */
         const val VERSION = 3
@@ -355,6 +358,7 @@ data class MembershipOp(
          * simple prefix (not length-framed) per ADR-0008 §A — the trailing NUL is
          * load-bearing and byte-for-byte with voidbind-go's `cosigDomain`.
          */
+        @Suppress("ktlint:standard:property-naming") // named after Go's cosigDomain; public API
         const val cosigDomain = "voidbind-cosig-v1\u0000"
 
         /**
@@ -368,7 +372,66 @@ data class MembershipOp(
          * empty/zero, `prev` always present). Leaving `typ` out here would make every
          * typed cosigned remove under-threshold, and this replica would then diverge.
          */
-        fun coreBytes(op: MembershipOp): ByteArray {
+        fun coreBytes(op: MembershipOp): ByteArray = payloadBytes(op, emptyList())
+
+        /** The preimage a cosigner signs: [cosigDomain] followed by the op's [core] bytes. */
+        fun cosigMessage(core: ByteArray): ByteArray = cosigDomain.encodeToByteArray() + core
+
+        /**
+         * [cosigner]'s co-signature over [op]'s core (ADR-0008): the second device's
+         * contribution to a k-of-N remove. [op] is the uncosigned remove the primary
+         * proposes (as [verify] parsed it); the cosigner signs [cosigMessage] of its
+         * [coreBytes]. [cosignerPublicKey] is the cosigner's raw 32-byte Ed25519 public
+         * key, rendered into the cosig's `by`. The caller (or a relay) collects these and
+         * hands them to [attachCosigs] on the primary's device.
+         *
+         * The core omits `cosig`, so co-signing an op that already carries cosigs signs
+         * the same bytes as co-signing its bare form. Whether the cosig COUNTS is
+         * [Membership.evaluate]'s business (rule 5: only members of the op's closure).
+         *
+         * Mirrors voidbind-go `enrolment.CosignOp` byte-for-byte.
+         */
+        fun cosign(cosigner: Ed25519Signer, cosignerPublicKey: ByteArray, op: MembershipOp): Cosig {
+            require(cosignerPublicKey.size == 32) { "a co-signing key is required" }
+            val by = KeyRef.ed25519(cosignerPublicKey).render()
+            val sig = cosigner.sign(cosigMessage(coreBytes(op)))
+            return Cosig(by = by, sig = Base64Url.encode(sig))
+        }
+
+        /**
+         * Re-mint [op]'s token with [cosigs] attached, signed afresh by the primary
+         * ([primary], whose public key [primaryPublicKey] must render to `op.by`, else
+         * [Failure.MALFORMED]). Each cosig must already cover op's core (see [cosign]);
+         * the primary signature then covers the whole payload, cosigs included. The
+         * returned token has a NEW hash, so it — not the uncosigned proposal — is what the
+         * primary publishes. Any cosigs already on [op] are replaced by [cosigs], and an
+         * empty [cosigs] omits the field (Go's `omitempty`). A bad or foreign cosig is
+         * preserved but ignored by [Membership.evaluate], never fatal.
+         *
+         * Mirrors voidbind-go `enrolment.AttachCosigs` byte-for-byte: the payload keeps
+         * [op]'s `typ` (so a typed op stays typed and an untyped one untyped), with
+         * `cosig` placed between `prev` and `iat`.
+         */
+        fun attachCosigs(
+            primary: Ed25519Signer,
+            primaryPublicKey: ByteArray,
+            op: MembershipOp,
+            cosigs: List<Cosig>,
+        ): String {
+            require(primaryPublicKey.size == 32) { "a signing key is required" }
+            if (KeyRef.ed25519(primaryPublicKey).render() != op.by) {
+                throw OpException(Failure.MALFORMED, "primary key is not op.by")
+            }
+            val body = payloadBytes(op, cosigs)
+            return Base64Url.encode(body) + "." + Base64Url.encode(primary.sign(body))
+        }
+
+        /**
+         * The v3 signed payload of [op] with [cosigs] (omitted when empty) — the one
+         * encoder behind [coreBytes] and [attachCosigs], in the field order and
+         * omitempty rules of [sign] and voidbind-go's `opPayload`.
+         */
+        private fun payloadBytes(op: MembershipOp, cosigs: List<Cosig>): ByteArray {
             val fields = ArrayList<Pair<String, Any>>()
             fields += "v" to op.version
             fields += typFields(op.typ)
@@ -378,13 +441,11 @@ data class MembershipOp(
             if (op.deviceEnc.isNotEmpty()) fields += "denc" to op.deviceEnc
             fields += "by" to op.by
             fields += "prev" to op.prev
+            if (cosigs.isNotEmpty()) fields += "cosig" to cosigs.map { listOf("by" to it.by, "sig" to it.sig) }
             fields += "iat" to op.issuedAt
             if (op.expiresAt != 0L) fields += "exp" to op.expiresAt
             return MiniJson.encodeObject(fields).encodeToByteArray()
         }
-
-        /** The preimage a cosigner signs: [cosigDomain] followed by the op's [core] bytes. */
-        fun cosigMessage(core: ByteArray): ByteArray = cosigDomain.encodeToByteArray() + core
 
         /** Decode a cosig `sig` (base64url, no padding); null if malformed. */
         internal fun decodeSigOrNull(s: String): ByteArray? = decodeOrNull(s)
