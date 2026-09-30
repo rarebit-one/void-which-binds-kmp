@@ -3,9 +3,6 @@
     <file name="src/commonMain/kotlin/one/rarebit/voidbind/DeepLink.kt">
         <error line="1" column="1" source="standard:filename" />
     </file>
-    <file name="src/commonMain/kotlin/one/rarebit/voidbind/MembershipOp.kt">
-        <error line="358" column="19" source="standard:property-naming" />
-    </file>
     <file name="src/commonMain/kotlin/one/rarebit/voidbind/crypto/X25519.kt">
         <error line="15" column="17" source="standard:backing-property-naming" />
         <error line="15" column="17" source="standard:backing-property-naming" />
