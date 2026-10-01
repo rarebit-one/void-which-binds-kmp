@@ -157,9 +157,15 @@ jobs:
             printf -- '- Signed with the Cruciform release key (`apksigner verify` ran in CI).\n'
             printf -- '- Built with `-PdeviceEngine=true` (release forces the hardware-backed engine).\n'
           } > notes.md
+          # A semver prerelease tag (app-v1.0.0-rc.1) publishes as a GitHub PRERELEASE.
+          # The homelab-ops F-Droid puller skips prereleases, so a gen2 build can be
+          # staged before the ADR-0022 cutover without gen1 phones auto-updating to it
+          # (C1). At C2, tag the plain version (app-v1.0.0) to put it on F-Droid.
+          pre=false
+          case "$VERSION" in *-*) pre=true ;; esac
           if gh release view "$TAG" >/dev/null 2>&1; then
             gh release upload "$TAG" "$APK" --clobber
-            gh release edit "$TAG" --title "Cruciform $VERSION" --notes-file notes.md
+            gh release edit "$TAG" --title "Cruciform $VERSION" --notes-file notes.md --prerelease="$pre"
           else
-            gh release create "$TAG" "$APK" --title "Cruciform $VERSION" --notes-file notes.md
+            gh release create "$TAG" "$APK" --title "Cruciform $VERSION" --notes-file notes.md --prerelease="$pre"
           fi
