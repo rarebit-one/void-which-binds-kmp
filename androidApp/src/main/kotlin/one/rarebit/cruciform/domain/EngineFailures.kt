@@ -1,7 +1,7 @@
 package one.rarebit.cruciform.domain
 
-import one.rarebit.voidbind.flow.PairingFailureKind
-import one.rarebit.voidbind.flow.PairingOutcome
+import one.rarebit.voidwhichbinds.flow.PairingFailureKind
+import one.rarebit.voidwhichbinds.flow.PairingOutcome
 
 /** A declined or dismissed prompt. */
 internal val CANCELLED_FAILURE =

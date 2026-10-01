@@ -8,13 +8,13 @@ import one.rarebit.cruciform.testing.FakeTransport
 import one.rarebit.cruciform.testing.InMemoryPrefs
 import one.rarebit.cruciform.testing.InMemorySealer
 import one.rarebit.cruciform.testing.SoftwareDeviceKeys
-import one.rarebit.voidbind.net.HttpResponse
+import one.rarebit.voidwhichbinds.net.HttpResponse
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * [DeviceVoidbindEngine.refusePairing]: "No, cancel" on the Verify screen (voidbind-go
+ * [DeviceVoidbindEngine.refusePairing]: "No, cancel" on the Verify screen (void-which-binds-go
  * ADR-0012). Behind the biometric it signs and posts a refusal to the invite's relay
  * session, so the new device stops at once; a cancelled prompt sends nothing. Either
  * way the invite can no longer be authorised. Same seams as [DeviceVoidbindEngineTest].

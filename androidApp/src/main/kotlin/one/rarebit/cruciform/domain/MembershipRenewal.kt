@@ -1,15 +1,15 @@
 package one.rarebit.cruciform.domain
 
 import one.rarebit.cruciform.platform.IdentityStore
-import one.rarebit.voidbind.KeyRef
-import one.rarebit.voidbind.Membership
-import one.rarebit.voidbind.MembershipOp
+import one.rarebit.voidwhichbinds.KeyRef
+import one.rarebit.voidwhichbinds.Membership
+import one.rarebit.voidwhichbinds.MembershipOp
 
 /**
  * This device's own membership over time (ADR-0005). An add lasts 90 days; a member
  * renews itself with a **self re-add** — an add of itself, signed by its own hardware
  * key, citing the replica's heads — while its current add is still valid. A lapsed
- * device's self re-add is `unauthorised` (voidbind-go vector
+ * device's self re-add is `unauthorised` (void-which-binds-go vector
  * `self-renew-extends-membership`), so it can only be re-admitted by another member or
  * the recovery secret.
  *
@@ -35,7 +35,7 @@ internal class MembershipRenewal(
      * The signed self re-add, or null for a non-member (a self re-add would be
      * unauthorised) and, with [onlyIfDue], for a member not yet within
      * [WINDOW_SECONDS] of expiry. Signing may throw
-     * [one.rarebit.voidbind.AuthenticationRequiredException] when the key's auth
+     * [one.rarebit.voidwhichbinds.AuthenticationRequiredException] when the key's auth
      * window is shut; the caller decides whether to prompt.
      */
     fun selfRenewal(persisted: IdentityStore.Persisted, onlyIfDue: Boolean): String? {

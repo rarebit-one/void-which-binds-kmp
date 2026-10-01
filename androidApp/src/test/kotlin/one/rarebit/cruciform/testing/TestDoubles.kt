@@ -7,10 +7,10 @@ import one.rarebit.cruciform.domain.HardwareBacking
 import one.rarebit.cruciform.platform.BiometricAuthenticator
 import one.rarebit.cruciform.platform.SecretSealer
 import one.rarebit.cruciform.platform.StrongAuth
-import one.rarebit.voidbind.AuthenticationRequiredException
-import one.rarebit.voidbind.UserIdentity
-import one.rarebit.voidbind.net.HttpResponse
-import one.rarebit.voidbind.net.HttpTransport
+import one.rarebit.voidwhichbinds.AuthenticationRequiredException
+import one.rarebit.voidwhichbinds.UserIdentity
+import one.rarebit.voidwhichbinds.net.HttpResponse
+import one.rarebit.voidwhichbinds.net.HttpTransport
 import java.io.IOException
 import kotlin.coroutines.cancellation.CancellationException
 

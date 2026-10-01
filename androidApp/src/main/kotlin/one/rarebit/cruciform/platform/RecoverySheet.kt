@@ -11,7 +11,7 @@ import kotlin.math.max
  * the layout is unit-tested on the JVM; [RecoverySheetPrinter] draws the result onto a
  * `PdfDocument` page and hands it to the print framework.
  *
- * A port of voidbind-go `recovery/sheet` (its HTML page, sized in millimetres): the
+ * A port of void-which-binds-go `recovery/sheet` (its HTML page, sized in millimetres): the
  * secret as an UPPER-CASE QR code (QR alphanumeric mode, so version 4 at medium error
  * correction), the secret in four-character groups, the user fingerprint and user ID,
  * numbered instructions, corner cut marks and a 50 mm calibration bar. If the bar does
@@ -69,7 +69,7 @@ internal object RecoverySheet {
 
     fun mm(value: Float): Float = value * PT_PER_MM
 
-    /** What one printed page carries (voidbind-go `sheet.Sheet`, `ForSecret`). */
+    /** What one printed page carries (void-which-binds-go `sheet.Sheet`, `ForSecret`). */
     data class Content(
         val heading: String,
         /** What the QR code carries: the secret in UPPER case. */

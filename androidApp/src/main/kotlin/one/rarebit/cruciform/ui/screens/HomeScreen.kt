@@ -293,7 +293,7 @@ fun HomeScreen(
 
 /**
  * Shown until the recovery secret written down at creation has been checked back
- * (voidbind-go ADR-0010): an unchecked backup is found to be wrong only when needed.
+ * (void-which-binds-go ADR-0010): an unchecked backup is found to be wrong only when needed.
  */
 @Composable
 private fun BackupCard(onCheck: () -> Unit) {

@@ -1,5 +1,10 @@
 # 0008. On one phone the SAS is compared by the apps, not by the human
 
+<!-- k0:keep name-note -->
+> **Name note (void-which-binds-go ADR-0013).** The protocol is now Void-Which-Binds
+> and this repo is `void-which-binds-kmp` (package `one.rarebit.voidwhichbinds`).
+> This record is kept as written, in gen1 names.
+
 **Status:** Accepted
 **Date:** 2026-09-03
 **Amends:** ADR-0006 §4 and §5 (the SAS gate stays on Cruciform; no callback back to Cruciform)

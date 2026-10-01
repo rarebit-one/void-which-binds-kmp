@@ -1,5 +1,5 @@
 import Foundation
-import Voidbind
+import VoidWhichBinds
 
 /// The iOS `HttpTransport` actual: a `URLSession`-backed implementation of the
 /// Kotlin transport seam the network clients + coordinators drive. The Kotlin
@@ -10,7 +10,7 @@ import Voidbind
 /// background `DispatchQueue`), exactly as the Android side runs them on
 /// `Dispatchers.IO`.
 ///
-/// > Type-checked against the exported `Voidbind.xcframework`; runs on a
+/// > Type-checked against the exported `VoidWhichBinds.xcframework`; runs on a
 /// > device/simulator.
 public final class URLSessionHttpTransport: NSObject, HttpTransport {
 
@@ -38,7 +38,7 @@ public final class URLSessionHttpTransport: NSObject, HttpTransport {
     }
 
     /// DELETE with an optional body — `NotifyClient.unsubscribe` sends the device
-    /// cert as JSON on DELETE (voidbind-go reads it). The Kotlin interface's default
+    /// cert as JSON on DELETE (void-which-binds-go reads it). The Kotlin interface's default
     /// throws `UnsupportedOperationException`, so this override is what makes
     /// unsubscribe work on iOS.
     public func delete(url: String, body: KotlinByteArray?, contentType: String?) -> HttpResponse {

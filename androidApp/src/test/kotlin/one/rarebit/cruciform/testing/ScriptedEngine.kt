@@ -16,7 +16,7 @@ import one.rarebit.cruciform.domain.RecoveryCheck
 import one.rarebit.cruciform.domain.ScannedCode
 import one.rarebit.cruciform.domain.SitePolicyView
 import one.rarebit.cruciform.domain.VoidbindEngine
-import one.rarebit.voidbind.policy.ApprovalPolicy
+import one.rarebit.voidwhichbinds.policy.ApprovalPolicy
 
 /**
  * A [VoidbindEngine] whose every answer is a settable field, and which records every

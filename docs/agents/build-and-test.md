@@ -13,9 +13,9 @@ targets are skipped on a Linux host).
 
 Targets: `jvm()` (dev/test, software keystore), `androidTarget()` (StrongBox/TEE),
 `iosArm64()` + `iosSimulatorArm64()` (Secure Enclave via the Swift sealer, exported
-as the `Voidbind` XCFramework). Tests in `commonTest` run on every target; `jvmTest`
+as the `VoidWhichBinds` XCFramework). Tests in `commonTest` run on every target; `jvmTest`
 adds the golden-vector parity suites, the JVM keystore test and live-voidbind-go
-interop (skipped when `go`/the voidbind-go checkout is absent). CI (`test.yml`) runs
+interop (skipped when `go`/the void-which-binds-go checkout is absent). CI (`test.yml`) runs
 `jvmTest` + the Android compile, ktlint + detekt, the app build + unit tests, and
 the iOS compile + simulator tests on macOS. Lint findings that predate the linters
 are frozen in each project's `config/ktlint/baseline.xml` / `config/detekt/baseline.xml`

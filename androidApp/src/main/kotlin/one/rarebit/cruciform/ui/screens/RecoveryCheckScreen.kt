@@ -38,7 +38,7 @@ import one.rarebit.cruciform.ui.theme.VbColors
 /**
  * Check a written recovery secret — or some groups of it — against this identity.
  * Nothing is signed: this proves the paper works before it is ever needed
- * (voidbind-go ADR-0010).
+ * (void-which-binds-go ADR-0010).
  *
  * [fields] are the labels of the inputs (one "Recovery secret" for a full drill; a few
  * "Group N" for the confirm step after creating). [onCheck] returns the success line

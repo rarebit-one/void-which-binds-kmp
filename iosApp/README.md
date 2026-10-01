@@ -1,8 +1,8 @@
 # Cruciform iOS app
 
-The SwiftUI device authenticator, **Cruciform** (the app; *Voidbind* is the protocol —
+The SwiftUI device authenticator, **Cruciform** (the app; *Void-Which-Binds* is the protocol —
 ADR-0004). The Xcode target is `Cruciform`, bundle id `one.rarebit.cruciform`; the
-Swift sources still live under `Voidbind/`, the folder named for the framework. It links the KMP library as `Voidbind.xcframework`
+Swift sources still live under `Voidbind/`, the folder named for the framework's gen1 name. It links the KMP library as `VoidWhichBinds.xcframework`
 and provides the two platform pieces the library needs on iOS: the **Swift
 `SecureEnclaveSealer`** (seals the Ed25519 signing seed to a Secure-Enclave P-256
 key) and a **`URLSessionHttpTransport`**. Everything else — identity derivation,
@@ -17,10 +17,10 @@ The Xcode project is generated from [`project.yml`](project.yml) with
 ```sh
 cd iosApp
 xcodegen generate            # writes Cruciform.xcodeproj from project.yml
-# The scheme's pre-build phase always runs `assembleVoidbindDebugXCFramework`
+# The scheme's pre-build phase always runs `assembleVoidWhichBindsDebugXCFramework`
 # (Gradle's up-to-date checks make it cheap when nothing changed, and a Kotlin edit
 # is never linked stale); you can also build it up front from the repo root:
-#   ./gradlew assembleVoidbindDebugXCFramework
+#   ./gradlew assembleVoidWhichBindsDebugXCFramework
 xcodebuild -scheme Cruciform -project Cruciform.xcodeproj -sdk iphonesimulator \
   -destination 'generic/platform=iOS Simulator' ARCHS=arm64 EXCLUDED_ARCHS=x86_64 build
 ```
@@ -44,9 +44,9 @@ Verified on the iOS 26.2 Simulator (Xcode 26.2): the app builds, installs,
 launches, and renders the onboarding screen (Create / Restore).
 
 Project facts: target + display name `Cruciform`, bundle id `one.rarebit.cruciform`, deployment target iOS 16, links
-`Voidbind.xcframework` **Embed & Sign**, `NSFaceIDUsageDescription` +
+`VoidWhichBinds.xcframework` **Embed & Sign**, `NSFaceIDUsageDescription` +
 `NSCameraUsageDescription` in `Info.plist`. The app's Swift module is
-`CruciformApp` (not `Voidbind`) so `import Voidbind` resolves to the framework and
+`CruciformApp` (not `VoidWhichBinds`) so `import VoidWhichBinds` resolves to the framework and
 not the app target itself.
 
 > ⚠️ CI verifies the KMP library (`jvmTest` + Android + the iOS klibs) and the
@@ -56,8 +56,8 @@ not the app target itself.
 >
 > To re-run the type-check:
 > ```sh
-> cd .. && ./gradlew assembleVoidbindDebugXCFramework
-> SLICE=build/XCFrameworks/debug/Voidbind.xcframework/ios-arm64-simulator
+> cd .. && ./gradlew assembleVoidWhichBindsDebugXCFramework
+> SLICE=build/XCFrameworks/debug/VoidWhichBinds.xcframework/ios-arm64-simulator
 > xcrun --sdk iphonesimulator swiftc -typecheck \
 >   -target arm64-apple-ios17.0-simulator -F "$SLICE" iosApp/Voidbind/*.swift
 > ```
@@ -123,7 +123,7 @@ iOS 26.2 Simulator:
 
 ```
 ROUNDTRIP OK      # create → recovery secret → restore → same identity
-KAT OK            # a known secret derives the exact voidbind-go public key, through Swift
+KAT OK            # a known secret derives the exact void-which-binds-go public key, through Swift
 THROWS OK         # a mistyped secret is caught, not a crash (the @Throws fix)
 QR_MATCH OK       # the voidbind:login QR is byte-identical through Swift
 SMOKE_DONE
@@ -133,8 +133,8 @@ SMOKE_DONE
 
 ```sh
 cd ..                                   # repo root
-./gradlew assembleVoidbindReleaseXCFramework
-#   → build/XCFrameworks/release/Voidbind.xcframework  (ios-arm64 + simulator)
+./gradlew assembleVoidWhichBindsReleaseXCFramework
+#   → build/XCFrameworks/release/VoidWhichBinds.xcframework  (ios-arm64 + simulator)
 ```
 
 ## Xcode project setup (one-time, done on-device/-Mac)
@@ -144,9 +144,9 @@ Xcode). To stand it up:
 
 1. **New Xcode project** → iOS App, SwiftUI, name it `Cruciform`, bundle id
    `one.rarebit.cruciform`. Add the `Voidbind/*.swift` files here to the target.
-2. **Link the framework**: drag `build/XCFrameworks/release/Voidbind.xcframework`
+2. **Link the framework**: drag `build/XCFrameworks/release/VoidWhichBinds.xcframework`
    into the target → *Frameworks, Libraries, and Embedded Content* → **Embed & Sign**.
-   (Add a Run Script or a Gradle build phase to re-run `assembleVoidbindReleaseXCFramework`
+   (Add a Run Script or a Gradle build phase to re-run `assembleVoidWhichBindsReleaseXCFramework`
    so the framework tracks the library.)
 3. **Capabilities / entitlements**:
    - Face ID usage string: add `NSFaceIDUsageDescription` to `Info.plist`

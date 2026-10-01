@@ -1,6 +1,6 @@
 import Security
 import SwiftUI
-import Voidbind
+import VoidWhichBinds
 
 enum PairMode { case connect, join }
 

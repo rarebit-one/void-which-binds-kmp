@@ -1,6 +1,6 @@
 import Foundation
 import Security
-import Voidbind
+import VoidWhichBinds
 
 /// The iOS mirror of the Android `DeviceVoidbindEngine`: it ties the commonMain
 /// brain to the platform — the Secure-Enclave-sealed device signing key
@@ -11,7 +11,7 @@ import Voidbind
 /// Deliberately thin: all identity crypto + wire lives in the KMP library; this is
 /// only provisioning + wiring, the same split the Android engine keeps.
 ///
-/// > Type-checked against the exported `Voidbind.xcframework`; the Secure Enclave /
+/// > Type-checked against the exported `VoidWhichBinds.xcframework`; the Secure Enclave /
 /// > biometric paths need a **real device** (docs/DEVICE-TESTING.md).
 public final class VoidbindEngine {
 

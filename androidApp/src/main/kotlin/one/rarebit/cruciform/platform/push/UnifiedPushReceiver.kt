@@ -3,11 +3,11 @@ package one.rarebit.cruciform.platform.push
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import one.rarebit.voidbind.PushPing
-import one.rarebit.voidbind.VoidbindQr
+import one.rarebit.voidwhichbinds.PushPing
+import one.rarebit.voidwhichbinds.VoidbindQr
 
 /**
- * The Android **UnifiedPush** wake receiver — Voidbind's ONLY background push path
+ * The Android **UnifiedPush** wake receiver — Void-Which-Binds's ONLY background push path
  * (self-hosted ntfy / UnifiedPush, no FCM/Google). A UnifiedPush distributor on the
  * phone (e.g. ntfy) broadcasts these intents when it registers an endpoint or
  * delivers a message; this receiver turns a delivered message into an app wake.
@@ -56,7 +56,7 @@ class UnifiedPushReceiver : BroadcastReceiver() {
 
     /** The opaque tuple to hand the app — rebuilt from the parsed parts (no secrets). */
     private fun rebuildTuple(login: VoidbindQr.Login): String =
-        one.rarebit.voidbind.LoginQr.encode(login.request.rp, login.request.id)
+        one.rarebit.voidwhichbinds.LoginQr.encode(login.request.rp, login.request.id)
 
     /**
      * UnifiedPush delivers the body under one of a few extra keys across versions.

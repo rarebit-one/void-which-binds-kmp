@@ -1,8 +1,8 @@
 import Foundation
-import Voidbind
+import VoidWhichBinds
 
 // A RUNTIME smoke of the Swift <-> KMP bridge through the exported
-// `Voidbind.xcframework` — it runs the actual identity path from Swift and checks
+// `VoidWhichBinds.xcframework` — it runs the actual identity path from Swift and checks
 // the results, so it proves the ObjC bridging (Data <-> KotlinByteArray, the
 // companion/object accessors, @Throws) works at runtime, not just that the Swift
 // type-checks. It exercises ONLY the pure/derivation surface, so it needs no
@@ -10,8 +10,8 @@ import Voidbind
 //
 // Run it (from the repo root):
 //
-//   ./gradlew assembleVoidbindDebugXCFramework
-//   SLICE=$PWD/build/XCFrameworks/debug/Voidbind.xcframework/ios-arm64-simulator
+//   ./gradlew assembleVoidWhichBindsDebugXCFramework
+//   SLICE=$PWD/build/XCFrameworks/debug/VoidWhichBinds.xcframework/ios-arm64-simulator
 //   xcrun --sdk iphonesimulator swiftc -target arm64-apple-ios17.0-simulator \
 //     -F "$SLICE" -Xlinker -rpath -Xlinker "$SLICE" iosApp/Smoke/RuntimeSmoke.swift -o /tmp/vbsmoke
 //   DEV=$(xcrun simctl list devices available | grep -m1 -oE '\([0-9A-F-]{36}\)' | tr -d '()')
@@ -31,7 +31,7 @@ let id = UserIdentity.companion.create()
 let restored = try! UserIdentity.companion.restore(secret: id.recovery.format())
 print("ROUNDTRIP \(hex(id.userPublicKey) == hex(restored.userPublicKey) ? "OK" : "MISMATCH")")
 
-// 2. a known recovery secret derives the exact voidbind-go public key — proves
+// 2. a known recovery secret derives the exact void-which-binds-go public key — proves
 //    HKDF + the pure-Kotlin Ed25519 pub-from-seed run correctly THROUGH Swift.
 let kat = try! UserIdentity.companion.restore(
     secret: "heyarr1ph3wnlphtjp4ha9j86g0ft6ktvuu4atzyt5hnm8m8905urq5540qyxldt3")

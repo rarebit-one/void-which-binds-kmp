@@ -5,11 +5,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import one.rarebit.voidbind.UserIdentity
-import one.rarebit.voidbind.policy.ApprovalPolicy
-import one.rarebit.voidbind.policy.ApprovalPolicyManager
-import one.rarebit.voidbind.policy.InMemoryApprovalAuditLog
-import one.rarebit.voidbind.policy.InMemorySitePolicyStore
+import one.rarebit.voidwhichbinds.UserIdentity
+import one.rarebit.voidwhichbinds.policy.ApprovalPolicy
+import one.rarebit.voidwhichbinds.policy.ApprovalPolicyManager
+import one.rarebit.voidwhichbinds.policy.InMemoryApprovalAuditLog
+import one.rarebit.voidwhichbinds.policy.InMemorySitePolicyStore
 
 /**
  * A fully in-memory engine seeded with the mockup data, so the entire UI runs and

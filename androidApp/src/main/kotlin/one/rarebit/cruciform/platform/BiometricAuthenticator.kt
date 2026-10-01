@@ -56,8 +56,8 @@ enum class StrongAuth {
 
 /**
  * Presents a user-presence check. The device signing key's hardware wrapping key is
- * bound to a short post-authentication window ([one.rarebit.voidbind.DeviceKeyStore]);
- * when the engine hits [one.rarebit.voidbind.AuthenticationRequiredException], it
+ * bound to a short post-authentication window ([one.rarebit.voidwhichbinds.DeviceKeyStore]);
+ * when the engine hits [one.rarebit.voidwhichbinds.AuthenticationRequiredException], it
  * calls [authenticate], and on success retries the signature within the window.
  */
 interface BiometricAuthenticator {

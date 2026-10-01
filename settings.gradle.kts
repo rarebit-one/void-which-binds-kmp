@@ -1,4 +1,4 @@
-rootProject.name = "voidbind-kmp"
+rootProject.name = "void-which-binds-kmp"
 
 pluginManagement {
     repositories {

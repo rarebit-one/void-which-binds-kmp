@@ -8,7 +8,7 @@ import one.rarebit.cruciform.BuildConfig
  * rules are unit-tested on the JVM; [NotifySettings] is the persisted half.
  *
  * The library appends `/v1/subscriptions` to whatever base it is handed
- * ([one.rarebit.voidbind.net.NotifyClient]), so this is the plane's mount point.
+ * ([one.rarebit.voidwhichbinds.net.NotifyClient]), so this is the plane's mount point.
  *
  * The plane is a **wake channel, not a crypto path**: this phone registers a public
  * ntfy topic URL with it and is later woken by an opaque login tuple. No key

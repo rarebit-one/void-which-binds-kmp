@@ -3,18 +3,18 @@ package one.rarebit.cruciform.domain
 import one.rarebit.cruciform.platform.BiometricAuthenticator
 import one.rarebit.cruciform.platform.IdentityStore
 import one.rarebit.cruciform.platform.StrongAuth
-import one.rarebit.voidbind.RecoverySecret
-import one.rarebit.voidbind.UserFingerprint
-import one.rarebit.voidbind.UserIdentity
+import one.rarebit.voidwhichbinds.RecoverySecret
+import one.rarebit.voidwhichbinds.UserFingerprint
+import one.rarebit.voidwhichbinds.UserIdentity
 
 /**
  * The recovery secret as this device handles it: the copy the phone may keep, and
  * checks of the copy written down.
  *
  * The kept copy IS the genesis authority, which bypasses the co-signed remove quorum
- * (voidbind-go ADR-0008). So it is sealed only behind a strong biometric, every use
+ * (void-which-binds-go ADR-0008). So it is sealed only behind a strong biometric, every use
  * needs one (never the screen-lock PIN), and the user can remove it once the paper is
- * proven. Checking the paper signs nothing (voidbind-go ADR-0010).
+ * proven. Checking the paper signs nothing (void-which-binds-go ADR-0010).
  */
 internal class RecoveryCopy(
     private val store: IdentityStore,
@@ -49,7 +49,7 @@ internal class RecoveryCopy(
     }
 
     /**
-     * Split the kept secret into SLIP-39 recovery shares (voidbind-go ADR-0011: any 2
+     * Split the kept secret into SLIP-39 recovery shares (void-which-binds-go ADR-0011: any 2
      * of 3, no passphrase), behind a **strong biometric**, as [unsealGenesis]. The
      * shares are returned for one showing and never stored; splitting revokes nothing,
      * so the written secret keeps working. A phone that keeps no copy is refused before

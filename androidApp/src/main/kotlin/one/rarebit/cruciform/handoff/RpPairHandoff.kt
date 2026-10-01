@@ -52,7 +52,7 @@ object RpPairHandoff {
 
     /**
      * The shared intent category an RP adds to a **data-less** `ACTION_VIEW`
-     * intent-filter to advertise "I can receive a same-phone Voidbind pairing handoff"
+     * intent-filter to advertise "I can receive a same-phone Void-Which-Binds pairing handoff"
      * (ADR-0009). Cruciform discovers RPs by querying `PackageManager` for a VIEW intent
      * carrying this category; a data-less probe cannot match a `scheme://pair` filter
      * (Android intent matching refuses a data-bearing filter when the intent has no

@@ -1,6 +1,6 @@
 import AVFoundation
 import SwiftUI
-import Voidbind
+import VoidWhichBinds
 
 /// The QR scanner. A scanned (or pasted) `voidbind:` code is classified by the KMP
 /// `VoidbindQr.parse` and dispatched: a **login** QR opens the web-login approval

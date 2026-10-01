@@ -16,7 +16,7 @@ settings:
 
 targets:
   # The authenticator app is named Cruciform (ADR-0004); the KMP framework it links
-  # stays `Voidbind` (the protocol). Sources still live under the `Voidbind/` folder.
+  # is `VoidWhichBinds` (the protocol). Sources still live under the `Voidbind/` folder.
   Cruciform:
     type: application
     platform: iOS
@@ -25,8 +25,8 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: one.rarebit.cruciform
-        # The KMP framework's module is 'Voidbind'; the app's own Swift module name is
-        # distinct so `import Voidbind` resolves to the framework, not itself.
+        # The KMP framework's module is 'VoidWhichBinds'; the app's own Swift module name is
+        # distinct so `import VoidWhichBinds` resolves to the framework, not itself.
         PRODUCT_MODULE_NAME: CruciformApp
         INFOPLIST_FILE: Voidbind/Info.plist
         GENERATE_INFOPLIST_FILE: "NO"
@@ -35,12 +35,12 @@ targets:
         TARGETED_DEVICE_FAMILY: "1"
         ENABLE_PREVIEWS: "YES"
     dependencies:
-      # Built by `./gradlew assembleVoidbindDebugXCFramework` (see preBuildScripts).
-      - framework: ../build/XCFrameworks/debug/Voidbind.xcframework
+      # Built by `./gradlew assembleVoidWhichBindsDebugXCFramework` (see preBuildScripts).
+      - framework: ../build/XCFrameworks/debug/VoidWhichBinds.xcframework
         embed: true
         codeSign: true
     preBuildScripts:
-      - name: Assemble Voidbind.xcframework (KMP)
+      - name: Assemble VoidWhichBinds.xcframework (KMP)
         basedOnDependencyAnalysis: false
         # Always invoke Gradle: its up-to-date checks make an unchanged rebuild cheap,
         # and skipping it when the XCFramework merely EXISTS silently links a stale
@@ -48,4 +48,4 @@ targets:
         script: |
           set -e
           cd "$PROJECT_DIR/.."
-          ./gradlew assembleVoidbindDebugXCFramework
+          ./gradlew assembleVoidWhichBindsDebugXCFramework

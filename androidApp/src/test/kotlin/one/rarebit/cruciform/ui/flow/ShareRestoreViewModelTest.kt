@@ -5,7 +5,7 @@ import kotlinx.coroutines.test.runTest
 import one.rarebit.cruciform.domain.EngineFailure
 import one.rarebit.cruciform.domain.EngineResult
 import one.rarebit.cruciform.testing.ScriptedEngine
-import one.rarebit.voidbind.RecoverySecret
+import one.rarebit.voidwhichbinds.RecoverySecret
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -89,7 +89,7 @@ class ShareRestoreViewModelTest {
 
     private companion object {
         /**
-         * `voidbind recovery split` (voidbind-go ADR-0011) of [ScriptedEngine.BACKUP]'s
+         * `void-which-binds recovery split` (void-which-binds-go ADR-0011) of [ScriptedEngine.BACKUP]'s
          * secret, the library's pinned `counting-entropy` test secret: test data only.
          */
         val GO_SHARES = listOf(

@@ -1,5 +1,5 @@
 import SwiftUI
-import Voidbind
+import VoidWhichBinds
 
 /// Settings: the identity summary, adding another device, the security posture, and
 /// signing this device out (which forgets the local enrolment but never destroys

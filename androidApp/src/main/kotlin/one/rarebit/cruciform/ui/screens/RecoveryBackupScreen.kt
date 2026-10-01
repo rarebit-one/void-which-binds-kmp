@@ -47,7 +47,7 @@ import one.rarebit.cruciform.ui.theme.VbType
 
 /**
  * Recovery backup (Mockup 7): show, warn, gate behind two acknowledgements. [onPrint]
- * opens the system print dialog for the recovery sheet (QR code + groups, voidbind-go
+ * opens the system print dialog for the recovery sheet (QR code + groups, void-which-binds-go
  * `recovery/sheet`), an alternative to copying the groups by hand.
  */
 @Composable

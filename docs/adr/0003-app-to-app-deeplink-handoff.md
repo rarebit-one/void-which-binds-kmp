@@ -1,5 +1,10 @@
 # 0003. Same-device app-to-app handoff: a `voidbind:` deep link is a third delivery channel for the QR tuple
 
+<!-- k0:keep name-note -->
+> **Name note (void-which-binds-go ADR-0013).** The protocol is now Void-Which-Binds
+> and this repo is `void-which-binds-kmp` (package `one.rarebit.voidwhichbinds`).
+> This record is kept as written, in gen1 names.
+
 **Status:** Accepted
 **Date:** 2026-09-02
 **Relates to:** ADR-0002 (per-RP approval policy), voidbind-go `weblogin` (the tuple wire), the

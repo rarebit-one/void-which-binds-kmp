@@ -1,5 +1,10 @@
 # 0004. The authenticator app is named **Cruciform**; **Voidbind** names the protocol
 
+<!-- k0:keep name-note -->
+> **Name note (void-which-binds-go ADR-0013).** The protocol is now Void-Which-Binds
+> and this repo is `void-which-binds-kmp` (package `one.rarebit.voidwhichbinds`).
+> This record is kept as written, in gen1 names.
+
 **Status:** Accepted
 **Date:** 2026-09-02
 **Relates to:** ADR-0001 (hardware keystore), ADR-0003 (the `voidbind:` deep link), the

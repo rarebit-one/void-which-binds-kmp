@@ -1,6 +1,6 @@
 #if DEBUG
 import SwiftUI
-import Voidbind
+import VoidWhichBinds
 
 /// Renders a single screen with representative sample data, selected by the
 /// `VOIDBIND_PREVIEW_SCREEN` launch environment variable. This is a **DEBUG-only**

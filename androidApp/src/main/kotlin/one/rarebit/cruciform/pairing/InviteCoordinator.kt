@@ -194,7 +194,7 @@ class InviteCoordinator(
 
     /**
      * The human said the codes DON'T match (Verify → "No, cancel"). Tell the new device —
-     * a signed refusal behind a biometric prompt (voidbind-go ADR-0012) — so it stops at
+     * a signed refusal behind a biometric prompt (void-which-binds-go ADR-0012) — so it stops at
      * once instead of timing out, then drop the invite like [cancel]. A cancelled prompt
      * or a failed send still declines locally; only the other device's wait differs.
      * Only meaningful from [State.Joined]; otherwise it is [cancel].

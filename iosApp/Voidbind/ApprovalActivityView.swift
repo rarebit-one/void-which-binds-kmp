@@ -1,5 +1,5 @@
 import SwiftUI
-import Voidbind
+import VoidWhichBinds
 
 /// The **approval activity** log: the immutable "who did I approve, and when" trail —
 /// one row per approve/deny decision, newest first. Read-only; the records are appended

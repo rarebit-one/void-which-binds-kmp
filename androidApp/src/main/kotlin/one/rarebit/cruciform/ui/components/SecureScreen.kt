@@ -19,7 +19,7 @@ import androidx.compose.ui.platform.LocalView
  *    declare `isAccessibilityTool` (screen readers such as TalkBack) can read the
  *    content. `FLAG_SECURE` does not stop the accessibility tree, so without this any
  *    enabled accessibility service could read a revealed or typed recovery secret
- *    (voidbind-kmp#87). Below Android 14 there is no such control; nothing changes.
+ *    (void-which-binds-kmp#87). Below Android 14 there is no such control; nothing changes.
  *
  * Used on the recovery-secret, share, scan and pairing screens, which display material
  * that must never be captured.

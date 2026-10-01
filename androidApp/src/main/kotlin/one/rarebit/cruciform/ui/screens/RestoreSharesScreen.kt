@@ -33,7 +33,7 @@ import one.rarebit.cruciform.ui.flow.ShareRestoreViewModel
 import one.rarebit.cruciform.ui.theme.VbColors
 
 /**
- * Restore an identity from SLIP-39 recovery shares (voidbind-go ADR-0011), typed one at
+ * Restore an identity from SLIP-39 recovery shares (void-which-binds-go ADR-0011), typed one at
  * a time. Each share is checked as it is added and a refused one is named with its
  * reason; the count runs toward the threshold the first share states; with exactly
  * enough in, "Restore identity" combines them offline and restores.
