@@ -34,10 +34,10 @@ import one.rarebit.cruciform.ui.components.VbCard
 import one.rarebit.cruciform.ui.components.WashCard
 import one.rarebit.cruciform.ui.theme.VbColors
 import one.rarebit.cruciform.ui.theme.VbType
-import one.rarebit.voidbind.RecoveryShares
+import one.rarebit.voidwhichbinds.RecoveryShares
 
 /**
- * Recovery shares (voidbind-go ADR-0011): the kept recovery secret split into SLIP-39
+ * Recovery shares (void-which-binds-go ADR-0011): the kept recovery secret split into SLIP-39
  * [shares] (never empty), any [threshold] of which restore the identity, shown one at
  * a time for the person to write down and hand out.
  *

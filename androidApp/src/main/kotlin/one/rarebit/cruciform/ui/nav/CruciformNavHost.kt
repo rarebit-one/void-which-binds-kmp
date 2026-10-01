@@ -66,7 +66,7 @@ object Routes {
     const val CREATE = "create"
     const val RESTORE = "restore"
 
-    /** Restore from SLIP-39 recovery shares, typed one at a time (voidbind-go ADR-0011). */
+    /** Restore from SLIP-39 recovery shares, typed one at a time (void-which-binds-go ADR-0011). */
     const val RESTORE_SHARES = "restore_shares"
     const val HOME = "home"
     const val SETTINGS = "settings"

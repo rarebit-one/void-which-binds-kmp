@@ -5,10 +5,10 @@ import one.rarebit.cruciform.domain.TrustedSite
 import one.rarebit.cruciform.testing.InMemoryPrefs
 import one.rarebit.cruciform.testing.InMemorySealer
 import one.rarebit.cruciform.testing.SoftwareDeviceKeys
-import one.rarebit.voidbind.DeviceIdentity
-import one.rarebit.voidbind.Enrolment
-import one.rarebit.voidbind.Membership
-import one.rarebit.voidbind.UserIdentity
+import one.rarebit.voidwhichbinds.DeviceIdentity
+import one.rarebit.voidwhichbinds.Enrolment
+import one.rarebit.voidwhichbinds.Membership
+import one.rarebit.voidwhichbinds.UserIdentity
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -78,8 +78,8 @@ class IdentityStoreTest {
         assertArrayEquals(enc.privateKey, store.encPrivateKey())
         // …and neither secret ever lands in plain prefs.
         val plain = prefs.values.values.joinToString("|")
-        assertFalse(plain.contains(one.rarebit.voidbind.crypto.Hex.encode(enc.privateKey)))
-        assertFalse(plain.contains(one.rarebit.voidbind.crypto.Hex.encode(user.recovery.bytes)))
+        assertFalse(plain.contains(one.rarebit.voidwhichbinds.crypto.Hex.encode(enc.privateKey)))
+        assertFalse(plain.contains(one.rarebit.voidwhichbinds.crypto.Hex.encode(user.recovery.bytes)))
         assertEquals(setOf("device-enc", "recovery"), sealer.secrets.keys)
         // Only the recovery secret — the genesis authority — is behind the strong key.
         assertEquals(setOf("recovery"), sealer.strong)

@@ -1,22 +1,45 @@
-# voidbind-kmp
+# void-which-binds-kmp
 
-Voidbind — the **Kotlin Multiplatform device-authenticator library**: hardware-backed
+<!-- k0:keep-begin readme -->
+> **Renamed (void-which-binds-go ADR-0013 R1).** Voidbind is now
+> **Void-Which-Binds**. From **0.10.0** this repo is `rarebit-one/void-which-binds-kmp`
+> (the old URL redirects), the Maven coordinates are
+> `one.rarebit.voidwhichbinds:void-which-binds-client` (0.9.0 and earlier stay
+> resolvable as `one.rarebit.voidbind:voidbind-client`), the Kotlin package is
+> `one.rarebit.voidwhichbinds`, and the iOS framework is `VoidWhichBinds.xcframework`.
+> Nothing on the wire changed: tokens, labels, the `heyarr` HRP, headers, the
+> `voidbind:` scheme and the golden vectors are byte-identical to 0.9.0; gen2
+> strings arrive with 0.11.0 (ADR-0022).
+>
+> - **Class names keep their prefix** (`VoidbindDeepLink`, `VoidbindQr`,
+>   `VoidbindAndroid`, `VoidbindIos`, …), as Go kept its package names, so a
+>   consumer only rewrites `one.rarebit.voidbind.` → `one.rarebit.voidwhichbinds.`
+>   in Kotlin sources, the dependency line, and its GitHub Packages
+>   `includeGroup`.
+> - **Do not rewrite manifests:** `one.rarebit.voidbind.category.RP_HANDOFF` and
+>   the `one.rarebit.voidbind.rp.pair_scheme` meta-data key are gen1 handoff
+>   strings Cruciform matches on.
+> - **Cruciform** (`one.rarebit.cruciform`) keeps its keystore aliases, prefs,
+>   dirs, keychain service and on-screen copy until gen2 re-enrols every device.
+<!-- k0:keep-end -->
+
+Void-Which-Binds — the **Kotlin Multiplatform device-authenticator library**: hardware-backed
 device keys, commit-before-reveal pairing, and account recovery, sharing **one
-wire contract** with [`voidbind-go`](https://github.com/rarebit-one/voidbind-go).
+wire contract** with [`void-which-binds-go`](https://github.com/rarebit-one/void-which-binds-go).
 The first-party authenticator **app** built on it is **Cruciform**
-([`androidApp/`](androidApp/README.md), [`iosApp/`](iosApp/README.md)) — *Voidbind*
+([`androidApp/`](androidApp/README.md), [`iosApp/`](iosApp/README.md)) — *Void-Which-Binds*
 names the protocol and the `voidbind:` scheme, *Cruciform* names the app
 ([ADR-0004](docs/adr/0004-authenticator-named-cruciform.md)).
 
-Voidbind is a device-authentication protocol extracted from **heyarr**.
-`voidbind-go` holds the wire contract (the source of truth); this repo is the
+Void-Which-Binds is a device-authentication protocol extracted from **heyarr**.
+`void-which-binds-go` holds the wire contract (the source of truth); this repo is the
 on-device side for **iOS / Android** (plus a JVM target for dev/test), and its
 reason to exist is keeping the device signing key **non-extractable in the secure
 element** (Secure Enclave / StrongBox).
 
 ## Status
 
-In use. `voidbind-client` is published (0.9.0) and consumed by heyarr-kmp. All
+In use. `void-which-binds-client` is published (0.10.0) and consumed by heyarr-kmp. All
 three targets are real. **Android** seals the Ed25519 seed with a StrongBox/TEE
 AndroidKeyStore key. **iOS** seals it with a Secure-Enclave P-256 key through the
 app-provided Swift `SecureEnclaveSealer`. **JVM** is software-only, for dev/test.
@@ -25,7 +48,7 @@ iOS app is a SwiftUI scaffold (see [`iosApp/`](iosApp/README.md)).
 
 ## What's here
 
-Pure-Kotlin (`commonMain`) re-implementations of the voidbind-go wire types. They
+Pure-Kotlin (`commonMain`) re-implementations of the void-which-binds-go wire types. They
 use no platform APIs. The only third-party dependency is
 [cryptography-kotlin](https://github.com/whyoleg/cryptography-kotlin), for SHA-256,
 HKDF, Ed25519 and X25519. The encodings themselves are hand-written:
@@ -35,9 +58,9 @@ HKDF, Ed25519 and X25519. The encodings themselves are hand-written:
   `{v, usr, dev, denc, iat, exp}`, signed by the user identity Ed25519 key.
 - **`Pairing`** — short-authentication-string derivation with **commit-before-reveal**.
 - **`Invite`** — the pairing QR `voidbind:pair?v=2&relay=&session=&salt=<hex>`;
-  `encode` is byte-identical to voidbind-go's `pairflow.EncodeInvite`.
+  `encode` is byte-identical to void-which-binds-go's `pairflow.EncodeInvite`.
 - **`LoginQr` / `VoidbindQr`** — the web-login QR `voidbind:login?rp=&id=`
-  (byte-identical to voidbind-go's `weblogin.EncodeLogin`), and a single
+  (byte-identical to void-which-binds-go's `weblogin.EncodeLogin`), and a single
   `VoidbindQr.parse` the Scan screen calls to dispatch a scanned code to the
   login-approval or pairing flow.
 - **`VoidbindDeepLink`** — the **same-device app-to-app handoff** URI (ADR-0003): the
@@ -46,7 +69,7 @@ HKDF, Ed25519 and X25519. The encodings themselves are hand-written:
   "Same-device handoff" below.
 - **`KeyRef`** — `ed25519:<hex>` / `x25519:<hex>` key rendering.
 - **`auth/`** — the **`Device` authorization scheme** a relying party's API accepts
-  from an enrolled device: `PossessionProof` (byte-exact port of voidbind-go
+  from an enrolled device: `PossessionProof` (byte-exact port of void-which-binds-go
   `enrolment.SignPossession`/`VerifyPossession`), `DeviceCredential`
   (`Authorization: Device <cert>~<proof>` with a reuse window + `refresh()`), and
   `DeviceAuthPolicy` (re-mint and retry once on `401`, transport-agnostic). See
@@ -56,7 +79,7 @@ HKDF, Ed25519 and X25519. The encodings themselves are hand-written:
 
 ### Network clients (`net/`)
 
-The wire types above plus an `HttpTransport` seam drive the live voidbind-go
+The wire types above plus an `HttpTransport` seam drive the live void-which-binds-go
 services. A platform supplies the engine: `JdkHttpTransport` (in `jvmMain`) backs
 the JVM and the tests, and the apps bring their own (OkHttp on Android,
 `URLSessionHttpTransport` on iOS):
@@ -68,7 +91,7 @@ the JVM and the tests, and the apps bring their own (OkHttp on Android,
   `authorise` / `receive` move the cert). The X25519 cert **seal** is
   `VoidbindCertSealer` (the default), completing the sealed cert delivery.
 - **`VoidbindCertSealer` / `crypto.VoidbindEncryption`** — the ephemeral-static
-  X25519 ECDH seal + XChaCha20-Poly1305, byte-identical to voidbind-go/encryption
+  X25519 ECDH seal + XChaCha20-Poly1305, byte-identical to void-which-binds-go/encryption
   (`Seal`/`Unwrap`/`EncryptChange`/`DecryptChange`). Pure-Kotlin X25519 (a
   TweetNaCl port, so `unwrap` can derive the recipient public key the JDK X25519
   provider will not) + a hand-written HChaCha20 over cryptography-kotlin's IETF
@@ -79,11 +102,11 @@ the JVM and the tests, and the apps bring their own (OkHttp on Android,
   `approve` with a `WebLogin.signAssertion` assertion) and browser side
   (`createLogin`, `poll`).
 
-These are **proven against a live voidbind-go** in `GoInteropTest` (JVM): two
+These are **proven against a live void-which-binds-go** in `GoInteropTest` (JVM): two
 Kotlin sides pair through the real Go relay (SAS matches), and a Kotlin device
 approves a login on the real Go RP, which verifies the Kotlin-signed cert and
-assertion and mints a token. That test builds + runs the `voidbind` CLI, so it is
-skipped (not failed) when `go`/the voidbind-go checkout is absent — CI keeps the
+assertion and mints a token. That test builds + runs the `void-which-binds` CLI, so it is
+skipped (not failed) when `go`/the void-which-binds-go checkout is absent — CI keeps the
 in-JVM mock coverage in `NetworkClientsTest`.
 
 ### Identity & enrolment
@@ -95,7 +118,7 @@ secret") drives:
 - **`UserIdentity`** — `create()` mints a fresh identity (returns the
   `RecoverySecret` to back up once); `restore(secret)` reconstructs it, failing
   **loud** on a mistyped secret. The user key is derived byte-identically to
-  voidbind-go's `recovery.DeriveUserSeed`
+  void-which-binds-go's `recovery.DeriveUserSeed`
   (`HKDF-SHA256(secret, info="heyarr/recovery/v1/user-identity-ed25519-seed")`),
   and its **public half** is recovered with a pure-Kotlin Ed25519
   (`crypto.Ed25519Group`, a TweetNaCl port) **because neither the JDK nor Apple
@@ -125,7 +148,7 @@ thread (they block on the relay / network).
   the SAS; `authorise` signs + seals + delivers the cert.
 
 These are proven against each other AND, in `CoordinatorGoInteropTest`, against a
-**live voidbind-go** (a coordinator-driven login on the real Go RP; the two
+**live void-which-binds-go** (a coordinator-driven login on the real Go RP; the two
 pairing coordinators through the real Go relay).
 
 Crypto backends (Ed25519, the pairing hash) are reached through interface seams so
@@ -135,7 +158,7 @@ Identity/signing = **Ed25519**; device encryption = **X25519**. Certain constant
 (the HKDF label, the `heyarr` HRP, the pairing labels) are **identity-defining** —
 see [`AGENTS.md`](AGENTS.md); changing them silently breaks wire compatibility.
 
-## Consuming `voidbind-client` as a dependency
+## Consuming `void-which-binds-client` as a dependency
 
 The shared client — everything above (the `commonMain` identity/net/flow wire
 brain: `UserIdentity`, `DeviceIdentity`, `Enrolment`, `RelayClient`,
@@ -146,13 +169,13 @@ coordinators, `LoginQr`/`WebLogin` + the challenge-v2 number-match), **plus** th
 relying-party apps depend on it over the wire instead of re-implementing the login
 seam.
 
-- **Coordinates:** `one.rarebit.voidbind:voidbind-client:0.9.0` (Gradle resolves
+- **Coordinates:** `one.rarebit.voidwhichbinds:void-which-binds-client:0.10.0` (Gradle resolves
   the right variant per target: `-jvm`, `-android`, `-iosarm64`,
   `-iossimulatorarm64`).
-- **Registry:** GitHub Packages — `https://maven.pkg.github.com/rarebit-one/voidbind-kmp`
+- **Registry:** GitHub Packages — `https://maven.pkg.github.com/rarebit-one/void-which-binds-kmp`
   (private; a read requires a token with `read:packages`).
 - **Published by CI** on a `v*` tag / GitHub Release (`.github/workflows/publish.yml`).
-  The tag must equal `version` in `build.gradle.kts` (`v0.9.0` ↔ `0.9.0`), and the
+  The tag must equal `version` in `build.gradle.kts` (`v0.10.0` ↔ `0.10.0`), and the
   JVM + iOS-simulator tests run before anything is published.
 
 ### What the artifact does NOT carry (stays per-app)
@@ -168,7 +191,7 @@ the library cannot hold:
   `androidx.biometric` dependency (the library does not pull it in).
 - **iOS** — implement the `SecureEnclaveSealer` protocol in Swift (CryptoKit /
   Security) and inject it once via `VoidbindIos.shared.doInit(sealer:)`. (iOS apps
-  typically link the `Voidbind.xcframework` — see below — rather than the Maven
+  typically link the `VoidWhichBinds.xcframework` — see below — rather than the Maven
   artifact.)
 
 ### Gradle setup (consuming app)
@@ -179,13 +202,16 @@ dependencyResolutionManagement {
     repositories {
         google(); mavenCentral()
         maven {
-            url = uri("https://maven.pkg.github.com/rarebit-one/voidbind-kmp")
+            // The owner-wide path resolves a package from any repo in the org, so a
+            // repo rename never moves it (heyarr-kmp#114, allthing-android#20).
+            url = uri("https://maven.pkg.github.com/rarebit-one/*")
             credentials {
                 username = providers.gradleProperty("gpr.user").orNull
                     ?: System.getenv("GITHUB_ACTOR")
                 password = providers.gradleProperty("gpr.token").orNull
                     ?: System.getenv("GITHUB_TOKEN")   // a PAT with read:packages
             }
+            content { includeGroup("one.rarebit.voidwhichbinds") }
         }
     }
 }
@@ -193,7 +219,7 @@ dependencyResolutionManagement {
 
 ```kotlin
 // app/build.gradle.kts — the single dependency line that replaces the login seam
-implementation("one.rarebit.voidbind:voidbind-client:0.9.0")
+implementation("one.rarebit.voidwhichbinds:void-which-binds-client:0.10.0")
 ```
 
 Adding this lets `allthing-android` / `heyarr-mobile` **delete their thin
@@ -202,7 +228,7 @@ wire-compatible `login/` seam** and call the real `WebLoginClient` / `LoginQr` /
 
 ### Same-device handoff (app-to-app deep link)
 
-An RP app running on the **same phone** as the Voidbind authenticator does not need a
+An RP app running on the **same phone** as the Void-Which-Binds authenticator does not need a
 second phone to scan its QR. It launches the authenticator with the same tuple its
 broker returned, and resumes when the authenticator finishes (the Singpass
 app-to-app model — ONE authenticator, N RPs). The contract:
@@ -213,7 +239,7 @@ voidbind:pair?v=2&relay=&session=&salt=<hex>[&callback=<private-app-scheme-uri>]
 ```
 
 - The tuple is **exactly** the `qr` string from `POST /login` (byte-identical to
-  voidbind-go's `weblogin.EncodeLogin`); `callback` is the only addition.
+  void-which-binds-go's `weblogin.EncodeLogin`); `callback` is the only addition.
 - The authenticator runs its normal approval: fetches the challenge from `rp`, **shows
   the origin** (and the number-match grid for a v2 challenge), and signs hardware-gated
   only after the user taps Approve + biometrics. **A deep link can never auto-approve.**
@@ -270,15 +296,15 @@ Authorization: Device <cert>~<proof>
   A cert says a user vouches for a device key; the proof shows the caller *holds*
   that key, bound to this very cert. It is stateless and short-lived — **120 s** by
   default — and the server honours it with **+30 s not-yet-valid tolerance and
-  strict expiry** (voidbind-go `PossessionTTL` / `PossessionSkew`).
+  strict expiry** (void-which-binds-go `PossessionTTL` / `PossessionSkew`).
 - `~` is the enrolment separator (outside the base64url alphabet, so unambiguous).
 
 `auth/` is the one implementation every relying-party app shares — a byte-exact port
-of voidbind-go v0.5.0 `enrolment.SignPossession`/`VerifyPossession`, pinned by Go-minted
+of void-which-binds-go v0.5.0 `enrolment.SignPossession`/`VerifyPossession`, pinned by Go-minted
 golden vectors (`src/jvmTest/resources/vectors/`):
 
 ```kotlin
-import one.rarebit.voidbind.auth.*
+import one.rarebit.voidwhichbinds.auth.*
 
 // The signer is the sealed device key — the same DeviceKeyStore seam the flows use.
 val credential = DeviceCredential(
@@ -316,15 +342,15 @@ Kotlin 2.3.20). The Android target needs an Android SDK (`ANDROID_HOME` /
 ./gradlew compileReleaseKotlinAndroid      # Android compile
 ./gradlew compileKotlinIosArm64            # iOS device compile (Kotlin/Native)
 ./gradlew iosSimulatorArm64Test            # commonTest on the iOS simulator (macOS)
-./gradlew assembleVoidbindXCFramework      # → build/XCFrameworks/{debug,release}/Voidbind.xcframework
+./gradlew assembleVoidWhichBindsXCFramework      # → build/XCFrameworks/{debug,release}/VoidWhichBinds.xcframework
 ```
 
-### The iOS `Voidbind.xcframework`
+### The iOS `VoidWhichBinds.xcframework`
 
-The SwiftUI app links the library as a single **XCFramework** named `Voidbind`
+The SwiftUI app links the library as a single **XCFramework** named `VoidWhichBinds`
 (device `ios-arm64` + `ios-arm64-simulator` slices). Build it with
-`./gradlew assembleVoidbindReleaseXCFramework`, drag `Voidbind.xcframework` into
-the Xcode app target (Embed & Sign), then `import Voidbind` — every type here is
+`./gradlew assembleVoidWhichBindsReleaseXCFramework`, drag `VoidWhichBinds.xcframework` into
+the Xcode app target (Embed & Sign), then `import VoidWhichBinds` — every type here is
 exported (`UserIdentity`, `DeviceIdentity`, `Enrolment`, `LoginQr`/`VoidbindQr`,
 `LoginApproval`/`DevicePairing`/`DeviceAuthorization`, `SecureEnclaveSealer`,
 `VoidbindIos`). The app implements the `SecureEnclaveSealer` protocol in Swift
@@ -336,7 +362,7 @@ exported (`UserIdentity`, `DeviceIdentity`, `Enrolment`, `LoginQr`/`VoidbindQr`,
 |---|---|
 | `jvm()` | dev/test — buildable **and** testable (software keystore) |
 | `androidTarget()` | StrongBox/TEE-sealed Ed25519 seed; builds on the Android SDK |
-| `iosArm64()`, `iosSimulatorArm64()` | compile + export the `Voidbind.xcframework`; the Secure Enclave `actual` needs the app-provided Swift `SecureEnclaveSealer` |
+| `iosArm64()`, `iosSimulatorArm64()` | compile + export the `VoidWhichBinds.xcframework`; the Secure Enclave `actual` needs the app-provided Swift `SecureEnclaveSealer` |
 
 ## Layout
 
@@ -352,7 +378,7 @@ phone installs.
 ### Cutting a release
 
 ```sh
-git tag app-v0.7.2          # `app-v<major>.<minor>.<patch>` — **the `app-v` prefix is load-bearing**: the shared `voidbind-client` library publishes on plain `v*` tags (`publish.yml`), so the app carries its own prefix and the two triggers never collide
+git tag app-v0.7.2          # `app-v<major>.<minor>.<patch>` — **the `app-v` prefix is load-bearing**: the shared `void-which-binds-client` library publishes on plain `v*` tags (`publish.yml`), so the app carries its own prefix and the two triggers never collide
 git push origin app-v0.7.2
 ```
 
@@ -366,7 +392,7 @@ repository variables (none are committed). `CRUCIFORM_DEFAULT_RELAY` and `CRUCIF
 (comma-separated) are required, and the job fails before building if either is unset.
 `CRUCIFORM_DEFAULT_NOTIFY` is optional: when it is unset the job only warns, and the build skips
 push registration. Every value must be `https://`. Set them with
-`gh variable set CRUCIFORM_DEFAULT_RELAY -R rarebit-one/voidbind-kmp --body 'https://…'`.
+`gh variable set CRUCIFORM_DEFAULT_RELAY -R rarebit-one/void-which-binds-kmp --body 'https://…'`.
 
 A release build also **forces the hardware-backed device engine** (`USE_DEVICE_ENGINE = true` in the `release` build type, plus `-PdeviceEngine=true` in CI) — the `PreviewVoidbindEngine` is a debug/CI affordance and must never ship in a signed release.
 

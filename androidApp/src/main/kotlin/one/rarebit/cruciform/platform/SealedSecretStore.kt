@@ -16,7 +16,7 @@ import javax.crypto.spec.GCMParameterSpec
 /**
  * Seals app-owned secrets at rest with a non-extractable AES-256-GCM key held in
  * the AndroidKeyStore (StrongBox where the device has one, TEE otherwise) — the
- * same mechanism the library's [one.rarebit.voidbind.DeviceKeyStore] uses for the
+ * same mechanism the library's [one.rarebit.voidwhichbinds.DeviceKeyStore] uses for the
  * Ed25519 seed (ADR-0001), applied here to the device **X25519 encryption private
  * key**, which no secure element can hold as an agreement key.
  *
@@ -27,7 +27,7 @@ import javax.crypto.spec.GCMParameterSpec
  *
  * [sealStrong] is for the one secret that IS the identity's root authority — the
  * recovery secret, which acts as genesis and so bypasses the co-signed remove
- * quorum (voidbind-go ADR-0008). Its wrapping key is usable only for a few seconds
+ * quorum (void-which-binds-go ADR-0008). Its wrapping key is usable only for a few seconds
  * after a **strong biometric** (a screen-lock PIN does not unlock it), and enrolling
  * a new fingerprint destroys it. The caller prompts for the strong biometric first;
  * [unseal] then works inside that window.

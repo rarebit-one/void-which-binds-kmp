@@ -2,12 +2,12 @@ package one.rarebit.cruciform.platform
 
 import android.content.Context
 import android.content.SharedPreferences
-import one.rarebit.voidbind.policy.ApprovalAuditEntry
-import one.rarebit.voidbind.policy.ApprovalAuditLog
-import one.rarebit.voidbind.policy.ApprovalDecision
-import one.rarebit.voidbind.policy.ApprovalPolicy
-import one.rarebit.voidbind.policy.SitePolicy
-import one.rarebit.voidbind.policy.SitePolicyStore
+import one.rarebit.voidwhichbinds.policy.ApprovalAuditEntry
+import one.rarebit.voidwhichbinds.policy.ApprovalAuditLog
+import one.rarebit.voidwhichbinds.policy.ApprovalDecision
+import one.rarebit.voidwhichbinds.policy.ApprovalPolicy
+import one.rarebit.voidwhichbinds.policy.SitePolicy
+import one.rarebit.voidwhichbinds.policy.SitePolicyStore
 
 /**
  * SharedPreferences-backed persistence for per-RP approval policy + the approval

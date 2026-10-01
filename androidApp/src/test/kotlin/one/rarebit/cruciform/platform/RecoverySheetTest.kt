@@ -6,8 +6,8 @@ import com.google.zxing.qrcode.encoder.Encoder
 import one.rarebit.cruciform.domain.RecoveryBackup
 import one.rarebit.cruciform.platform.RecoverySheet.Op
 import one.rarebit.cruciform.platform.RecoverySheet.mm
-import one.rarebit.voidbind.RecoverySecret
-import one.rarebit.voidbind.UserIdentity
+import one.rarebit.voidwhichbinds.RecoverySecret
+import one.rarebit.voidwhichbinds.UserIdentity
 import org.junit.Test
 import kotlin.math.abs
 import kotlin.test.assertEquals
@@ -15,7 +15,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 /**
- * The recovery sheet's content and geometry (voidbind-go `recovery/sheet` parity). The
+ * The recovery sheet's content and geometry (void-which-binds-go `recovery/sheet` parity). The
  * PDF drawing and the print dialog need a device (docs/DEVICE-TESTING.md, Test 2d);
  * everything they are handed is decided here.
  */

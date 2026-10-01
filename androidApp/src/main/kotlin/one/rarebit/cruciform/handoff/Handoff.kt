@@ -1,6 +1,6 @@
 package one.rarebit.cruciform.handoff
 
-import one.rarebit.voidbind.VoidbindDeepLink
+import one.rarebit.voidwhichbinds.VoidbindDeepLink
 
 /**
  * A login/pairing the app was WOKEN into from outside its own UI — by a push ping

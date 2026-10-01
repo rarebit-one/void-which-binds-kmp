@@ -1,6 +1,6 @@
 package one.rarebit.cruciform.domain
 
-import one.rarebit.voidbind.DeviceKeyStore
+import one.rarebit.voidwhichbinds.DeviceKeyStore
 
 /**
  * The device signing key as [DeviceVoidbindEngine] uses it: a public key, a signature,
@@ -16,7 +16,7 @@ interface DeviceSigningKey {
 
     /**
      * Sign [message] with the device key. On hardware this can throw
-     * [one.rarebit.voidbind.AuthenticationRequiredException] when the post-authentication
+     * [one.rarebit.voidwhichbinds.AuthenticationRequiredException] when the post-authentication
      * window has lapsed.
      */
     fun sign(message: ByteArray): ByteArray
@@ -27,7 +27,7 @@ interface DeviceSigningKey {
 
 /**
  * Loads (or, the first time, provisions) this device's signing key. Can throw
- * [one.rarebit.voidbind.AuthenticationRequiredException] on hardware; the engine's
+ * [one.rarebit.voidwhichbinds.AuthenticationRequiredException] on hardware; the engine's
  * `withDeviceAuth` prompts and retries.
  */
 fun interface DeviceKeys {

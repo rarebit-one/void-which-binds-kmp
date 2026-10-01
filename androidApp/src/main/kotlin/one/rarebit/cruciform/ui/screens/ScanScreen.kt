@@ -39,7 +39,7 @@ import one.rarebit.cruciform.ui.scan.QrScanner
 import one.rarebit.cruciform.ui.theme.VbColors
 
 /**
- * QR scanner (Mockup 3): a live camera viewfinder that decodes Voidbind login and
+ * QR scanner (Mockup 3): a live camera viewfinder that decodes Void-Which-Binds login and
  * pairing codes, and the recovery sheet's code, with a manual-entry fallback. The
  * scanned payload is handed up via [onCode]; the nav layer parses it and routes it.
  *

@@ -3,7 +3,7 @@
 The first-party Android app, **Cruciform** (`one.rarebit.cruciform`; the Hyperion
 Cantos artefact that lets you come back with your identity intact — ADR-0004): a
 Jetpack Compose, Material 3, **dark-first** authenticator that drives the real
-**Voidbind** protocol flows with a hardware-backed device key. Voidbind names the
+**Void-Which-Binds** protocol flows with a hardware-backed device key. Void-Which-Binds names the
 protocol and the `voidbind:` scheme; Cruciform names this app. It is a separate Gradle application module that depends on the root KMP
 library (`project(":")`) — the shared wire contract, the flow coordinators, and
 the hardware `DeviceKeyStore`.

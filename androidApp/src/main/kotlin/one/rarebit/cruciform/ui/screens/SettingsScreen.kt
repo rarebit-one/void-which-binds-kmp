@@ -73,7 +73,7 @@ import one.rarebit.cruciform.ui.components.VbCard
 import one.rarebit.cruciform.ui.components.VbHairline
 import one.rarebit.cruciform.ui.theme.VbColors
 import one.rarebit.cruciform.ui.theme.VbType
-import one.rarebit.voidbind.policy.ApprovalPolicy
+import one.rarebit.voidwhichbinds.policy.ApprovalPolicy
 
 /**
  * Settings (Mockup 8): identity header, device, pairing relay, trusted sites, recovery,

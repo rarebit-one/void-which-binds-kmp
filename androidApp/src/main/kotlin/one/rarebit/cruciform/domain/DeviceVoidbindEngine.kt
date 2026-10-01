@@ -13,27 +13,28 @@ import one.rarebit.cruciform.platform.IdentityStore
 import one.rarebit.cruciform.platform.NotifyConfig
 import one.rarebit.cruciform.platform.RelayConfig
 import one.rarebit.cruciform.platform.StrongAuth
-import one.rarebit.voidbind.AuthenticationRequiredException
-import one.rarebit.voidbind.DeviceIdentity
-import one.rarebit.voidbind.Enrolment
-import one.rarebit.voidbind.KeyRef
-import one.rarebit.voidbind.LoginQr
-import one.rarebit.voidbind.Membership
-import one.rarebit.voidbind.MembershipOp
-import one.rarebit.voidbind.RecoverySecret
-import one.rarebit.voidbind.UserFingerprint
-import one.rarebit.voidbind.UserIdentity
-import one.rarebit.voidbind.crypto.Hex
-import one.rarebit.voidbind.crypto.MiniJson
-import one.rarebit.voidbind.flow.DeviceAuthorization
-import one.rarebit.voidbind.flow.DevicePairing
-import one.rarebit.voidbind.flow.LoginApproval
-import one.rarebit.voidbind.flow.PairingFailures
-import one.rarebit.voidbind.flow.PairingOutcome
-import one.rarebit.voidbind.net.HttpTransport
-import one.rarebit.voidbind.net.NotifyClient
-import one.rarebit.voidbind.policy.ApprovalPolicy
-import one.rarebit.voidbind.policy.ApprovalPolicyManager
+import one.rarebit.voidwhichbinds.AuthenticationRequiredException
+import one.rarebit.voidwhichbinds.DeviceIdentity
+import one.rarebit.voidwhichbinds.Enrolment
+import one.rarebit.voidwhichbinds.KeyRef
+import one.rarebit.voidwhichbinds.LoginQr
+import one.rarebit.voidwhichbinds.Membership
+import one.rarebit.voidwhichbinds.MembershipOp
+import one.rarebit.voidwhichbinds.RecoverySecret
+import one.rarebit.voidwhichbinds.UserFingerprint
+import one.rarebit.voidwhichbinds.UserIdentity
+import one.rarebit.voidwhichbinds.VoidbindQr
+import one.rarebit.voidwhichbinds.crypto.Hex
+import one.rarebit.voidwhichbinds.crypto.MiniJson
+import one.rarebit.voidwhichbinds.flow.DeviceAuthorization
+import one.rarebit.voidwhichbinds.flow.DevicePairing
+import one.rarebit.voidwhichbinds.flow.LoginApproval
+import one.rarebit.voidwhichbinds.flow.PairingFailures
+import one.rarebit.voidwhichbinds.flow.PairingOutcome
+import one.rarebit.voidwhichbinds.net.HttpTransport
+import one.rarebit.voidwhichbinds.net.NotifyClient
+import one.rarebit.voidwhichbinds.policy.ApprovalPolicy
+import one.rarebit.voidwhichbinds.policy.ApprovalPolicyManager
 import java.io.InterruptedIOException
 import java.net.URI
 import java.text.SimpleDateFormat
@@ -200,9 +201,9 @@ class DeviceVoidbindEngine(
     // --- Scanning -------------------------------------------------------------
 
     override fun parseScanned(raw: String): ScannedCode = try {
-        when (val qr = one.rarebit.voidbind.VoidbindQr.parse(raw)) {
-            is one.rarebit.voidbind.VoidbindQr.Login -> ScannedCode.WebLogin(qr.request.rp, qr.request.id, raw)
-            is one.rarebit.voidbind.VoidbindQr.Pair -> ScannedCode.PairInvite(qr.invite.relay, qr.invite.session, raw)
+        when (val qr = VoidbindQr.parse(raw)) {
+            is VoidbindQr.Login -> ScannedCode.WebLogin(qr.request.rp, qr.request.id, raw)
+            is VoidbindQr.Pair -> ScannedCode.PairInvite(qr.invite.relay, qr.invite.session, raw)
         }
     } catch (_: Exception) {
         // Not a login or pairing code: perhaps the recovery sheet's QR (the secret in
@@ -702,7 +703,7 @@ class DeviceVoidbindEngine(
         val persisted = store.load() ?: return 0
         val usr = KeyRef.ed25519(persisted.userPublicKey).render()
         val body = MiniJson.encodeObject(
-            listOf("ops" to one.rarebit.voidbind.WebLogin.presentable(ops)),
+            listOf("ops" to one.rarebit.voidwhichbinds.WebLogin.presentable(ops)),
         ).encodeToByteArray()
         var accepted = 0
         for (rp in membershipRps) {
@@ -773,7 +774,7 @@ class DeviceVoidbindEngine(
             identity = Identity(
                 label = persisted.deviceName, // the enrolled/chosen device name — never a leftover tag
                 fingerprint = UserFingerprint.of(persisted.userPublicKey),
-                fullKey = one.rarebit.voidbind.KeyRef.ed25519(persisted.userPublicKey).render(),
+                fullKey = one.rarebit.voidwhichbinds.KeyRef.ed25519(persisted.userPublicKey).render(),
                 offlineVerifiable = true,
             ),
             device = DeviceInfo(
@@ -902,7 +903,7 @@ class DeviceVoidbindEngine(
     companion object {
         /**
          * How long a minted invite waits for the new device, and the initiator's relay
-         * poll bound: the relay's session TTL (voidbind-go `relay.DefaultSessionTTL`,
+         * poll bound: the relay's session TTL (void-which-binds-go `relay.DefaultSessionTTL`,
          * 10 min on the heyarr node). The new device may have to be created first — a
          * key behind a fingerprint in another app — so the wait is human-paced, not
          * transport-paced (the library default of 60 s stranded every same-phone

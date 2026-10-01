@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.StateFlow
  * The app-side contract for "the brain" — everything the UI needs the identity core
  * to do. The real implementation binds these to the KMP library's commonMain flow
  * coordinators (identity derivation, pairing, web-login, recovery) + the hardware
- * [one.rarebit.voidbind.DeviceKeyStore]; a [PreviewVoidbindEngine] backs @Preview
+ * [one.rarebit.voidwhichbinds.DeviceKeyStore]; a [PreviewVoidbindEngine] backs @Preview
  * and lets the whole UI run against the mockup data before the coordinators land.
  *
  * Everything cryptographic stays behind this seam: screens receive already-formatted
@@ -53,7 +53,7 @@ interface VoidbindEngine {
 
     /**
      * Split the kept recovery secret into SLIP-39 shares (Settings → Split into shares):
-     * the voidbind profile, any 2 of 3, no passphrase (voidbind-go ADR-0011). Behind a
+     * the voidbind profile, any 2 of 3, no passphrase (void-which-binds-go ADR-0011). Behind a
      * strong biometric, never the PIN, like [revealRecoverySecret]. The shares are for
      * one showing: the caller holds them in memory only. Splitting revokes nothing (the
      * written secret keeps working), and each call gives a fresh, unrelated set. A
@@ -173,7 +173,7 @@ interface VoidbindEngine {
     /**
      * As the existing device, when the human says the numbers DON'T match: behind a
      * biometric prompt, sign a refusal with this device's key and post it, so the new
-     * device stops at once instead of waiting out its timeout (voidbind-go ADR-0012).
+     * device stops at once instead of waiting out its timeout (void-which-binds-go ADR-0012).
      * Signs no op. A cancelled prompt is a `Failed` of kind CANCELLED and sends nothing.
      * Either way the invite is over: [confirmPairing] fails afterwards.
      */
@@ -237,8 +237,8 @@ interface VoidbindEngine {
 /** The per-RP policy as the approval sheet / settings shows it. */
 data class SitePolicyView(
     val rp: String,
-    val policy: one.rarebit.voidbind.policy.ApprovalPolicy,
+    val policy: one.rarebit.voidwhichbinds.policy.ApprovalPolicy,
     val pinnedAlwaysAsk: Boolean,
 ) {
-    val trusted: Boolean get() = policy == one.rarebit.voidbind.policy.ApprovalPolicy.TrustedTofu
+    val trusted: Boolean get() = policy == one.rarebit.voidwhichbinds.policy.ApprovalPolicy.TrustedTofu
 }

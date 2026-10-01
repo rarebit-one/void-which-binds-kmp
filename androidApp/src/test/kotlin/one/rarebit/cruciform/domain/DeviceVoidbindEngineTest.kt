@@ -9,16 +9,16 @@ import one.rarebit.cruciform.testing.FakeTransport
 import one.rarebit.cruciform.testing.InMemoryPrefs
 import one.rarebit.cruciform.testing.InMemorySealer
 import one.rarebit.cruciform.testing.SoftwareDeviceKeys
-import one.rarebit.voidbind.AuthenticationRequiredException
-import one.rarebit.voidbind.DeviceIdentity
-import one.rarebit.voidbind.Enrolment
-import one.rarebit.voidbind.Invite
-import one.rarebit.voidbind.KeyRef
-import one.rarebit.voidbind.LoginQr
-import one.rarebit.voidbind.UserIdentity
-import one.rarebit.voidbind.crypto.Base64Url
-import one.rarebit.voidbind.net.HttpResponse
-import one.rarebit.voidbind.policy.ApprovalPolicy
+import one.rarebit.voidwhichbinds.AuthenticationRequiredException
+import one.rarebit.voidwhichbinds.DeviceIdentity
+import one.rarebit.voidwhichbinds.Enrolment
+import one.rarebit.voidwhichbinds.Invite
+import one.rarebit.voidwhichbinds.KeyRef
+import one.rarebit.voidwhichbinds.LoginQr
+import one.rarebit.voidwhichbinds.UserIdentity
+import one.rarebit.voidwhichbinds.crypto.Base64Url
+import one.rarebit.voidwhichbinds.net.HttpResponse
+import one.rarebit.voidwhichbinds.policy.ApprovalPolicy
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotEquals
@@ -256,7 +256,7 @@ class DeviceVoidbindEngineTest {
         assertTrue(biometric.prompts.isEmpty())
     }
 
-    // --- the written backup (voidbind-go ADR-0010) --------------------------------
+    // --- the written backup (void-which-binds-go ADR-0010) --------------------------------
 
     @Test
     fun `a created identity asks for its backup to be confirmed, a restored one does not`() = runTest {

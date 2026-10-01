@@ -13,7 +13,7 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.compose.compiler) apply false
     // Publishes the shared client (identity/net/flow wire brain + DeviceKeyStore
-    // seam) as the consumable `voidbind-client` artifact to GitHub Packages, so
+    // seam) as the consumable `void-which-binds-client` artifact to GitHub Packages, so
     // relying-party apps (allthing-android, heyarr-mobile) depend on it over the
     // wire instead of re-implementing the login seam. See "Consuming as a
     // dependency" in README.md.
@@ -60,9 +60,9 @@ allprojects {
     }
 }
 
-group = "one.rarebit.voidbind"
+group = "one.rarebit.voidwhichbinds"
 // Bump on any wire-affecting or API-affecting change; the coordinates are
-// `one.rarebit.voidbind:voidbind-client`. 0.2.0 adds `VoidbindDeepLink` (the
+// `one.rarebit.voidwhichbinds:void-which-binds-client`. 0.2.0 adds `VoidbindDeepLink` (the
 // same-device app-to-app handoff URI, ADR-0003). 0.2.1 adds the non-throwing
 // `*Catching` pairing steps + `PairingOutcome` (a relay you cannot reach is an
 // error the UI renders, not a crash) and the typed `RelayHttpException`. 0.4.0 adds
@@ -70,10 +70,10 @@ group = "one.rarebit.voidbind"
 // `Authorization: Device <cert>~<proof>` credential with its reuse window
 // (`DeviceCredential`) and the transport-agnostic re-mint-and-retry-once policy
 // (`DeviceAuthPolicy`), so every relying-party app shares ONE implementation.
-// 0.5.0 adds the membership op-set (ADR-0005 / voidbind-go ADR-0007): `MembershipOp`
+// 0.5.0 adds the membership op-set (ADR-0005 / void-which-binds-go ADR-0007): `MembershipOp`
 // (the v3 add/remove op, v1/v2 certs reinterpreted as genesis adds) and
 // `Membership.evaluate`/`merge` (the CRDT evaluator, golden-vector parity with
-// voidbind-go v0.9.0), so any member device can admit or remove another; invite v3
+// void-which-binds-go v0.9.0), so any member device can admit or remove another; invite v3
 // carries `usr`, `PairflowInitiator`/`DeviceAuthorization` take a MEMBER device
 // (`PairflowAuthority.Device`) or genesis, the responder evaluates the initiator's
 // ops before deriving a SAS, `DevicePairing.confirm` returns the `Admission`
@@ -86,7 +86,18 @@ group = "one.rarebit.voidbind"
 // for heyarr-core#444/#443 (server ceiling returns to 10 min once apps adopt it).
 // Android maps it to `setUserAuthenticationParameters`; iOS to the LAContext reuse
 // duration (platform-capped at 10 min); JVM ignores it (software).
-version = "0.9.0"
+// k0:keep-begin version
+// 0.10.0 is void-which-binds-go ADR-0013 R1 (K0): a packaging-only rename, the wire
+// byte-identical to 0.9.0. The coordinates become
+// `one.rarebit.voidwhichbinds:void-which-binds-client` (0.9.0 and earlier stay at
+// `one.rarebit.voidbind:voidbind-client`), the Kotlin package and Android namespace
+// `one.rarebit.voidwhichbinds`, the XCFramework `VoidWhichBinds`, the repo
+// `rarebit-one/void-which-binds-kmp`. Class names (`VoidbindDeepLink`, `VoidbindQr`,
+// `VoidbindAndroid`, …), every typ/label/HRP/header, the `voidbind:` scheme, the
+// RP_HANDOFF category and every keystore alias, pref and dir keep their gen1
+// spelling until gen2 (0.11.0, void-which-binds-go ADR-0022).
+// k0:keep-end
+version = "0.10.0"
 
 repositories {
     mavenCentral()
@@ -123,7 +134,7 @@ kotlin {
             jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
         }
         // Publish only the release variant of the Android artifact
-        // (`voidbind-client-android`) — deterministic, and what a consuming app
+        // (`void-which-binds-client-android`) — deterministic, and what a consuming app
         // resolves. Debug is a build-time concern of the consuming app.
         publishLibraryVariants("release")
     }
@@ -132,16 +143,16 @@ kotlin {
     // the Native targets needs the Kotlin/Native toolchain (auto-downloaded); the
     // Secure Enclave `actual` uses the Security framework via the K/N platform libs.
     //
-    // The iOS SwiftUI app links this as a single **XCFramework** named `Voidbind`
-    // (device arm64 + simulator arm64 slices). `./gradlew assembleVoidbindXCFramework`
-    // produces `build/XCFrameworks/{debug,release}/Voidbind.xcframework`; the Swift
-    // app imports `Voidbind` and provides the `SecureEnclaveSealer` via
+    // The iOS SwiftUI app links this as a single **XCFramework** named `VoidWhichBinds`
+    // (device arm64 + simulator arm64 slices). `./gradlew assembleVoidWhichBindsXCFramework`
+    // produces `build/XCFrameworks/{debug,release}/VoidWhichBinds.xcframework`; the Swift
+    // app imports `VoidWhichBinds` and provides the `SecureEnclaveSealer` via
     // `VoidbindIos.init(...)`. Dynamic (default) is fine — the framework carries the
     // cryptography-kotlin/CryptoKit backend with it.
-    val xcf = XCFramework("Voidbind")
+    val xcf = XCFramework("VoidWhichBinds")
     listOf(iosArm64(), iosSimulatorArm64()).forEach { target ->
         target.binaries.framework {
-            baseName = "Voidbind"
+            baseName = "VoidWhichBinds"
             xcf.add(this)
         }
     }
@@ -162,7 +173,7 @@ kotlin {
 }
 
 android {
-    namespace = "one.rarebit.voidbind"
+    namespace = "one.rarebit.voidwhichbinds"
     compileSdk = 35
     defaultConfig {
         // minSdk 33: StrongBox (API 28+) plus a platform that reliably carries
@@ -175,7 +186,7 @@ android {
     }
 }
 
-// ── Publishing: `voidbind-client` on GitHub Packages ───────────────────────────
+// ── Publishing: `void-which-binds-client` on GitHub Packages ───────────────────────────
 // The shared client — the pure `commonMain` identity/net/flow wire brain
 // (UserIdentity, DeviceIdentity, Enrolment, RelayClient, WebLoginClient,
 // NotifyClient, PairflowInitiator/Responder, VoidbindCertSealer, the
@@ -186,24 +197,24 @@ android {
 // consuming app; the published artifact is the shared wire/flow brain, not the app.
 //
 // The Kotlin Multiplatform plugin creates one publication per target; we only
-// rename each artifactId from the project name (`voidbind-kmp`) to
-// `voidbind-client`, giving:
-//   one.rarebit.voidbind:voidbind-client                    (root Gradle-metadata)
-//   one.rarebit.voidbind:voidbind-client-jvm
-//   one.rarebit.voidbind:voidbind-client-android
-//   one.rarebit.voidbind:voidbind-client-iosarm64
-//   one.rarebit.voidbind:voidbind-client-iossimulatorarm64
+// rename each artifactId from the project name (`void-which-binds-kmp`) to
+// `void-which-binds-client`, giving:
+//   one.rarebit.voidwhichbinds:void-which-binds-client                    (root Gradle-metadata)
+//   one.rarebit.voidwhichbinds:void-which-binds-client-jvm
+//   one.rarebit.voidwhichbinds:void-which-binds-client-android
+//   one.rarebit.voidwhichbinds:void-which-binds-client-iosarm64
+//   one.rarebit.voidwhichbinds:void-which-binds-client-iossimulatorarm64
 // Consumers depend on the root coordinate and Gradle resolves the right variant.
 publishing {
     publications.withType<MavenPublication>().configureEach {
         pom {
-            name.set("voidbind-client")
+            name.set("void-which-binds-client")
             description.set(
-                "Voidbind shared client — the Kotlin Multiplatform identity/net/flow " +
+                "Void-Which-Binds shared client — the Kotlin Multiplatform identity/net/flow " +
                     "wire brain (login/pairing/authorization) plus the DeviceKeyStore " +
-                    "hardware seam. The consumable side of voidbind-kmp.",
+                    "hardware seam. The consumable side of void-which-binds-kmp.",
             )
-            url.set("https://github.com/rarebit-one/voidbind-kmp")
+            url.set("https://github.com/rarebit-one/void-which-binds-kmp")
             licenses {
                 license {
                     name.set("The Apache Software License, Version 2.0")
@@ -215,7 +226,7 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/rarebit-one/voidbind-kmp")
+            url = uri("https://maven.pkg.github.com/rarebit-one/void-which-binds-kmp")
             credentials {
                 // CI provides GITHUB_ACTOR/GITHUB_TOKEN; locally, GPR_USER/GPR_TOKEN
                 // (a PAT with read:packages / write:packages) fall back in.
@@ -228,16 +239,16 @@ publishing {
     }
 }
 
-// Rename every publication's artifactId from the project name (`voidbind-kmp`) to
-// `voidbind-client`. This runs in `afterEvaluate` because the Android Gradle
+// Rename every publication's artifactId from the project name (`void-which-binds-kmp`) to
+// `void-which-binds-client`. This runs in `afterEvaluate` because the Android Gradle
 // Plugin sets the Android variant publication's artifactId in its OWN
 // `afterEvaluate` (registered when the plugin is applied, i.e. earlier than this
 // block) — so a plain `configureEach` rename is overwritten back to
-// `voidbind-kmp-android`. Renaming here, after all plugin `afterEvaluate` hooks,
-// makes every target — including `-android` — consistently `voidbind-client-*`,
+// `void-which-binds-kmp-android`. Renaming here, after all plugin `afterEvaluate` hooks,
+// makes every target — including `-android` — consistently `void-which-binds-client-*`,
 // and keeps the root Gradle-module metadata's variant coordinates in sync.
 afterEvaluate {
     publishing.publications.withType<MavenPublication>().configureEach {
-        artifactId = artifactId.replace(rootProject.name, "voidbind-client")
+        artifactId = artifactId.replace(rootProject.name, "void-which-binds-client")
     }
 }

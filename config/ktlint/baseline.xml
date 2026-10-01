@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <baseline version="1.0">
-    <file name="src/commonMain/kotlin/one/rarebit/voidbind/DeepLink.kt">
+    <file name="src/commonMain/kotlin/one/rarebit/voidwhichbinds/DeepLink.kt">
         <error line="1" column="1" source="standard:filename" />
     </file>
-    <file name="src/commonMain/kotlin/one/rarebit/voidbind/crypto/X25519.kt">
+    <file name="src/commonMain/kotlin/one/rarebit/voidwhichbinds/crypto/X25519.kt">
         <error line="15" column="17" source="standard:backing-property-naming" />
         <error line="15" column="17" source="standard:backing-property-naming" />
     </file>
-    <file name="src/commonMain/kotlin/one/rarebit/voidbind/net/Pairflow.kt">
+    <file name="src/commonMain/kotlin/one/rarebit/voidwhichbinds/net/Pairflow.kt">
         <error line="14" column="1" source="standard:kdoc" />
     </file>
-    <file name="src/commonMain/kotlin/one/rarebit/voidbind/offload/OffloadInvite.kt">
+    <file name="src/commonMain/kotlin/one/rarebit/voidwhichbinds/offload/OffloadInvite.kt">
         <error line="1" column="1" source="standard:filename" />
     </file>
-    <file name="src/commonMain/kotlin/one/rarebit/voidbind/offload/OffloadResponder.kt">
+    <file name="src/commonMain/kotlin/one/rarebit/voidwhichbinds/offload/OffloadResponder.kt">
         <error line="8" column="1" source="standard:kdoc" />
     </file>
-    <file name="src/commonTest/kotlin/one/rarebit/voidbind/auth/DeviceCredentialTest.kt">
+    <file name="src/commonTest/kotlin/one/rarebit/voidwhichbinds/auth/DeviceCredentialTest.kt">
         <error line="22" column="121" source="standard:max-line-length" />
         <error line="23" column="121" source="standard:max-line-length" />
     </file>
-    <file name="src/commonTest/kotlin/one/rarebit/voidbind/auth/PossessionProofTest.kt">
+    <file name="src/commonTest/kotlin/one/rarebit/voidwhichbinds/auth/PossessionProofTest.kt">
         <error line="31" column="121" source="standard:max-line-length" />
         <error line="32" column="121" source="standard:max-line-length" />
         <error line="39" column="121" source="standard:max-line-length" />
         <error line="40" column="121" source="standard:max-line-length" />
     </file>
-    <file name="src/commonTest/kotlin/one/rarebit/voidbind/policy/ApprovalPolicyTest.kt">
+    <file name="src/commonTest/kotlin/one/rarebit/voidwhichbinds/policy/ApprovalPolicyTest.kt">
         <error line="16" column="17" source="standard:property-naming" />
         <error line="17" column="17" source="standard:property-naming" />
     </file>
-    <file name="src/jvmTest/kotlin/one/rarebit/voidbind/net/NetworkClientsTest.kt">
+    <file name="src/jvmTest/kotlin/one/rarebit/voidwhichbinds/net/NetworkClientsTest.kt">
         <error line="97" column="121" source="standard:max-line-length" />
     </file>
 </baseline>

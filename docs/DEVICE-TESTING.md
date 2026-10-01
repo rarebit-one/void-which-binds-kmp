@@ -12,24 +12,24 @@ This is the runbook, plus the map of what still has to be built to reach the ful
 |---|---|
 | Crypto decision (ADR-0001) | ✅ resolved + recorded |
 | `Ed25519Engine` (software, multiplatform) | ✅ done, JVM round-trip tested |
-| Pairing/cert wire reconciled to voidbind-go **v2** | ✅ done + merged (dual-key commit, 7-digit SAS) |
+| Pairing/cert wire reconciled to void-which-binds-go **v2** | ✅ done + merged (dual-key commit, 7-digit SAS) |
 | `DeviceKeyStore` JVM actual (software) | ✅ done |
 | `DeviceKeyStore` Android actual (StrongBox-sealed) | ✅ compiles; **needs a device to prove non-extractability** |
 | `DeviceKeyStore` iOS actual (SE-sealed) | ✅ compiles; **needs a device** |
 | Swift `SecureEnclaveSealer` implementation | ✅ written (`iosApp/Voidbind/SecureEnclaveSealer.swift`); **needs Xcode + a device** |
-| `UserIdentity` / `Enrolment` / `LoginQr` / flow coordinators (commonMain) | ✅ done, unit-tested + cross-language proven vs live voidbind-go |
-| `Voidbind.xcframework` export | ✅ done (`assembleVoidbindXCFramework`) |
+| `UserIdentity` / `Enrolment` / `LoginQr` / flow coordinators (commonMain) | ✅ done, unit-tested + cross-language proven vs live void-which-binds-go |
+| `VoidWhichBinds.xcframework` export | ✅ done (`assembleVoidWhichBindsXCFramework`) |
 | Android app shell (Compose) | 🚧 in progress (peer session — `androidApp/`) |
 | iOS app shell (SwiftUI) | 🚧 scaffold (`iosApp/`); full screen set on-device |
 | Live web QR-login vs All Thing / heyarr | ⏳ device test (below) |
 | Same-device app-to-app deep link (`voidbind:login?…` from an RP app) | ✅ approval sheet proven on-device via `adb am start` against a live heyarr node (Test 5) |
 | Reverse same-device handoff (ADR-0006): "Send to `<app>` on this phone" from the invite screen | ✅ buttons resolve per installed RP; **end-to-end (RP joins → SAS on both apps → confirm here) needs the human finger (Test 6)** |
-| Membership op-set (ADR-0005): any member adds the next; Devices list + Remove | ✅ library proven vs live voidbind-go (14/14 vectors, phone→phone through the Go relay, Go RP honours `ops`); **on-device: upgrade-in-place + Devices list proven; a real second-phone pair/remove needs a second phone (Test 4b)** |
-| Recovery shares (SLIP-39, voidbind-go ADR-0011): restore from 2-of-3 shares, typed; split on the phone | ✅ library passes Trezor's 45 vectors + combines Go-made shares (JVM); **on-device restore from Go-made shares: Test 2e; split on the phone and restore elsewhere: Test 2f** |
+| Membership op-set (ADR-0005): any member adds the next; Devices list + Remove | ✅ library proven vs live void-which-binds-go (14/14 vectors, phone→phone through the Go relay, Go RP honours `ops`); **on-device: upgrade-in-place + Devices list proven; a real second-phone pair/remove needs a second phone (Test 4b)** |
+| Recovery shares (SLIP-39, void-which-binds-go ADR-0011): restore from 2-of-3 shares, typed; split on the phone | ✅ library passes Trezor's 45 vectors + combines Go-made shares (JVM); **on-device restore from Go-made shares: Test 2e; split on the phone and restore elsewhere: Test 2f** |
 
 The commonMain "device brain" (identity derivation, self-enrolment, the
 `LoginApproval` / `DevicePairing` / `DeviceAuthorization` coordinators, the QR
-wire) is done and **cross-language proven against a live voidbind-go**
+wire) is done and **cross-language proven against a live void-which-binds-go**
 (`CoordinatorGoInteropTest`: a coordinator-driven login on the real Go RP + the
 pairing coordinators through the real Go relay). What remains is genuinely
 device-bound: the Secure Enclave / StrongBox properties and the biometric gate.
@@ -85,7 +85,7 @@ iOS; the Android onboarding screens).
    Assert the recovery secret is shown (`heyarr1…`) with **no copy button**, and that
    the backup screen says whether the phone kept a copy. The identity is provisioned
    before the backup screen appears (confirming the backup is Phase 1 of
-   voidbind-go#52).
+   void-which-binds-go#52).
 2. **Restore**: reinstall the app (or use a second device), tap "Restore", type the
    secret **exactly as grouped on screen, spaces included**. Assert the reconstructed
    `userId` **equals** the original (recovery restores the SAME pinned identity,
@@ -103,7 +103,7 @@ iOS; the Android onboarding screens).
    keystore` / a keystore listing: `voidbind.secret.wrap.recovery` is gone and
    `voidbind.secret.wrap-strong.recovery` exists.
 
-## Test 2c — prove the backup; remove the phone's copy (voidbind-go ADR-0010)
+## Test 2c — prove the backup; remove the phone's copy (void-which-binds-go ADR-0010)
 
 1. **Confirm on create.** After "I've saved it", the app asks for three random groups
    (never groups 1–2) from what you wrote. A wrong group is named and nothing is
@@ -127,9 +127,9 @@ iOS; the Android onboarding screens).
    - adding a device from it still works (member-signed); re-admitting a REMOVED
      device now needs the paper (Restore on that device).
 
-## Test 2d — print the recovery sheet; scan it back (voidbind-go#52)
+## Test 2d — print the recovery sheet; scan it back (void-which-binds-go#52)
 
-The sheet mirrors voidbind-go `recovery/sheet` (`voidbind recovery sheet --out …`):
+The sheet mirrors void-which-binds-go `recovery/sheet` (`void-which-binds recovery sheet --out …`):
 the secret as an upper-case QR code (alphanumeric, version 4, medium error
 correction), the secret in four-character groups, the fingerprint and user ID, four
 numbered instructions, corner cut marks and a 50 mm calibration bar. The app draws it
@@ -169,16 +169,16 @@ print, the paper and the camera are what this test proves.
    shows no PDF. (The print spooler holds its own copy of the job until it completes;
    that is the system's, not the app's.)
 
-## Test 2e — restore from recovery shares (voidbind-go ADR-0011)
+## Test 2e — restore from recovery shares (void-which-binds-go ADR-0011)
 
-The shares come from voidbind-go, so this also proves the SLIP-39 port against the
+The shares come from void-which-binds-go, so this also proves the SLIP-39 port against the
 Go implementation on real hardware (the JVM tests prove the maths; this proves the
 phone's PBKDF2 provider and the typing flow). Use a throwaway secret, or the
 identity's own secret on a wiped phone.
 
-1. **Make the shares.** In a voidbind-go checkout (ADR-0011 or later), split the
+1. **Make the shares.** In a void-which-binds-go checkout (ADR-0011 or later), split the
    secret you will restore:
-   `echo heyarr1… | go run ./cmd/voidbind recovery split --secret-file -`. It prints
+   `echo heyarr1… | go run ./cmd/void-which-binds recovery split --secret-file -`. It prints
    the user ID, the fingerprint (`XXXX XXXX XXXX XXXX`) and three 33-word shares, any
    2 of which rebuild it. (`--sheets <dir>` also writes printable sheets.) Note the
    fingerprint.
@@ -212,7 +212,7 @@ identity's own secret on a wiped phone.
 ## Test 2f — split into shares on the phone; restore from 2 of them elsewhere
 
 The phone splits its kept copy of the recovery secret with the same SLIP-39 profile
-as `voidbind recovery split` (any 2 of 3, no passphrase), so this proves the split
+as `void-which-binds recovery split` (any 2 of 3, no passphrase), so this proves the split
 half on real hardware; Test 2e proved the restore half.
 
 1. **Split.** On a phone that keeps the recovery copy: Settings → Recovery → **Split
@@ -249,14 +249,14 @@ clock forward (auto-time off) past day 60.
 
 ## Test 3 — web QR-login with the hardware key (via `LoginApproval`)
 
-The RP backend already exists — run `cmd/voidbind login-serve --pin <userId>` (or
+The RP backend already exists — run `cmd/void-which-binds login-serve --pin <userId>` (or
 a deployed All Thing) and pin the identity from Test 2.
 1. The RP shows a `voidbind:login?rp=&id=` QR. The app's Scan screen calls
    `VoidbindQr.parse` → `LoginApproval.begin(qr)`; the approval sheet shows the
    audience (RP origin) + a live expiry countdown.
 2. Tap Approve → `LoginApproval.approve` calls `DeviceKeyStore.sign`, so the
    **biometric prompt fires** (the SE/StrongBox unseal); the assertion posts.
-3. The RP verifies it offline (voidbind-go/rp) and mints a short-lived token.
+3. The RP verifies it offline (void-which-binds-go/rp) and mints a short-lived token.
 4. Assert: no private key leaves the phone; a **cancelled** biometric prompt yields
    no login; an **unpinned** device is refused (401); an expired challenge is refused.
 

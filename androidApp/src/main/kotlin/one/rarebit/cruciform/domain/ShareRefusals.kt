@@ -1,11 +1,11 @@
 package one.rarebit.cruciform.domain
 
-import one.rarebit.voidbind.NotARecoverySecretException
-import one.rarebit.voidbind.slip39.Slip39Error
-import one.rarebit.voidbind.slip39.Slip39Exception
+import one.rarebit.voidwhichbinds.NotARecoverySecretException
+import one.rarebit.voidwhichbinds.slip39.Slip39Error
+import one.rarebit.voidwhichbinds.slip39.Slip39Exception
 
 /**
- * What to tell a person whose recovery share was refused (voidbind-go ADR-0011): which
+ * What to tell a person whose recovery share was refused (void-which-binds-go ADR-0011): which
  * share, counting from 1 in the order they were entered, and what to do about it. The
  * library's typed refusal decides the words; its raw text is never shown.
  */
@@ -52,7 +52,7 @@ internal object ShareRefusals {
         }
     }
 
-    /** A voidbind share: one group, 32 bytes, so 33 words (voidbind-go ADR-0011). */
+    /** A voidbind share: one group, 32 bytes, so 33 words (void-which-binds-go ADR-0011). */
     const val SHARE_WORDS = 33
 
     const val NOT_A_RECOVERY_SECRET =

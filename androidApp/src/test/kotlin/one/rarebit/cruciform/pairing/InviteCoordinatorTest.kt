@@ -484,7 +484,7 @@ class InviteCoordinatorTest {
         assertEquals(InviteCoordinator.SamePhone.None, c.samePhone.value)
     }
 
-    // --- "No, cancel": the codes differ (voidbind-go ADR-0012) -----------------------
+    // --- "No, cancel": the codes differ (void-which-binds-go ADR-0012) -----------------------
 
     private fun TestScope.joined(engine: FakeEngine, keep: CountingKeepAlive): InviteCoordinator {
         val c = coordinator(engine, keep)

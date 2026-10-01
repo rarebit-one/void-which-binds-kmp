@@ -4,8 +4,8 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import one.rarebit.voidbind.net.HttpResponse
-import one.rarebit.voidbind.net.HttpTransport
+import one.rarebit.voidwhichbinds.net.HttpResponse
+import one.rarebit.voidwhichbinds.net.HttpTransport
 import java.util.concurrent.TimeUnit
 
 /**

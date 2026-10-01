@@ -11,11 +11,11 @@ import kotlinx.coroutines.withContext
 import one.rarebit.cruciform.domain.EngineResult
 import one.rarebit.cruciform.domain.ShareRefusals
 import one.rarebit.cruciform.domain.VoidbindEngine
-import one.rarebit.voidbind.RecoverySecret
-import one.rarebit.voidbind.RecoveryShares
+import one.rarebit.voidwhichbinds.RecoverySecret
+import one.rarebit.voidwhichbinds.RecoveryShares
 
 /**
- * Restoring an identity from SLIP-39 recovery shares (voidbind-go ADR-0011), typed one
+ * Restoring an identity from SLIP-39 recovery shares (void-which-binds-go ADR-0011), typed one
  * at a time: each share is checked the moment it is added (a typo, a share of another
  * set, the same share twice), progress counts toward the threshold the first share
  * states, and once exactly enough are in, [restore] combines them and restores through

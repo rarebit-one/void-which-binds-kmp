@@ -1,6 +1,6 @@
 name: publish
 
-# Publishes the shared `voidbind-client` KMP artifact (all targets: metadata,
+# Publishes the shared `void-which-binds-client` KMP artifact (all targets: metadata,
 # jvm, android, iosArm64, iosSimulatorArm64) to GitHub Packages for consumption
 # by relying-party apps (allthing-android, heyarr-mobile).
 #
@@ -25,11 +25,11 @@ jobs:
   # A single macOS runner publishes EVERY target: the iOS Kotlin/Native klibs
   # compile only on macOS, and macos-latest also ships the Android SDK + JDK, so
   # the jvm/android/ios/metadata publications all go up in one pass. GITHUB_TOKEN
-  # carries `packages: write` for the rarebit-one/voidbind-kmp registry.
+  # carries `packages: write` for the rarebit-one/void-which-binds-kmp registry.
   publish:
     runs-on: macos-latest
     # An `app-v*` Release is the Cruciform APK (release.yml), NOT a library cut —
-    # republishing 'voidbind-client' at its unchanged version would only fail. The
+    # republishing 'void-which-binds-client' at its unchanged version would only fail. The
     # `push: tags: v*` trigger already ignores `app-v*`; this guards the sibling
     # `release: published` trigger that the app's own Release would otherwise fire.
     if: >-
@@ -67,7 +67,7 @@ jobs:
         run: >-
           ./gradlew jvmTest iosSimulatorArm64Test
           --no-daemon --stacktrace
-      - name: publish voidbind-client to GitHub Packages
+      - name: publish void-which-binds-client to GitHub Packages
         run: >-
           ./gradlew publishAllPublicationsToGitHubPackagesRepository
           --no-daemon --stacktrace

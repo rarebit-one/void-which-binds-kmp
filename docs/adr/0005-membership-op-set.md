@@ -1,5 +1,10 @@
 # 0005. Membership op-set: the device side of "any member admits or removes"
 
+<!-- k0:keep name-note -->
+> **Name note (void-which-binds-go ADR-0013).** The protocol is now Void-Which-Binds
+> and this repo is `void-which-binds-kmp` (package `one.rarebit.voidwhichbinds`).
+> This record is kept as written, in gen1 names.
+
 **Status:** Accepted
 **Date:** 2026-09-02
 **Mirrors:** voidbind-go ADR-0007 (`docs/adr/0007-membership-op-set.md`, v0.9.0) — the

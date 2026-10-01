@@ -1,7 +1,7 @@
 package one.rarebit.cruciform.domain
 
-import one.rarebit.voidbind.policy.ApprovalAuditEntry
-import one.rarebit.voidbind.policy.ApprovalPolicy
+import one.rarebit.voidwhichbinds.policy.ApprovalAuditEntry
+import one.rarebit.voidwhichbinds.policy.ApprovalPolicy
 
 /**
  * UI-facing domain models. These are the app's own view of identity state, kept
@@ -71,7 +71,7 @@ data class TrustedSite(
     val accent: SiteAccent = SiteAccent.BLUE,
     /**
      * This RP's per-site approval policy (trust-on-first-use vs. always-ask). Joined
-     * in from the [one.rarebit.voidbind.policy.SitePolicyStore] at load time — it is
+     * in from the [one.rarebit.voidwhichbinds.policy.SitePolicyStore] at load time — it is
      * NOT part of the trusted-site serialization, so the two stores stay independent.
      */
     val policy: ApprovalPolicy = ApprovalPolicy.AlwaysAsk,
@@ -101,7 +101,7 @@ data class ApprovalActivity(
             rp = entry.rp,
             audience = entry.audience,
             loginId = entry.loginId,
-            approved = entry.decision == one.rarebit.voidbind.policy.ApprovalDecision.Approved,
+            approved = entry.decision == one.rarebit.voidwhichbinds.policy.ApprovalDecision.Approved,
             whenLabel = whenLabel,
             matchNumber = entry.matchNumber,
         )
@@ -146,7 +146,7 @@ data class RecoveryBackup(
 /**
  * Whether the identity's written recovery secret has been checked on this device.
  * Checking signs nothing: the secret is parsed, its identity derived and compared
- * (voidbind-go ADR-0010).
+ * (void-which-binds-go ADR-0010).
  */
 data class BackupStatus(
     /** Created on this device and the written secret not yet confirmed: Home asks for it. */

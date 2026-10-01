@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// The Voidbind visual language: **dark-first, teal accent**, monospace for key
+/// The Void-Which-Binds visual language: **dark-first, teal accent**, monospace for key
 /// material. One place for the colors, fonts, and the reusable card / button /
 /// pill treatments every screen shares, so the eight screens read as one app.
 enum VB {

@@ -2,7 +2,7 @@ import CryptoKit
 import Foundation
 import LocalAuthentication
 import Security
-import Voidbind
+import VoidWhichBinds
 
 /// The Swift implementation of the Kotlin `SecureEnclaveSealer` protocol the iOS
 /// `DeviceKeyStore` needs (see the interface doc in commonMain). The device's
@@ -22,7 +22,7 @@ import Voidbind
 ///  - the sealed seed ciphertext — a generic-password item `voidbind.<alias>.sealed`.
 ///  - the Ed25519 public key (RAW 32 bytes, not secret) — `voidbind.<alias>.pub`.
 ///
-/// > Type-checked against the exported `Voidbind.xcframework` (simulator slice);
+/// > Type-checked against the exported `VoidWhichBinds.xcframework` (simulator slice);
 /// > the Secure Enclave + biometric behaviour still needs a **real iPhone** (see
 /// > docs/DEVICE-TESTING.md).
 public final class EnclaveSealer: NSObject, SecureEnclaveSealer {

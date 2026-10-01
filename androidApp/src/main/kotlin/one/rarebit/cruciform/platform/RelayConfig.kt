@@ -8,7 +8,7 @@ import java.net.URISyntaxException
  * The pairing-relay base URL: its default and its validation. Pure Kotlin (no Android
  * types) so the rules are unit-tested on the JVM; [RelaySettings] is the persisted
  * half. The library appends `/v1/sessions…` to whatever base it is handed
- * ([one.rarebit.voidbind.net.RelayClient]), so the base is the mount point of a
+ * ([one.rarebit.voidwhichbinds.net.RelayClient]), so the base is the mount point of a
  * relay, e.g. `https://relay.example.com/pair` (a heyarr node's `RelayPrefix`).
  */
 object RelayConfig {

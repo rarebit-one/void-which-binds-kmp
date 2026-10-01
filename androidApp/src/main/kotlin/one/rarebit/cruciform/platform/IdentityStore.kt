@@ -3,8 +3,8 @@ package one.rarebit.cruciform.platform
 import android.content.Context
 import android.content.SharedPreferences
 import one.rarebit.cruciform.domain.TrustedSite
-import one.rarebit.voidbind.Membership
-import one.rarebit.voidbind.crypto.Hex
+import one.rarebit.voidwhichbinds.Membership
+import one.rarebit.voidwhichbinds.crypto.Hex
 
 /**
  * On-device persistence for the provisioned identity. **Public** material (the
@@ -94,7 +94,7 @@ class IdentityStore(private val prefs: SharedPreferences, private val sealed: Se
     /** Remove this device's copy of the recovery secret. The written copy is then the only one. */
     fun forgetRecoverySecret() = sealed.delete(SEAL_RECOVERY)
 
-    // --- the written backup (recovery drill, voidbind-go ADR-0010) -----------------
+    // --- the written backup (recovery drill, void-which-binds-go ADR-0010) -----------------
 
     /** The identity was created here and its written secret is not yet confirmed. */
     fun markBackupPending() = prefs.edit().putBoolean(KEY_BACKUP_PENDING, true).apply()
@@ -162,7 +162,7 @@ class IdentityStore(private val prefs: SharedPreferences, private val sealed: Se
     /**
      * Record [renewal] — this device's self re-add — and make it the credential the
      * device presents. A relying party refuses a credential whose add has expired
-     * (voidbind-go `rp.Verify` step 4), so the device must present its newest add, not
+     * (void-which-binds-go `rp.Verify` step 4), so the device must present its newest add, not
      * the one that first admitted it. The old add stays in the replica as history.
      */
     fun renewCredential(renewal: String) {

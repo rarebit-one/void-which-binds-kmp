@@ -1,6 +1,6 @@
 import Foundation
 import SwiftUI
-import Voidbind
+import VoidWhichBinds
 
 /// A relying party this identity has signed into, shown on Home.
 struct TrustedSite: Identifiable, Hashable {

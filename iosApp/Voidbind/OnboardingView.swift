@@ -1,5 +1,5 @@
 import SwiftUI
-import Voidbind
+import VoidWhichBinds
 
 /// Drives onboarding against the ``VoidbindEngine``: create a new identity, restore
 /// from a written-down secret, or add this device to an existing account (pairing).

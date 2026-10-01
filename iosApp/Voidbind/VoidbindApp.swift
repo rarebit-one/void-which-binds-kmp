@@ -1,5 +1,5 @@
 import SwiftUI
-import Voidbind
+import VoidWhichBinds
 
 /// The SwiftUI app entry. Builds the ``AppModel`` once (which builds the
 /// ``VoidbindEngine``, injecting the Swift Secure Enclave sealer into the KMP

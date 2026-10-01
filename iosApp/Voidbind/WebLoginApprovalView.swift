@@ -1,5 +1,5 @@
 import SwiftUI
-import Voidbind
+import VoidWhichBinds
 
 /// The **web-login approval** sheet. After scanning a `voidbind:login` QR, the app
 /// fetches the challenge (via ``LoginApproval/begin``), shows the human WHAT they
