@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -25,14 +26,20 @@ import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.delay
 import one.rarebit.cruciform.AppViewModel
 import one.rarebit.cruciform.domain.EngineFailure
+import one.rarebit.cruciform.domain.HardwareDeviceKeys
 import one.rarebit.cruciform.domain.IdentityState
+import one.rarebit.cruciform.domain.OffloadCoordinator
 import one.rarebit.cruciform.domain.ScannedCode
 import one.rarebit.cruciform.handoff.Handoff
 import one.rarebit.cruciform.handoff.RpAppIdentity
 import one.rarebit.cruciform.handoff.RpPairLauncher
 import one.rarebit.cruciform.handoff.SamePhoneJoin
 import one.rarebit.cruciform.pairing.InviteCoordinator
+import one.rarebit.cruciform.platform.AndroidBiometricAuthenticator
+import one.rarebit.cruciform.platform.IdentityStore
 import one.rarebit.cruciform.platform.NotifySettings
+import one.rarebit.cruciform.platform.OffloadPairStore
+import one.rarebit.cruciform.platform.OkHttpTransport
 import one.rarebit.cruciform.platform.RecoverySheetPrinter
 import one.rarebit.cruciform.platform.RelaySettings
 import one.rarebit.cruciform.ui.flow.EngineErrorState
@@ -47,6 +54,7 @@ import one.rarebit.cruciform.ui.screens.DevicesScreen
 import one.rarebit.cruciform.ui.screens.HomeScreen
 import one.rarebit.cruciform.ui.screens.LoginApprovalScreen
 import one.rarebit.cruciform.ui.screens.NumberMatchApprovalScreen
+import one.rarebit.cruciform.ui.screens.OffloadApprovalScreen
 import one.rarebit.cruciform.ui.screens.OnboardingScreen
 import one.rarebit.cruciform.ui.screens.PairAllowScreen
 import one.rarebit.cruciform.ui.screens.PairConnectScreen
@@ -59,6 +67,7 @@ import one.rarebit.cruciform.ui.screens.RestoreSharesScreen
 import one.rarebit.cruciform.ui.screens.ScanScreen
 import one.rarebit.cruciform.ui.screens.SettingsScreen
 import one.rarebit.cruciform.ui.theme.VbColors
+import one.rarebit.voidbind.offload.OffloadDeepLink
 
 /** Navigation routes. */
 object Routes {
@@ -71,6 +80,7 @@ object Routes {
     const val HOME = "home"
     const val SETTINGS = "settings"
     const val SCAN = "scan"
+    const val OFFLOAD = "offload"
 
     /** The scanner the Restore / drill fields open: reads a recovery sheet, hands the secret back. */
     const val SCAN_SECRET = "scan_secret"
@@ -104,6 +114,8 @@ object Routes {
 fun CruciformNavHost(
     appViewModel: AppViewModel,
     handoff: Handoff? = null,
+    offloadWake: String? = null,
+    onOffloadWakeHandled: () -> Unit = {},
     onHandoffFinished: (Handoff, approved: Boolean) -> Unit = { _, _ -> },
     /**
      * A `cruciform://pair-joined` report from a relying-party app on this phone
@@ -127,6 +139,7 @@ fun CruciformNavHost(
     val engine = appViewModel.engine
     val identityState by appViewModel.identity.collectAsStateWithLifecycle()
     val appContext = LocalContext.current.applicationContext
+    val activity = LocalContext.current as? FragmentActivity
     val clipboard = LocalClipboardManager.current
 
     // Per-flow state holders, activity-scoped so a flow spanning several destinations
@@ -134,6 +147,15 @@ fun CruciformNavHost(
     val loginVm: LoginViewModel = viewModel { LoginViewModel(engine, createSavedStateHandle()) }
     val pairVm: PairViewModel = viewModel { PairViewModel(engine, createSavedStateHandle()) }
     val onboardingVm: OnboardingViewModel = viewModel { OnboardingViewModel(engine, createSavedStateHandle()) }
+    val offloadVm: OffloadCoordinator = viewModel {
+        OffloadCoordinator(
+            identityStore = IdentityStore(appContext),
+            pairStore = OffloadPairStore(appContext),
+            deviceKeys = HardwareDeviceKeys(),
+            biometric = AndroidBiometricAuthenticator(checkNotNull(activity)),
+            transport = OkHttpTransport(),
+        )
+    }
 
     // No SavedStateHandle: the shares are secret and live in memory only.
     val shareRestoreVm: ShareRestoreViewModel = viewModel { ShareRestoreViewModel(engine) }
@@ -141,6 +163,14 @@ fun CruciformNavHost(
         SettingsViewModel(engine, RelaySettings(appContext), NotifySettings(appContext), createSavedStateHandle())
     }
     val scannedSecretVm: ScannedSecretViewModel = viewModel { ScannedSecretViewModel() }
+
+    LaunchedEffect(offloadWake) {
+        offloadWake?.let {
+            offloadVm.receiveWake(it)
+            nav.navigate(Routes.OFFLOAD) { launchSingleTop = true }
+            onOffloadWakeHandled()
+        }
+    }
 
     // The initiator's invite lifecycle (ADR-0007): app-scoped, observed here, never
     // restarted by a screen. Its handshake keeps polling the relay while the user is in
@@ -230,6 +260,20 @@ fun CruciformNavHost(
      */
     fun onScanned(raw: String, mode: ScanMode, reject: (String) -> Unit) {
         val hasIdentity = identityState is IdentityState.Active
+        val offloadInvite = if (mode == ScanMode.ANY) {
+            runCatching { OffloadDeepLink.parsePairInvite(raw) }.getOrNull()
+        } else {
+            null
+        }
+        if (offloadInvite != null) {
+            if (!hasIdentity) {
+                reject("Create or restore an identity before pairing a desktop.")
+                return
+            }
+            offloadVm.pair(raw)
+            nav.navigate(Routes.OFFLOAD) { popUpTo(Routes.SCAN) { inclusive = true } }
+            return
+        }
         when (val action = scanAction(engine.parseScanned(raw), mode, hasIdentity)) {
             is ScanAction.OpenLogin -> loginVm.open(action.code, fromScan = true)
 
@@ -656,6 +700,19 @@ fun CruciformNavHost(
                         rescan++
                     },
                     rescanKey = rescan,
+                )
+            }
+
+            composable(Routes.OFFLOAD) {
+                val state by offloadVm.state.collectAsStateWithLifecycle()
+                OffloadApprovalScreen(
+                    state = state,
+                    onConfirmPair = offloadVm::confirmPair,
+                    onApproveUnwrap = offloadVm::approveUnwrap,
+                    onClose = {
+                        offloadVm.deny()
+                        nav.popBackStack()
+                    },
                 )
             }
 
