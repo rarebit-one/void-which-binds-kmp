@@ -8,7 +8,7 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 /**
- * The membership op's wire contract, pinned against void-which-binds-go v0.9.0's
+ * The membership op's wire contract, pinned against void-which-binds-go's (gen2, ADR-0022)
  * `genesis-a-b` golden vector: re-signing the vector's ops from its (test-only)
  * seeds must reproduce the exact TOKENS and HASHES the Go side minted. The JDK's
  * Ed25519 is deterministic, so on JVM/Android any byte of drift in the payload
@@ -19,19 +19,23 @@ import kotlin.test.assertTrue
 class MembershipOpTest {
 
     // From testvectors/vectors/membership/genesis-a-b.json (void-which-binds-go, test-only keys).
-    private val usr = "ed25519:f947b10c8089aa8fed2d435fae069d0ca1513b33691955ae963dfe8bc5b398c4"
-    private val genesisSeed = Hex.decode("c24bb87672097fd3292251030126197ba061ffb69b9b67b0786318f627fb132c")
-    private val aSeed = Hex.decode("5a855e9adc99a1ed10fbe04f44132d9d04885edf1a92e2e16828f825ea167d06")
-    private val aId = "ed25519:44f255376bd10821f82b0f9f568504caaf6c1583c65e685d66d05ec3aac3d789"
-    private val aEnc = "x25519:99e1e58af901d759e6969fefe3c3fa47d9cdef954ab64e21fc990c5bae45d35c"
-    private val bId = "ed25519:ce9c83f13c6a06666665e0471d45c0b4d4107d892e8ddb4de7ac27520e36f37d"
-    private val bEnc = "x25519:32338a06d4f67a664fcaabbf1e98c1e46f2b5750f2270bd4af127355ed560619"
+    private val usr = "ed25519:5c167ac159feac80a76906ae94f7afe328e1aea2752cddee0c641661ec99535d"
+    private val genesisSeed = Hex.decode("b683c7c89a94432a50b03b212fc8a8512f56b7e9e3c90a1661276e6ef672eb15")
+    private val aSeed = Hex.decode("aa4ef871a1e26955f4273eb857e17a476864d12c84b54180112753bafe845571")
+    private val aId = "ed25519:e592a07d7f478013038e471ef2c960f2ba4163fdb993eb917c46120d1df6b945"
+    private val aEnc = "x25519:3e99c2f9a2a927bba84c62c19fb01c6e4c778b9b79450eac781a360f57b783ec"
+    private val bId = "ed25519:99c686cb1bde1ce694c03d507de25901e70cba4e0204eb1cd7539f5bbbcd27f4"
+    private val bEnc = "x25519:3217f637677bc98b06daa4ea850e6623f9d16e941c9d4acfe2c985c78d379768"
+
+    @Suppress("MaxLineLength")
     private val addAToken =
-        "eyJ2IjozLCJ1c3IiOiJlZDI1NTE5OmY5NDdiMTBjODA4OWFhOGZlZDJkNDM1ZmFlMDY5ZDBjYTE1MTNiMzM2OTE5NTVhZTk2M2RmZThiYzViMzk4YzQiLCJvcCI6ImFkZCIsImRldiI6ImVkMjU1MTk6NDRmMjU1Mzc2YmQxMDgyMWY4MmIwZjlmNTY4NTA0Y2FhZjZjMTU4M2M2NWU2ODVkNjZkMDVlYzNhYWMzZDc4OSIsImRlbmMiOiJ4MjU1MTk6OTllMWU1OGFmOTAxZDc1OWU2OTY5ZmVmZTNjM2ZhNDdkOWNkZWY5NTRhYjY0ZTIxZmM5OTBjNWJhZTQ1ZDM1YyIsImJ5IjoiZWQyNTUxOTpmOTQ3YjEwYzgwODlhYThmZWQyZDQzNWZhZTA2OWQwY2ExNTEzYjMzNjkxOTU1YWU5NjNkZmU4YmM1YjM5OGM0IiwicHJldiI6W10sImlhdCI6MTc4ODI2NDAwMCwiZXhwIjoxNzk2MDQwMDAwfQ._6NQ53HSNPWvzQQVNbB2mEnGBwI__2fDvZ50OOMbiNGoFDPLPDSunF4ntlIvf3xnexcx8YAqCShYTszzC7KcDw"
+        "eyJ2IjozLCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLm9wIiwidXNyIjoiZWQyNTUxOTo1YzE2N2FjMTU5ZmVhYzgwYTc2OTA2YWU5NGY3YWZlMzI4ZTFhZWEyNzUyY2RkZWUwYzY0MTY2MWVjOTk1MzVkIiwib3AiOiJhZGQiLCJkZXYiOiJlZDI1NTE5OmU1OTJhMDdkN2Y0NzgwMTMwMzhlNDcxZWYyYzk2MGYyYmE0MTYzZmRiOTkzZWI5MTdjNDYxMjBkMWRmNmI5NDUiLCJkZW5jIjoieDI1NTE5OjNlOTljMmY5YTJhOTI3YmJhODRjNjJjMTlmYjAxYzZlNGM3NzhiOWI3OTQ1MGVhYzc4MWEzNjBmNTdiNzgzZWMiLCJieSI6ImVkMjU1MTk6NWMxNjdhYzE1OWZlYWM4MGE3NjkwNmFlOTRmN2FmZTMyOGUxYWVhMjc1MmNkZGVlMGM2NDE2NjFlYzk5NTM1ZCIsInByZXYiOltdLCJpYXQiOjE3ODgyNjQwMDAsImV4cCI6MTc5NjA0MDAwMH0.lRhU33D4Q5hyZ9n83VZ7GmnjQDyV-D92u5RYAoQS9R8BMeQOMvuRsSGjpsAidEcU6VyV-iQd1D_xrgkJsyoUAg"
+
+    @Suppress("MaxLineLength")
     private val addBToken =
-        "eyJ2IjozLCJ1c3IiOiJlZDI1NTE5OmY5NDdiMTBjODA4OWFhOGZlZDJkNDM1ZmFlMDY5ZDBjYTE1MTNiMzM2OTE5NTVhZTk2M2RmZThiYzViMzk4YzQiLCJvcCI6ImFkZCIsImRldiI6ImVkMjU1MTk6Y2U5YzgzZjEzYzZhMDY2NjY2NjVlMDQ3MWQ0NWMwYjRkNDEwN2Q4OTJlOGRkYjRkZTdhYzI3NTIwZTM2ZjM3ZCIsImRlbmMiOiJ4MjU1MTk6MzIzMzhhMDZkNGY2N2E2NjRmY2FhYmJmMWU5OGMxZTQ2ZjJiNTc1MGYyMjcwYmQ0YWYxMjczNTVlZDU2MDYxOSIsImJ5IjoiZWQyNTUxOTo0NGYyNTUzNzZiZDEwODIxZjgyYjBmOWY1Njg1MDRjYWFmNmMxNTgzYzY1ZTY4NWQ2NmQwNWVjM2FhYzNkNzg5IiwicHJldiI6WyJzaGEyNTY6OTY0NmI0OTFiNzNlMDYwYzUxYmRkOWUzYjY5Yjg5ZWE4M2ZjMmU1YTY2YzNiMzUxNDFlYzFlMGM1NzhhOGZjNyJdLCJpYXQiOjE3ODgyNjQzMDAsImV4cCI6MTc5NjA0MDMwMH0.xpU7mECpsz-GUYhnwB_26ZyyoT-p0e0en9DGpVri26K-cQmVVrfQcsDP9CYrRXXpzAtm5svBsqaI-JC8azuACg"
-    private val addAHash = "sha256:9646b491b73e060c51bdd9e3b69b89ea83fc2e5a66c3b35141ec1e0c578a8fc7"
-    private val addBHash = "sha256:3503aea8cf10165ea2417483b66b453610ba07a3c2a1b87c75898e3bb1202d0b"
+        "eyJ2IjozLCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLm9wIiwidXNyIjoiZWQyNTUxOTo1YzE2N2FjMTU5ZmVhYzgwYTc2OTA2YWU5NGY3YWZlMzI4ZTFhZWEyNzUyY2RkZWUwYzY0MTY2MWVjOTk1MzVkIiwib3AiOiJhZGQiLCJkZXYiOiJlZDI1NTE5Ojk5YzY4NmNiMWJkZTFjZTY5NGMwM2Q1MDdkZTI1OTAxZTcwY2JhNGUwMjA0ZWIxY2Q3NTM5ZjViYmJjZDI3ZjQiLCJkZW5jIjoieDI1NTE5OjMyMTdmNjM3Njc3YmM5OGIwNmRhYTRlYTg1MGU2NjIzZjlkMTZlOTQxYzlkNGFjZmUyYzk4NWM3OGQzNzk3NjgiLCJieSI6ImVkMjU1MTk6ZTU5MmEwN2Q3ZjQ3ODAxMzAzOGU0NzFlZjJjOTYwZjJiYTQxNjNmZGI5OTNlYjkxN2M0NjEyMGQxZGY2Yjk0NSIsInByZXYiOlsic2hhMjU2OjZhMjNlYmJkY2M3ODc5ODUyZDUyOGQwYjU4YzkxMTkyZmRhYWVhZDBjZjcyZmM4NTk0NGE4ZGE2ZGI0NTA0NWIiXSwiaWF0IjoxNzg4MjY0MzAwLCJleHAiOjE3OTYwNDAzMDB9.dmso4rWo1zZZSLyaP6YoAx23elwht4yzeh0Q25B3U4a5rvhoWuDwVvEPNWuTi2Qz-WfJDH8Do9Qb0kTlZ05tDQ"
+    private val addAHash = "sha256:6a23ebbdcc7879852d528d0b58c91192fdaaead0cf72fc85944a8da6db45045b"
+    private val addBHash = "sha256:1c38c323bf04875e4ee674d289a772d569c249d9303d617b61e00bb9f3dc4de5"
 
     private fun signer(seed: ByteArray) = Ed25519Signer { Ed25519Engine.sign(seed, it) }
     private fun pub(seed: ByteArray) = Ed25519Group.publicKeyFromSeed(seed)
@@ -39,10 +43,7 @@ class MembershipOpTest {
     @Test
     fun genesisAddReproducesTheGoTokenByteForByte() {
         assertEquals(usr, KeyRef.ed25519(pub(genesisSeed)).render(), "genesis seed must derive the vector's usr")
-        // genesis-a-b is legacy (untyped) history: reproduce it through the untyped path.
-        // The public sign emits typ since ADR-0009 phase 2 (see TypVectorTest).
-        val tok = MembershipOp.signTyped(
-            "",
+        val tok = MembershipOp.sign(
             signer(genesisSeed), pub(genesisSeed), usr, MembershipOp.Kind.ADD, aId, aEnc,
             prev = emptyList(), issuedAt = 1_788_264_000L, lifetimeSeconds = 90L * 24 * 3600,
         )
@@ -54,8 +55,7 @@ class MembershipOpTest {
     @Test
     fun memberAddCitingHeadsReproducesTheGoHash() {
         assertEquals(aId, KeyRef.ed25519(pub(aSeed)).render())
-        val tok = MembershipOp.signTyped(
-            "",
+        val tok = MembershipOp.sign(
             signer(aSeed), pub(aSeed), usr, MembershipOp.Kind.ADD, bId, bEnc,
             prev = listOf(addAHash), issuedAt = 1_788_264_300L, lifetimeSeconds = 90L * 24 * 3600,
         )
@@ -85,7 +85,7 @@ class MembershipOpTest {
         assertEquals(usr, MembershipOp.user(addAToken))
 
         // One signature byte flipped (the vector's "tampered-sig" case) → BAD_SIGNATURE.
-        val tampered = addAToken.replace("._6NQ53", "._6NA53")
+        val tampered = addAToken.replace(".lRhU3", ".lRhA3")
         val e = assertFailsWith<MembershipOp.OpException> { MembershipOp.verify(tampered) }
         assertEquals(MembershipOp.Failure.BAD_SIGNATURE, e.failure)
     }

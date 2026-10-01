@@ -1,0 +1,79 @@
+{
+  "name": "gen1-cosig-domain-ignored",
+  "description": "ADR-0022: cosig-threshold-met, except B co-signs under the gen1 domain (voidbind-cosig-v1). The cosig does not verify under void-which-binds-cosig-v1, so it does not count: the remove of C is under_threshold and C stays",
+  "usr": "ed25519:5c167ac159feac80a76906ae94f7afe328e1aea2752cddee0c641661ec99535d",
+  "now": 1788267600,
+  "keys": {
+    "A": {
+      "sign_seed": "aa4ef871a1e26955f4273eb857e17a476864d12c84b54180112753bafe845571",
+      "enc_seed": "3e99c2f9a2a927bba84c62c19fb01c6e4c778b9b79450eac781a360f57b783ec",
+      "id": "ed25519:e592a07d7f478013038e471ef2c960f2ba4163fdb993eb917c46120d1df6b945"
+    },
+    "B": {
+      "sign_seed": "7aa08dada3f0d568decff6b7983f5a6b2e9b0402a204c3640ea86d721cf4922d",
+      "enc_seed": "3217f637677bc98b06daa4ea850e6623f9d16e941c9d4acfe2c985c78d379768",
+      "id": "ed25519:99c686cb1bde1ce694c03d507de25901e70cba4e0204eb1cd7539f5bbbcd27f4"
+    },
+    "C": {
+      "sign_seed": "4cac10dd459393a083623b358def75f64e9760fd85345bb8cd9bc522dea47a4b",
+      "enc_seed": "d540819f79b034d7b570d922f6b632d799184c08ced3e9b6d171906376395409",
+      "id": "ed25519:6b32c359ce7dc8b67a78daca1ccde0fdf9b8ddc5441e569bd3882ff75fd1add8"
+    },
+    "genesis": {
+      "sign_seed": "b683c7c89a94432a50b03b212fc8a8512f56b7e9e3c90a1661276e6ef672eb15",
+      "id": "ed25519:5c167ac159feac80a76906ae94f7afe328e1aea2752cddee0c641661ec99535d"
+    }
+  },
+  "ops": [
+    {
+      "label": "rm-C-gen1-cosig",
+      "token": "eyJ2IjozLCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLm9wIiwidXNyIjoiZWQyNTUxOTo1YzE2N2FjMTU5ZmVhYzgwYTc2OTA2YWU5NGY3YWZlMzI4ZTFhZWEyNzUyY2RkZWUwYzY0MTY2MWVjOTk1MzVkIiwib3AiOiJyZW1vdmUiLCJkZXYiOiJlZDI1NTE5OjZiMzJjMzU5Y2U3ZGM4YjY3YTc4ZGFjYTFjY2RlMGZkZjliOGRkYzU0NDFlNTY5YmQzODgyZmY3NWZkMWFkZDgiLCJieSI6ImVkMjU1MTk6ZTU5MmEwN2Q3ZjQ3ODAxMzAzOGU0NzFlZjJjOTYwZjJiYTQxNjNmZGI5OTNlYjkxN2M0NjEyMGQxZGY2Yjk0NSIsInByZXYiOlsic2hhMjU2OjkyYWRlMjg1ZjYxMDBiMTdhZWI4MTBlYTY1MDExNTc2M2JiNTQ4ZDdkZDNkNjEyMDNiYmE4MTE0NTdkOWYxMzMiXSwiY29zaWciOlt7ImJ5IjoiZWQyNTUxOTo5OWM2ODZjYjFiZGUxY2U2OTRjMDNkNTA3ZGUyNTkwMWU3MGNiYTRlMDIwNGViMWNkNzUzOWY1YmJiY2QyN2Y0Iiwic2lnIjoic0RRSThKUlpZNEl4VzB3aXVuUUh1bkkxN240Smk4bzFYcXdETjJMUXNNZUx1UVp4M052a01wOWJUUTI5bThPOWZRd0loNTZFcXhrZ1lidnFfXzUxQ3cifV0sImlhdCI6MTc4ODI2NDYwMH0.r65nnoIh8hmJZ4ML3SGQMboQ2DOkAdV2trr1E84-Ae9poLeuUoECgI3M8oV0o7BHXTVo-LCHKM1xHHi8I0iIAw",
+      "hash": "sha256:70cd5f121f4dabf276c318975770acb0a74f1e4c5f9e08ebc45f0ac2106e26dd"
+    },
+    {
+      "label": "add-C",
+      "token": "eyJ2IjozLCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLm9wIiwidXNyIjoiZWQyNTUxOTo1YzE2N2FjMTU5ZmVhYzgwYTc2OTA2YWU5NGY3YWZlMzI4ZTFhZWEyNzUyY2RkZWUwYzY0MTY2MWVjOTk1MzVkIiwib3AiOiJhZGQiLCJkZXYiOiJlZDI1NTE5OjZiMzJjMzU5Y2U3ZGM4YjY3YTc4ZGFjYTFjY2RlMGZkZjliOGRkYzU0NDFlNTY5YmQzODgyZmY3NWZkMWFkZDgiLCJkZW5jIjoieDI1NTE5OmQ1NDA4MTlmNzliMDM0ZDdiNTcwZDkyMmY2YjYzMmQ3OTkxODRjMDhjZWQzZTliNmQxNzE5MDYzNzYzOTU0MDkiLCJieSI6ImVkMjU1MTk6NWMxNjdhYzE1OWZlYWM4MGE3NjkwNmFlOTRmN2FmZTMyOGUxYWVhMjc1MmNkZGVlMGM2NDE2NjFlYzk5NTM1ZCIsInByZXYiOlsic2hhMjU2OmE1N2FhZmNiYmI4OGY3ZTlkMzgyYTQ2Nzc5ZGZjZTliZGM4NGE5NTdmZmE3ZTNiM2NmYWFmZGVmZDYyMGQ2YjciXSwiaWF0IjoxNzg4MjY0MTIwLCJleHAiOjE3OTYwNDAxMjB9.cQXlWd3DXwLyJsvyAMG0eJYrxF2p0GYPtaC-BmczsCZminwO4SNqmBpVxLqpuZoSoAb1ldispGwU5O-CQ0HPDg",
+      "hash": "sha256:92ade285f6100b17aeb810ea650115763bb548d7dd3d61203bba811457d9f133"
+    },
+    {
+      "label": "add-B",
+      "token": "eyJ2IjozLCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLm9wIiwidXNyIjoiZWQyNTUxOTo1YzE2N2FjMTU5ZmVhYzgwYTc2OTA2YWU5NGY3YWZlMzI4ZTFhZWEyNzUyY2RkZWUwYzY0MTY2MWVjOTk1MzVkIiwib3AiOiJhZGQiLCJkZXYiOiJlZDI1NTE5Ojk5YzY4NmNiMWJkZTFjZTY5NGMwM2Q1MDdkZTI1OTAxZTcwY2JhNGUwMjA0ZWIxY2Q3NTM5ZjViYmJjZDI3ZjQiLCJkZW5jIjoieDI1NTE5OjMyMTdmNjM3Njc3YmM5OGIwNmRhYTRlYTg1MGU2NjIzZjlkMTZlOTQxYzlkNGFjZmUyYzk4NWM3OGQzNzk3NjgiLCJieSI6ImVkMjU1MTk6NWMxNjdhYzE1OWZlYWM4MGE3NjkwNmFlOTRmN2FmZTMyOGUxYWVhMjc1MmNkZGVlMGM2NDE2NjFlYzk5NTM1ZCIsInByZXYiOlsic2hhMjU2OjZhMjNlYmJkY2M3ODc5ODUyZDUyOGQwYjU4YzkxMTkyZmRhYWVhZDBjZjcyZmM4NTk0NGE4ZGE2ZGI0NTA0NWIiXSwiaWF0IjoxNzg4MjY0MDYwLCJleHAiOjE3OTYwNDAwNjB9.ua--DWyayXT-173ATlQnC_PxlIPu-H45-gIiHmYtm1mIgE_nEYFjLggT0rKzwjhI-umdyJTZgdMW4rUcNOUGAQ",
+      "hash": "sha256:a57aafcbbb88f7e9d382a46779dfce9bdc84a957ffa7e3b3cfaafdefd620d6b7"
+    },
+    {
+      "label": "add-A",
+      "token": "eyJ2IjozLCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLm9wIiwidXNyIjoiZWQyNTUxOTo1YzE2N2FjMTU5ZmVhYzgwYTc2OTA2YWU5NGY3YWZlMzI4ZTFhZWEyNzUyY2RkZWUwYzY0MTY2MWVjOTk1MzVkIiwib3AiOiJhZGQiLCJkZXYiOiJlZDI1NTE5OmU1OTJhMDdkN2Y0NzgwMTMwMzhlNDcxZWYyYzk2MGYyYmE0MTYzZmRiOTkzZWI5MTdjNDYxMjBkMWRmNmI5NDUiLCJkZW5jIjoieDI1NTE5OjNlOTljMmY5YTJhOTI3YmJhODRjNjJjMTlmYjAxYzZlNGM3NzhiOWI3OTQ1MGVhYzc4MWEzNjBmNTdiNzgzZWMiLCJieSI6ImVkMjU1MTk6NWMxNjdhYzE1OWZlYWM4MGE3NjkwNmFlOTRmN2FmZTMyOGUxYWVhMjc1MmNkZGVlMGM2NDE2NjFlYzk5NTM1ZCIsInByZXYiOltdLCJpYXQiOjE3ODgyNjQwMDAsImV4cCI6MTc5NjA0MDAwMH0.lRhU33D4Q5hyZ9n83VZ7GmnjQDyV-D92u5RYAoQS9R8BMeQOMvuRsSGjpsAidEcU6VyV-iQd1D_xrgkJsyoUAg",
+      "hash": "sha256:6a23ebbdcc7879852d528d0b58c91192fdaaead0cf72fc85944a8da6db45045b"
+    }
+  ],
+  "expect": {
+    "members": {
+      "ed25519:6b32c359ce7dc8b67a78daca1ccde0fdf9b8ddc5441e569bd3882ff75fd1add8": {
+        "admitted_by": "sha256:92ade285f6100b17aeb810ea650115763bb548d7dd3d61203bba811457d9f133",
+        "denc": "x25519:d540819f79b034d7b570d922f6b632d799184c08ced3e9b6d171906376395409",
+        "admitted_at": 1788264120,
+        "expires": 1796040120
+      },
+      "ed25519:99c686cb1bde1ce694c03d507de25901e70cba4e0204eb1cd7539f5bbbcd27f4": {
+        "admitted_by": "sha256:a57aafcbbb88f7e9d382a46779dfce9bdc84a957ffa7e3b3cfaafdefd620d6b7",
+        "denc": "x25519:3217f637677bc98b06daa4ea850e6623f9d16e941c9d4acfe2c985c78d379768",
+        "admitted_at": 1788264060,
+        "expires": 1796040060
+      },
+      "ed25519:e592a07d7f478013038e471ef2c960f2ba4163fdb993eb917c46120d1df6b945": {
+        "admitted_by": "sha256:6a23ebbdcc7879852d528d0b58c91192fdaaead0cf72fc85944a8da6db45045b",
+        "denc": "x25519:3e99c2f9a2a927bba84c62c19fb01c6e4c778b9b79450eac781a360f57b783ec",
+        "admitted_at": 1788264000,
+        "expires": 1796040000
+      }
+    },
+    "removed": [],
+    "heads": [
+      "sha256:70cd5f121f4dabf276c318975770acb0a74f1e4c5f9e08ebc45f0ac2106e26dd"
+    ],
+    "rejected": {},
+    "ineffective": {
+      "sha256:70cd5f121f4dabf276c318975770acb0a74f1e4c5f9e08ebc45f0ac2106e26dd": "under_threshold"
+    }
+  }
+}

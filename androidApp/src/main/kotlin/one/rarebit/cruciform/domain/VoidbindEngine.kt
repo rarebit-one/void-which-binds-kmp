@@ -53,7 +53,7 @@ interface VoidbindEngine {
 
     /**
      * Split the kept recovery secret into SLIP-39 shares (Settings → Split into shares):
-     * the voidbind profile, any 2 of 3, no passphrase (void-which-binds-go ADR-0011). Behind a
+     * the Void-Which-Binds profile, any 2 of 3, no passphrase (void-which-binds-go ADR-0011). Behind a
      * strong biometric, never the PIN, like [revealRecoverySecret]. The shares are for
      * one showing: the caller holds them in memory only. Splitting revokes nothing (the
      * written secret keeps working), and each call gives a fresh, unrelated set. A

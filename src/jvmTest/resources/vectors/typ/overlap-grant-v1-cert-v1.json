@@ -1,21 +1,21 @@
 {
   "name": "overlap-grant-v1-cert-v1",
-  "description": "grant v1 and cert v1 share v:1 and the user key signs both. A v1 body carrying both shapes' fields is, UNTYPED, accepted by BOTH the grant and the cert verifier today: only field-name disjointness has kept real tokens apart. Typed voidbind.grant it is a grant only; typed voidbind.cert it is a cert only",
+  "description": "grant v1 and cert v1 share v:1 and the user key signs both. A v1 body carrying both shapes' fields was, UNTYPED, accepted by BOTH the grant and the cert verifier before gen2: only field-name disjointness kept real tokens apart. Gen2 refuses it untyped (wrong_type); typed void-which-binds.grant it is a grant only, typed void-which-binds.cert a cert only",
   "now": 1790251200,
   "keys": {
     "device": {
-      "sign_seed": "d721c834b1d967bcf2c1635686ad8817c0577e452279f4a7f4f4743882d772eb",
-      "id": "ed25519:8256344bfdd93680c637386ad0195f01ae9bc6a7ea32bcb12c9c1b500ca7c839"
+      "sign_seed": "51d258eed93173eb8efffa1f6160fd18100e0e6ee753a53ae525d687595079da",
+      "id": "ed25519:51c028175628b13ad868ec3cfd5c4a7d3df55b27fecba832c33f1bdcc0e53602"
     },
     "user": {
-      "sign_seed": "99d56175dc3aa4346d6226043ae922888feb59e6c0bc0ef1e155356a4f103879",
-      "id": "ed25519:e17116170a4db3671d211d171021a31708a45e1a97d2f8d3ca542a75bdf77344"
+      "sign_seed": "c8aa23904f385b53e1b7d782d62610c027b1f1127a845eeb2104dec70dd881e6",
+      "id": "ed25519:cd515f0cdffd633d6f81f0ec79f99ad2609852806ee1d9789cf025369516f3b3"
     }
   },
   "tokens": {
-    "typed-cert": "eyJ2IjoxLCJ0eXAiOiJ2b2lkYmluZC5jZXJ0IiwiaXNzIjoiZWQyNTUxOTplMTcxMTYxNzBhNGRiMzY3MWQyMTFkMTcxMDIxYTMxNzA4YTQ1ZTFhOTdkMmY4ZDNjYTU0MmE3NWJkZjc3MzQ0IiwicHJuIjoiZGV2aWNlOmFscGhhIiwicmVzIjoic3BhY2U6b25lIiwiY2FwIjpbInJlYWQiXSwidXNyIjoiZWQyNTUxOTplMTcxMTYxNzBhNGRiMzY3MWQyMTFkMTcxMDIxYTMxNzA4YTQ1ZTFhOTdkMmY4ZDNjYTU0MmE3NWJkZjc3MzQ0IiwiZGV2IjoiZWQyNTUxOTo4MjU2MzQ0YmZkZDkzNjgwYzYzNzM4NmFkMDE5NWYwMWFlOWJjNmE3ZWEzMmJjYjEyYzljMWI1MDBjYTdjODM5IiwiaWF0IjoxNzkwMjUxMjAwLCJleHAiOjE3OTAyNTQ4MDB9.rTVaJT3DakKjwvNWyFROHJT3-kPy-a3_JYWjOj5ltMACMyPbjkcUGBC_ZI3PZrHxABfYRAw6L5fixFeAcnIBDA",
-    "typed-grant": "eyJ2IjoxLCJ0eXAiOiJ2b2lkYmluZC5ncmFudCIsImlzcyI6ImVkMjU1MTk6ZTE3MTE2MTcwYTRkYjM2NzFkMjExZDE3MTAyMWEzMTcwOGE0NWUxYTk3ZDJmOGQzY2E1NDJhNzViZGY3NzM0NCIsInBybiI6ImRldmljZTphbHBoYSIsInJlcyI6InNwYWNlOm9uZSIsImNhcCI6WyJyZWFkIl0sInVzciI6ImVkMjU1MTk6ZTE3MTE2MTcwYTRkYjM2NzFkMjExZDE3MTAyMWEzMTcwOGE0NWUxYTk3ZDJmOGQzY2E1NDJhNzViZGY3NzM0NCIsImRldiI6ImVkMjU1MTk6ODI1NjM0NGJmZGQ5MzY4MGM2MzczODZhZDAxOTVmMDFhZTliYzZhN2VhMzJiY2IxMmM5YzFiNTAwY2E3YzgzOSIsImlhdCI6MTc5MDI1MTIwMCwiZXhwIjoxNzkwMjU0ODAwfQ.Qhf_DbPVjNZQLvFcjPNHVD9YY55ild0F50MJ8AEaMRzsjINn8emVjl7oxNyAM9vAekuZHw3_a3wzhrF0FUlAAw",
-    "untyped": "eyJ2IjoxLCJpc3MiOiJlZDI1NTE5OmUxNzExNjE3MGE0ZGIzNjcxZDIxMWQxNzEwMjFhMzE3MDhhNDVlMWE5N2QyZjhkM2NhNTQyYTc1YmRmNzczNDQiLCJwcm4iOiJkZXZpY2U6YWxwaGEiLCJyZXMiOiJzcGFjZTpvbmUiLCJjYXAiOlsicmVhZCJdLCJ1c3IiOiJlZDI1NTE5OmUxNzExNjE3MGE0ZGIzNjcxZDIxMWQxNzEwMjFhMzE3MDhhNDVlMWE5N2QyZjhkM2NhNTQyYTc1YmRmNzczNDQiLCJkZXYiOiJlZDI1NTE5OjgyNTYzNDRiZmRkOTM2ODBjNjM3Mzg2YWQwMTk1ZjAxYWU5YmM2YTdlYTMyYmNiMTJjOWMxYjUwMGNhN2M4MzkiLCJpYXQiOjE3OTAyNTEyMDAsImV4cCI6MTc5MDI1NDgwMH0.xkn5RZsIDpoKy1WZhA3pvr23cnFzeIFOlYwcHQu_hk-5JqYHPxeeoKsToWvJlhMZbYK6Bau4tDEEMi_zw8C8CQ"
+    "typed-cert": "eyJ2IjoxLCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLmNlcnQiLCJpc3MiOiJlZDI1NTE5OmNkNTE1ZjBjZGZmZDYzM2Q2ZjgxZjBlYzc5Zjk5YWQyNjA5ODUyODA2ZWUxZDk3ODljZjAyNTM2OTUxNmYzYjMiLCJwcm4iOiJkZXZpY2U6YWxwaGEiLCJyZXMiOiJzcGFjZTpvbmUiLCJjYXAiOlsicmVhZCJdLCJ1c3IiOiJlZDI1NTE5OmNkNTE1ZjBjZGZmZDYzM2Q2ZjgxZjBlYzc5Zjk5YWQyNjA5ODUyODA2ZWUxZDk3ODljZjAyNTM2OTUxNmYzYjMiLCJkZXYiOiJlZDI1NTE5OjUxYzAyODE3NTYyOGIxM2FkODY4ZWMzY2ZkNWM0YTdkM2RmNTViMjdmZWNiYTgzMmMzM2YxYmRjYzBlNTM2MDIiLCJpYXQiOjE3OTAyNTEyMDAsImV4cCI6MTc5MDI1NDgwMH0.4zkhB9UHGujte3wZPAsYQ0JcGEzH5vlgnPx_7_Fz0na6pjRzYsXHiqL8ZrgdeH_GDEBxWap2VN9qmokztzXOAQ",
+    "typed-grant": "eyJ2IjoxLCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLmdyYW50IiwiaXNzIjoiZWQyNTUxOTpjZDUxNWYwY2RmZmQ2MzNkNmY4MWYwZWM3OWY5OWFkMjYwOTg1MjgwNmVlMWQ5Nzg5Y2YwMjUzNjk1MTZmM2IzIiwicHJuIjoiZGV2aWNlOmFscGhhIiwicmVzIjoic3BhY2U6b25lIiwiY2FwIjpbInJlYWQiXSwidXNyIjoiZWQyNTUxOTpjZDUxNWYwY2RmZmQ2MzNkNmY4MWYwZWM3OWY5OWFkMjYwOTg1MjgwNmVlMWQ5Nzg5Y2YwMjUzNjk1MTZmM2IzIiwiZGV2IjoiZWQyNTUxOTo1MWMwMjgxNzU2MjhiMTNhZDg2OGVjM2NmZDVjNGE3ZDNkZjU1YjI3ZmVjYmE4MzJjMzNmMWJkY2MwZTUzNjAyIiwiaWF0IjoxNzkwMjUxMjAwLCJleHAiOjE3OTAyNTQ4MDB9.foldbyFCF9S-P02YADCjRQRrgpc4rBtvG0keqZPAyHnzA45V8MyPrEQw-_U0ZHkodd1j5WdMweLcyVU4f36GDg",
+    "untyped": "eyJ2IjoxLCJpc3MiOiJlZDI1NTE5OmNkNTE1ZjBjZGZmZDYzM2Q2ZjgxZjBlYzc5Zjk5YWQyNjA5ODUyODA2ZWUxZDk3ODljZjAyNTM2OTUxNmYzYjMiLCJwcm4iOiJkZXZpY2U6YWxwaGEiLCJyZXMiOiJzcGFjZTpvbmUiLCJjYXAiOlsicmVhZCJdLCJ1c3IiOiJlZDI1NTE5OmNkNTE1ZjBjZGZmZDYzM2Q2ZjgxZjBlYzc5Zjk5YWQyNjA5ODUyODA2ZWUxZDk3ODljZjAyNTM2OTUxNmYzYjMiLCJkZXYiOiJlZDI1NTE5OjUxYzAyODE3NTYyOGIxM2FkODY4ZWMzY2ZkNWM0YTdkM2RmNTViMjdmZWNiYTgzMmMzM2YxYmRjYzBlNTM2MDIiLCJpYXQiOjE3OTAyNTEyMDAsImV4cCI6MTc5MDI1NDgwMH0.YS-H51wykTJIYPYYAtFvq8KST34V53hk1qVlNs2jDcyxOAfZyF5LZRjkCpELWVmToJ-G4JBWFDy0n2TmrTa4Cg"
   },
   "grant_request": {
     "principal": "device:alpha",
@@ -27,70 +27,42 @@
       "verifier": "grant",
       "token": "untyped",
       "key": "user",
-      "expect": {
-        "accept": "ok",
-        "emit": "ok",
-        "require": "untyped"
-      }
+      "expect": "wrong_type"
     },
     {
       "verifier": "cert",
       "token": "untyped",
       "key": "user",
-      "expect": {
-        "accept": "ok",
-        "emit": "ok",
-        "require": "untyped"
-      }
+      "expect": "wrong_type"
     },
     {
       "verifier": "grant",
       "token": "typed-grant",
       "key": "user",
-      "expect": {
-        "accept": "ok",
-        "emit": "ok",
-        "require": "ok"
-      }
+      "expect": "ok"
     },
     {
       "verifier": "cert",
       "token": "typed-grant",
       "key": "user",
-      "expect": {
-        "accept": "wrong_type",
-        "emit": "wrong_type",
-        "require": "wrong_type"
-      }
+      "expect": "wrong_type"
     },
     {
       "verifier": "op",
       "token": "typed-grant",
-      "expect": {
-        "accept": "wrong_type",
-        "emit": "wrong_type",
-        "require": "wrong_type"
-      }
+      "expect": "wrong_type"
     },
     {
       "verifier": "cert",
       "token": "typed-cert",
       "key": "user",
-      "expect": {
-        "accept": "ok",
-        "emit": "ok",
-        "require": "ok"
-      }
+      "expect": "ok"
     },
     {
       "verifier": "grant",
       "token": "typed-cert",
       "key": "user",
-      "expect": {
-        "accept": "wrong_type",
-        "emit": "wrong_type",
-        "require": "wrong_type"
-      }
+      "expect": "wrong_type"
     }
   ]
 }

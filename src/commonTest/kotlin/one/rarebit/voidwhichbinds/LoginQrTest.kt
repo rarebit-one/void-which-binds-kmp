@@ -16,11 +16,11 @@ class LoginQrTest {
     @Test
     fun encodeMatchesVoidbindGoByteForByte() {
         assertEquals(
-            "voidbind:login?id=L1a2b3&rp=https%3A%2F%2Fhomelab.example%3A8443%2Fapp",
+            "void-which-binds:login?id=L1a2b3&rp=https%3A%2F%2Fhomelab.example%3A8443%2Fapp",
             LoginQr.encode("https://homelab.example:8443/app", "L1a2b3"),
         )
         assertEquals(
-            "voidbind:login?id=abc+DEF%2B%2F%3D%3F%26&rp=http%3A%2F%2F127.0.0.1%3A9000",
+            "void-which-binds:login?id=abc+DEF%2B%2F%3D%3F%26&rp=http%3A%2F%2F127.0.0.1%3A9000",
             LoginQr.encode("http://127.0.0.1:9000", "abc DEF+/=?&"),
         )
     }
@@ -37,7 +37,7 @@ class LoginQrTest {
     @Test
     fun decodeToleratesKeyOrder() {
         // rp before id — a decoder must not depend on the sorted order encode emits.
-        val parsed = LoginQr.decode("voidbind:login?rp=http%3A%2F%2Fh&id=XYZ")
+        val parsed = LoginQr.decode("void-which-binds:login?rp=http%3A%2F%2Fh&id=XYZ")
         assertEquals("http://h", parsed.rp)
         assertEquals("XYZ", parsed.id)
     }
@@ -46,13 +46,22 @@ class LoginQrTest {
     fun refusesEmptyFieldsAndWrongScheme() {
         assertFailsWith<IllegalArgumentException> { LoginQr.encode("", "id") }
         assertFailsWith<IllegalArgumentException> { LoginQr.encode("rp", "") }
-        assertFailsWith<IllegalArgumentException> { LoginQr.decode("voidbind:login?rp=x") } // no id
-        assertFailsWith<IllegalArgumentException> { LoginQr.decode("voidbind:pair?v=3") } // not a login QR
+        assertFailsWith<IllegalArgumentException> { LoginQr.decode("void-which-binds:login?rp=x") } // no id
+        assertFailsWith<IllegalArgumentException> { LoginQr.decode("void-which-binds:pair?v=4") } // not a login QR
+    }
+
+    @Test
+    fun aGen1LoginQrIsRefused() {
+        // ADR-0022 (void-which-binds-go TestDecodeLoginRefusesGen1): `voidbind:login` is not dual-parsed.
+        val gen1 = "voidbind:login?id=L1a2b3&rp=https%3A%2F%2Fhomelab.example%3A8443%2Fapp"
+        assertFailsWith<IllegalArgumentException> { LoginQr.decode(gen1) }
+        assertFailsWith<IllegalArgumentException> { VoidbindQr.parse(gen1) }
+        assertFailsWith<IllegalArgumentException> { PushPing.parse(gen1) }
     }
 
     @Test
     fun dispatcherClassifiesLoginAndPair() {
-        val login = VoidbindQr.parse("voidbind:login?id=L1&rp=http%3A%2F%2Fh")
+        val login = VoidbindQr.parse("void-which-binds:login?id=L1&rp=http%3A%2F%2Fh")
         assertTrue(login is VoidbindQr.Login)
         assertEquals("L1", (login as VoidbindQr.Login).request.id)
 
@@ -71,6 +80,6 @@ class LoginQrTest {
     @Test
     fun dispatcherRejectsForeignQr() {
         assertFailsWith<IllegalArgumentException> { VoidbindQr.parse("https://example.com/login") }
-        assertFailsWith<IllegalArgumentException> { VoidbindQr.parse("voidbind:unknown?x=1") }
+        assertFailsWith<IllegalArgumentException> { VoidbindQr.parse("void-which-binds:unknown?x=1") }
     }
 }

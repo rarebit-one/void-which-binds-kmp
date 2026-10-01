@@ -40,7 +40,7 @@ struct SettingsView: View {
                         subtitle: "Your recovery secret still restores the account",
                         tint: VB.danger) { confirmSignOut = true }
                 }
-                Text("Cruciform • Voidbind protocol\nNo account, no password, no server.")
+                Text("Cruciform • Void-Which-Binds protocol\nNo account, no password, no server.")
                     .font(VB.rounded(12)).foregroundStyle(VB.textFaint)
                     .multilineTextAlignment(.center).padding(.top, 8)
             }
@@ -142,7 +142,7 @@ struct AddDeviceGate: View {
             Text("Confirm it’s you").font(VB.rounded(24, .bold))
             Text("Adding a device signs a new key onto your account, so it needs your recovery secret.")
                 .font(VB.rounded(15)).foregroundStyle(VB.textSecondary)
-            TextField("", text: $secret, prompt: Text("heyarr1…").foregroundColor(VB.textFaint))
+            TextField("", text: $secret, prompt: Text("void-which-binds1…").foregroundColor(VB.textFaint))
                 .font(VB.mono(15)).autocorrectionDisabled().textInputAutocapitalization(.never)
                 .padding(14).background(VB.surface2, in: RoundedRectangle(cornerRadius: 12))
                 .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(VB.hairline, lineWidth: 1))

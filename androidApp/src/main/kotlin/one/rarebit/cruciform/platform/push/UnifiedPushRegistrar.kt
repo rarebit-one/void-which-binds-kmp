@@ -28,7 +28,7 @@ object UnifiedPushRegistrar {
     const val EXTRA_TOKEN = "token"
     const val EXTRA_APPLICATION = "application"
 
-    private const val PREFS = "voidbind_push"
+    private const val PREFS = "void-which-binds.push"
     private const val KEY_DISTRIBUTOR = "distributor"
     private const val KEY_TOKEN = "token"
 

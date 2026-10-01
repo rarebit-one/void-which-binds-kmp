@@ -36,7 +36,9 @@ class CosignVectorTest {
             val keys = (o["keys"] as? Map<String, Map<String, Any>>).orEmpty()
             // rendered ed25519 id -> signing seed
             val seedById = keys.values.mapNotNull { k ->
-                val seed = (k["sign_seed"] as? String)?.let(Hex::decode) ?: return@mapNotNull null
+                // A `webauthn:` passkey member (ADR-0018) has no Ed25519 seed and never cosigns.
+                val seed = (k["sign_seed"] as? String)?.takeIf { it.isNotEmpty() }?.let(Hex::decode)
+                    ?: return@mapNotNull null
                 KeyRef.ed25519(Ed25519Group.publicKeyFromSeed(seed)).render() to seed
             }.toMap()
             for (entry in o["ops"] as List<Map<String, Any>>) {
@@ -46,7 +48,7 @@ class CosignVectorTest {
             }
         }
         // cosig-threshold-met, cosig-nonmember-ignored, cosig-reserved and
-        // typed-cosig-threshold-met carry cosigs today; guard against a vacuous pass.
+        // gen1-cosig-domain-ignored (among others) carry cosigs; guard against a vacuous pass.
         assertTrue(
             cosignedOps >= MIN_COSIGNED_OPS,
             "expected >= $MIN_COSIGNED_OPS cosigned vector ops, found $cosignedOps",
@@ -78,7 +80,7 @@ class CosignVectorTest {
             val mine = MembershipOp.cosign({
                 Ed25519Engine.sign(seed, it)
             }, Ed25519Group.publicKeyFromSeed(seed), proposal)
-            assertEquals(cs, mine, "$where: cosig by ${cs.by} must equal voidbind-go CosignOp")
+            assertEquals(cs, mine, "$where: cosig by ${cs.by} must equal void-which-binds-go CosignOp")
             remadeCount++
             mine
         }
@@ -89,7 +91,7 @@ class CosignVectorTest {
             proposal,
             remade,
         )
-        assertEquals(token, reminted, "$where: attachCosigs must reproduce voidbind-go AttachCosigs")
+        assertEquals(token, reminted, "$where: attachCosigs must reproduce void-which-binds-go AttachCosigs")
         assertEquals(entry["hash"], MembershipOp.hash(reminted), "$where: hash")
         return remadeCount
     }

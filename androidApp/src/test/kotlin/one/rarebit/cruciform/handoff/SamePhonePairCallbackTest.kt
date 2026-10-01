@@ -63,7 +63,7 @@ class SamePhonePairCallbackTest {
             ),
         )
         assertNull(SamePhonePairCallback.route(SamePhonePairCallback.ACTION_VIEW, "heyarr-mobile://pair?invite=x"))
-        assertNull(SamePhonePairCallback.route(SamePhonePairCallback.ACTION_VIEW, "voidbind:login?rp=a&id=b"))
+        assertNull(SamePhonePairCallback.route(SamePhonePairCallback.ACTION_VIEW, "void-which-binds:login?rp=a&id=b"))
         assertNull(
             SamePhonePairCallback.route(SamePhonePairCallback.ACTION_VIEW, "cruciform://pair-joined-x?session=a"),
         )

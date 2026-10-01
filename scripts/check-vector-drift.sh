@@ -21,7 +21,7 @@ set -euo pipefail
 root="$(cd "$(dirname "$0")/.." && pwd)"
 vectors="$root/src/jvmTest/resources/vectors"
 pin_file="$vectors/VOID_WHICH_BINDS_GO_REF"
-url="${VOID_WHICH_BINDS_GO_URL:-${VOIDBIND_GO_URL:-https://github.com/rarebit-one/void-which-binds-go.git}}" # k0:keep: the gen1 env name is a fallback (ADR-0013 legacy)
+url="${VOID_WHICH_BINDS_GO_URL:-https://github.com/rarebit-one/void-which-binds-go.git}"
 
 ref="$(sed -e 's/#.*//' "$pin_file" | tr -d '[:space:]')"
 if [[ ! "$ref" =~ ^[0-9a-f]{40}$ ]]; then
@@ -32,8 +32,6 @@ fi
 work="$(mktemp -d)"
 trap 'rm -rf "$work"' EXIT
 
-# The gen1 names VOIDBIND_GO_TOKEN / VOIDBIND_GO_URL still work (ADR-0013 legacy).
-VOID_WHICH_BINDS_GO_TOKEN="${VOID_WHICH_BINDS_GO_TOKEN:-${VOIDBIND_GO_TOKEN:-}}" # k0:keep
 auth=()
 if [[ -n "${VOID_WHICH_BINDS_GO_TOKEN:-}" ]]; then
   basic="$(printf 'x-access-token:%s' "$VOID_WHICH_BINDS_GO_TOKEN" | base64 | tr -d '\n')"

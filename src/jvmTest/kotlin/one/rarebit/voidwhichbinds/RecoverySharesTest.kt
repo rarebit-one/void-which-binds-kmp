@@ -13,7 +13,7 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 /**
- * The voidbind SLIP-39 profile ([RecoveryShares], void-which-binds-go ADR-0011), and the
+ * The Void-Which-Binds SLIP-39 profile ([RecoveryShares], void-which-binds-go ADR-0011), and the
  * cross-language proof: shares made by void-which-binds-go's CLI combine here to the secret
  * they were split from, so the same identity.
  */
@@ -23,14 +23,15 @@ class RecoverySharesTest {
      * void-which-binds-go's `counting-entropy` recovery vector (00 01 … 1f): its bech32m
      * secret, user identity and fingerprint are pinned in `vectors/recovery/`.
      */
-    private val secretText = "heyarr1qqqsyqcyq5rqwzqfpg9scrgwpugpzysnzs23v9ccrydpk8qarc0s6e0ucu"
-    private val userId = "ed25519:40521a413f04f5e76d309dc8aebd8980d877291e62fedbf573ed3b45f7aa54a0"
-    private val fingerprint = "PYJI XGNZ K7ZH XHEJ"
+    private val secretText = "void-which-binds1qqqsyqcyq5rqwzqfpg9scrgwpugpzysnzs23v9ccrydpk8qarc0stska6c"
+    private val userId = "ed25519:da16ead22f9bd99facafa8013a997aff28dba13887c7aa1e77b2e88214dff6a6"
+    private val fingerprint = "PK6L RYVL LB44 OEQM"
 
     /**
-     * Made on 2026-09-25 by void-which-binds-go (the unmerged `recovery-slip39` branch, ADR-0011):
-     * `echo <secretText> | go run ./cmd/void-which-binds recovery split --secret-file -`, which
-     * printed the user and fingerprint above. Test data only: the secret is public.
+     * Made on 2026-09-25 by void-which-binds-go (the unmerged `recovery-slip39` branch, ADR-0011)
+     * from the same entropy: `recovery split` of its then (gen1) rendering. SLIP-39 shares
+     * carry only the entropy, so they are generation-neutral; the gen2 secret, user and
+     * fingerprint above are the counting-entropy vector's. Test data only: the secret is public.
      */
     private val goShares = listOf(
         "regular agency academic acid avoid erode echo health fatigue thunder calcium iris change network " +

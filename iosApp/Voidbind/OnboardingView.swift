@@ -111,7 +111,7 @@ struct OnboardingView: View {
                         .foregroundStyle(VB.teal)
                 }
                 Text("Cruciform").font(VB.rounded(34, .bold))
-                Text("Voidbind protocol").font(VB.rounded(12)).foregroundStyle(VB.textFaint)
+                Text("Void-Which-Binds protocol").font(VB.rounded(12)).foregroundStyle(VB.textFaint)
                 Text("Your identity is a key you hold — no account, no password, no server.")
                     .font(VB.rounded(15))
                     .foregroundStyle(VB.textSecondary)
@@ -152,7 +152,7 @@ struct OnboardingView: View {
             Text("Type the recovery secret you wrote down. It rebuilds the same identity, offline — a single wrong character is rejected, never guessed.")
                 .font(VB.rounded(15)).foregroundStyle(VB.textSecondary)
 
-            TextField("", text: $model.secretInput, prompt: Text("heyarr1…").foregroundColor(VB.textFaint))
+            TextField("", text: $model.secretInput, prompt: Text("void-which-binds1…").foregroundColor(VB.textFaint))
                 .font(VB.mono(15))
                 .autocorrectionDisabled()
                 .textInputAutocapitalization(.never)

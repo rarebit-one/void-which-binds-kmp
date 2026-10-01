@@ -37,7 +37,7 @@ final class AppModel: ObservableObject {
     let policy: ApprovalPolicyManager
 
     private let defaults = UserDefaults.standard
-    private enum Key { static let userId = "vb.userId", cert = "vb.cert" }
+    private enum Key { static let userId = "void-which-binds.userId", cert = "void-which-binds.cert" }
 
     init(engine: VoidbindEngine = VoidbindEngine(), preview: Bool = false) {
         self.engine = engine

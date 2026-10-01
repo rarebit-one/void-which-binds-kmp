@@ -1,0 +1,48 @@
+{
+  "name": "gen1-domain",
+  "description": "a v3 remove carrying a co-signature by the device over the op's core (the body without cosig). Made under the gen2 domain prefix void-which-binds-cosig-v1 (and a NUL) the cosig verifies; made under the gen1 prefix voidbind-cosig-v1 it is bad_signature, the plain signature refusal (ADR-0022), and so never counts toward a removal threshold. The op's own signature is good either way",
+  "now": 1790251200,
+  "keys": {
+    "device": {
+      "sign_seed": "51d258eed93173eb8efffa1f6160fd18100e0e6ee753a53ae525d687595079da",
+      "id": "ed25519:51c028175628b13ad868ec3cfd5c4a7d3df55b27fecba832c33f1bdcc0e53602"
+    },
+    "user": {
+      "sign_seed": "c8aa23904f385b53e1b7d782d62610c027b1f1127a845eeb2104dec70dd881e6",
+      "id": "ed25519:cd515f0cdffd633d6f81f0ec79f99ad2609852806ee1d9789cf025369516f3b3"
+    }
+  },
+  "tokens": {
+    "gen1-cosigned": "eyJ2IjozLCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLm9wIiwidXNyIjoiZWQyNTUxOTpjZDUxNWYwY2RmZmQ2MzNkNmY4MWYwZWM3OWY5OWFkMjYwOTg1MjgwNmVlMWQ5Nzg5Y2YwMjUzNjk1MTZmM2IzIiwib3AiOiJyZW1vdmUiLCJkZXYiOiJlZDI1NTE5OjUxYzAyODE3NTYyOGIxM2FkODY4ZWMzY2ZkNWM0YTdkM2RmNTViMjdmZWNiYTgzMmMzM2YxYmRjYzBlNTM2MDIiLCJieSI6ImVkMjU1MTk6Y2Q1MTVmMGNkZmZkNjMzZDZmODFmMGVjNzlmOTlhZDI2MDk4NTI4MDZlZTFkOTc4OWNmMDI1MzY5NTE2ZjNiMyIsInByZXYiOltdLCJjb3NpZyI6W3siYnkiOiJlZDI1NTE5OjUxYzAyODE3NTYyOGIxM2FkODY4ZWMzY2ZkNWM0YTdkM2RmNTViMjdmZWNiYTgzMmMzM2YxYmRjYzBlNTM2MDIiLCJzaWciOiJVTDFqTG9zbU1rSV9jMi1GbFkyM2hvWXhtUWQ5cUVwckl2SXhxejJfNFZaMGlSVUk4el91ZFI5NVVNQ0p6Z3JyNE0zVVdHWF9sdkhPTjQxVUdkQ1ZDdyJ9XSwiaWF0IjoxNzkwMjUxMjAwfQ.AJCwQFQ-zPRBtGvKs70WNXYNULxLpY2gQS3OBaTUjifiyUMf_osMDUOyFGrc8DnYWp_RZgzmeKbqQv5Hib0RDA",
+    "gen2-cosigned": "eyJ2IjozLCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLm9wIiwidXNyIjoiZWQyNTUxOTpjZDUxNWYwY2RmZmQ2MzNkNmY4MWYwZWM3OWY5OWFkMjYwOTg1MjgwNmVlMWQ5Nzg5Y2YwMjUzNjk1MTZmM2IzIiwib3AiOiJyZW1vdmUiLCJkZXYiOiJlZDI1NTE5OjUxYzAyODE3NTYyOGIxM2FkODY4ZWMzY2ZkNWM0YTdkM2RmNTViMjdmZWNiYTgzMmMzM2YxYmRjYzBlNTM2MDIiLCJieSI6ImVkMjU1MTk6Y2Q1MTVmMGNkZmZkNjMzZDZmODFmMGVjNzlmOTlhZDI2MDk4NTI4MDZlZTFkOTc4OWNmMDI1MzY5NTE2ZjNiMyIsInByZXYiOltdLCJjb3NpZyI6W3siYnkiOiJlZDI1NTE5OjUxYzAyODE3NTYyOGIxM2FkODY4ZWMzY2ZkNWM0YTdkM2RmNTViMjdmZWNiYTgzMmMzM2YxYmRjYzBlNTM2MDIiLCJzaWciOiJOeE83dWVBT0h6OGR6NWttZmZjV3BLemRrd3dHTjVhTkh0Vkdka1k4bE14SDFqOWtQSk9KMXd5VlFZLXN5Q2lnOEFSNDRGSjdwMGtJWFlmZVlXN1REZyJ9XSwiaWF0IjoxNzkwMjUxMjAwfQ.B3JpCVoLInbons2dWEU6Tx17go_0w41l0n-bj8nFAO5YMjAY0zc1E9UafYo5rwKnee844hJGojFNJId6OmqtBw"
+  },
+  "grant_request": {
+    "principal": "device:alpha",
+    "resource": "space:one",
+    "capability": "read"
+  },
+  "checks": [
+    {
+      "verifier": "op",
+      "token": "gen2-cosigned",
+      "expect": "ok"
+    },
+    {
+      "verifier": "cosig",
+      "token": "gen2-cosigned",
+      "key": "device",
+      "expect": "ok"
+    },
+    {
+      "verifier": "op",
+      "token": "gen1-cosigned",
+      "expect": "ok"
+    },
+    {
+      "verifier": "cosig",
+      "token": "gen1-cosigned",
+      "key": "device",
+      "expect": "bad_signature"
+    }
+  ]
+}

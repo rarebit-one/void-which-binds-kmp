@@ -37,7 +37,7 @@ class PushEndpointStore(context: Context) {
     }
 
     private companion object {
-        const val FILE = "voidbind_push"
+        const val FILE = "void-which-binds.push"
         const val KEY = "endpoint"
     }
 }

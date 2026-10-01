@@ -34,7 +34,7 @@ import one.rarebit.voidwhichbinds.crypto.Hex
 class IdentityStore(private val prefs: SharedPreferences, private val sealed: SecretSealer) {
 
     constructor(context: Context) : this(
-        context.getSharedPreferences("voidbind.identity", Context.MODE_PRIVATE),
+        context.getSharedPreferences("void-which-binds.identity", Context.MODE_PRIVATE),
         SealedSecretStore(context),
     )
 

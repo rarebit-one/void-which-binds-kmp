@@ -33,7 +33,7 @@ import kotlin.test.assertTrue
  */
 class CoordinatorPairingTest {
 
-    /** A faithful in-memory voidbind relay: opaque, write-once slots over HTTP. */
+    /** A faithful in-memory void-which-binds relay: opaque, write-once slots over HTTP. */
     private class RelayTransport : HttpTransport {
         private val slots = ConcurrentHashMap<String, ByteArray>()
         private var seq = 0
@@ -110,8 +110,8 @@ class CoordinatorPairingTest {
 
         val salt = ByteArray(32) { (it * 5 + 1).toByte() }
         val invitation = auth.invite(relayBase, salt)
-        assertTrue(invitation.inviteQr.startsWith("voidbind:pair?"), "must be a pairing invite")
-        assertTrue(invitation.inviteQr.contains("v=3"), "invite must carry version 3")
+        assertTrue(invitation.inviteQr.startsWith("void-which-binds:pair?"), "must be a pairing invite")
+        assertTrue(invitation.inviteQr.contains("v=4"), "invite must carry version 4")
         assertTrue(invitation.inviteQr.contains("usr=ed25519%3A"), "invite must carry the identity")
         assertEquals(user.userId.render(), invitation.userId)
 

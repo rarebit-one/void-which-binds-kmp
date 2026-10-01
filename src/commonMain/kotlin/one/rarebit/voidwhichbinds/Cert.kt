@@ -16,7 +16,7 @@ import one.rarebit.voidwhichbinds.crypto.MiniJson
  * | field  | meaning                                   | rendered as        |
  * |--------|-------------------------------------------|--------------------|
  * | `v`    | payload version ([Labels.CERT_VERSION])   | int                |
- * | `typ`  | ADR-0009 token type, only when set        | `voidbind.cert`    |
+ * | `typ`  | ADR-0009 token type ([TokenType.CERT])    | `void-which-binds.cert` |
  * | `usr`  | user identity key                         | `ed25519:<hex>`    |
  * | `dev`  | device signing key                        | `ed25519:<hex>`    |
  * | `denc` | device encryption key                     | `x25519:<hex>`     |
@@ -33,25 +33,24 @@ data class Cert(
     val deviceEnc: KeyRef,
     val issuedAt: Long,
     val expiresAt: Long,
-    /**
-     * The ADR-0009 `typ` claim, signed second after `v`. It defaults to [TokenType.CERT]:
-     * since phase 2 every new cert is typed. A legacy cert parses with `""` and
-     * re-encodes untyped, byte for byte.
-     */
-    val typ: String = TokenType.CERT,
 ) {
+    /**
+     * The ADR-0009 `typ` claim, signed second after `v`. Gen2 is typed-only
+     * (ADR-0022), so every cert carries [TokenType.CERT].
+     */
+    val typ: String get() = TokenType.CERT
+
     init {
         require(user.alg == Labels.ALG_ED25519) { "usr must be ed25519, got ${user.alg}" }
         require(device.alg == Labels.ALG_ED25519) { "dev must be ed25519, got ${device.alg}" }
         require(deviceEnc.alg == Labels.ALG_X25519) { "denc must be x25519, got ${deviceEnc.alg}" }
-        require(typ.isEmpty() || typ == TokenType.CERT) { "a cert's typ is ${TokenType.CERT}, got $typ" }
     }
 
     /** The exact JSON bytes that are signed (and that `base64url` wraps). */
     fun signingBytes(): ByteArray = MiniJson.encodeObject(
-        listOfNotNull(
+        listOf(
             "v" to version,
-            if (typ.isNotEmpty()) "typ" to typ else null,
+            "typ" to typ,
             "usr" to user.render(),
             "dev" to device.render(),
             "denc" to deviceEnc.render(),
@@ -82,9 +81,10 @@ data class Cert(
          * signature (that needs an [Ed25519Verifier]) — call [Cert.verify] with the
          * same token afterwards.
          *
-         * ADR-0009: a present `typ` must be [TokenType.CERT]. Any other kind throws
-         * [TokenType.TypeException] ([TokenType.Failure.WRONG_TYPE]), and so does a
-         * malformed `typ`. An untyped cert parses as before.
+         * ADR-0009/ADR-0022: `typ` must be [TokenType.CERT]. An absent `typ` (a gen1
+         * untyped cert) or any other kind (a gen1 `voidbind.cert` included) throws
+         * [TokenType.TypeException] ([TokenType.Failure.WRONG_TYPE]); a malformed
+         * `typ` throws it with [TokenType.Failure.MALFORMED].
          */
         fun parse(token: String): Parsed {
             val dot = token.indexOf('.')
@@ -106,9 +106,8 @@ data class Cert(
                 deviceEnc = KeyRef.parse(str("denc")),
                 issuedAt = num("iat"),
                 expiresAt = num("exp"),
-                typ = typ,
             )
-            require(TokenType.versionOk(typ, cert.version)) { "a typed cert is v1 or v2, got v${cert.version}" }
+            require(TokenType.versionOk(typ, cert.version)) { "a cert is v1 or v2, got v${cert.version}" }
             return Parsed(cert, payloadBytes, sig)
         }
     }

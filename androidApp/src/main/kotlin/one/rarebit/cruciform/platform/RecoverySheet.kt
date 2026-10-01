@@ -99,9 +99,9 @@ internal object RecoverySheet {
                 "This secret IS your identity. Anyone who holds it can become you, so keep it offline: " +
                     "no photos, no cloud, no email.",
                 "Check it now and once a year, without using it: Cruciform → Settings → Test recovery secret, " +
-                    "or 'voidbind recovery verify --secret-file -'. The fingerprint shown must read $fp.",
+                    "or 'void-which-binds recovery verify --secret-file -'. The fingerprint shown must read $fp.",
                 "To restore after losing every device: Cruciform → Restore (scan the code, or type the groups " +
-                    "above, spaces allowed), or 'voidbind identity recover --secret-file -'.",
+                    "above, spaces allowed), or 'void-which-binds identity recover --secret-file -'.",
                 "Case does not matter and a single wrong character is refused, never mistaken for another identity.",
             ),
         )
@@ -242,7 +242,7 @@ internal object RecoverySheet {
         private fun header() {
             line(content.heading, left, Styles.Heading)
             y += mm(HEADING_GAP_MM)
-            line("Voidbind identity · written ${content.dateLabel}", left, Styles.Meta)
+            line("Void-Which-Binds identity · written ${content.dateLabel}", left, Styles.Meta)
             y += mm(META_GAP_MM)
         }
 

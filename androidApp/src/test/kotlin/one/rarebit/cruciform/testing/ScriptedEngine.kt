@@ -65,9 +65,10 @@ class ScriptedEngine : VoidbindEngine {
 
     // Mirrors the real parser's shape closely enough for the flows: login / pair / other.
     override fun parseScanned(raw: String): ScannedCode = when {
-        raw.startsWith("voidbind:login") -> ScannedCode.WebLogin("https://rp.example.test", "L1", raw)
-        raw.startsWith("voidbind:pair") -> ScannedCode.PairInvite("https://relay.example.test", "s1", raw)
-        raw.lowercase().startsWith("heyarr1") -> ScannedCode.RecoverySecret(raw)
+        raw.startsWith("void-which-binds:login") -> ScannedCode.WebLogin("https://rp.example.test", "L1", raw)
+        raw.startsWith("void-which-binds:pair") -> ScannedCode.PairInvite("https://relay.example.test", "s1", raw)
+        raw.lowercase().startsWith("void-which-binds1") -> ScannedCode.RecoverySecret(raw)
+        raw.lowercase().startsWith("heyarr1") -> ScannedCode.RetiredRecoverySecret(raw)
         else -> ScannedCode.Unknown(raw)
     }
 
@@ -97,8 +98,9 @@ class ScriptedEngine : VoidbindEngine {
 
     companion object {
         val BACKUP = RecoveryBackup(
-            groupedSecret = "heya rr1q qqsy qcyq 5rqw zqfp g9sc rgwp ugpz ysnz s23v 9ccr ydpk 8qar c0s6 e0uc u",
-            rawSecret = "heyarr1qqqsyqcyq5rqwzqfpg9scrgwpugpzysnzs23v9ccrydpk8qarc0s6e0ucu",
+            groupedSecret = "void -whi ch-b inds 1qqq syqc yq5r qwzq fpg9 scrg wpug pzys nzs2 3v9c cryd pk8q " +
+                "arc0 stsk a6c",
+            rawSecret = "void-which-binds1qqqsyqcyq5rqwzqfpg9scrgwpugpzysnzs23v9ccrydpk8qarc0stska6c",
             fingerprint = "PYJI XGNZ K7ZH XHEJ",
             userId = "ed25519:00",
         )
@@ -114,8 +116,8 @@ class ScriptedEngine : VoidbindEngine {
         )
         val SESSION = PairSession("Test Phone", peerDeviceName = "New device", securityCode = "123 4567")
         private val UNUSED = EngineResult.Failed(EngineFailure("unused", Kind.INTERNAL))
-        const val LOGIN = "voidbind:login?v=1&rp=https://rp.example.test&id=L1"
-        const val INVITE = "voidbind:pair?v=3&relay=https://relay.example.test&session=s1"
+        const val LOGIN = "void-which-binds:login?v=1&rp=https://rp.example.test&id=L1"
+        const val INVITE = "void-which-binds:pair?v=4&relay=https://relay.example.test&session=s1"
 
         fun failure(kind: Kind = Kind.UNREACHABLE, msg: String = "x") = EngineResult.Failed(EngineFailure(msg, kind))
     }

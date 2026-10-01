@@ -4,7 +4,7 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
     <!-- Two interlocking rings in the brand's mint + fern — a placeholder for the
-         Voidbind knot mark, sized inside the adaptive-icon safe zone. -->
+         Cruciform knot mark, sized inside the adaptive-icon safe zone. -->
     <path
         android:fillColor="#00000000"
         android:strokeColor="#7EE0B3"

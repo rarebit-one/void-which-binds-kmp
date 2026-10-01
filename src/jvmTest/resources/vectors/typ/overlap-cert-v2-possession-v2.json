@@ -1,22 +1,22 @@
 {
   "name": "overlap-cert-v2-possession-v2",
-  "description": "cert v2 and a possession proof share v:2. A v2 body carrying both shapes' fields, signed by a key that is both the pinned user and the device, is UNTYPED accepted as a cert AND as a possession proof. Typed, it is only what its typ says",
+  "description": "cert v2 and a possession proof share v:2. A v2 body carrying both shapes' fields, signed by a key that is both the pinned user and the device, was UNTYPED accepted as a cert AND as a possession proof. Gen2 refuses it untyped; typed, it is only what its typ says",
   "now": 1790251200,
   "keys": {
     "device": {
-      "sign_seed": "d721c834b1d967bcf2c1635686ad8817c0577e452279f4a7f4f4743882d772eb",
-      "id": "ed25519:8256344bfdd93680c637386ad0195f01ae9bc6a7ea32bcb12c9c1b500ca7c839"
+      "sign_seed": "51d258eed93173eb8efffa1f6160fd18100e0e6ee753a53ae525d687595079da",
+      "id": "ed25519:51c028175628b13ad868ec3cfd5c4a7d3df55b27fecba832c33f1bdcc0e53602"
     },
     "user": {
-      "sign_seed": "99d56175dc3aa4346d6226043ae922888feb59e6c0bc0ef1e155356a4f103879",
-      "id": "ed25519:e17116170a4db3671d211d171021a31708a45e1a97d2f8d3ca542a75bdf77344"
+      "sign_seed": "c8aa23904f385b53e1b7d782d62610c027b1f1127a845eeb2104dec70dd881e6",
+      "id": "ed25519:cd515f0cdffd633d6f81f0ec79f99ad2609852806ee1d9789cf025369516f3b3"
     }
   },
   "tokens": {
-    "anchor": "eyJ2IjoyLCJ1c3IiOiJlZDI1NTE5OjgyNTYzNDRiZmRkOTM2ODBjNjM3Mzg2YWQwMTk1ZjAxYWU5YmM2YTdlYTMyYmNiMTJjOWMxYjUwMGNhN2M4MzkiLCJkZXYiOiJlZDI1NTE5OmUxNzExNjE3MGE0ZGIzNjcxZDIxMWQxNzEwMjFhMzE3MDhhNDVlMWE5N2QyZjhkM2NhNTQyYTc1YmRmNzczNDQiLCJpYXQiOjE3OTAyNTEyMDAsImV4cCI6MTc5MDI1NDgwMH0.fKmv5HlXSiyuh-qRuPxXlQ8WzNeZQt9v_lpCWc3MLqLIqJD1w9vVmUuGJxUvm1daGkeTVuUoqPz7JW5Oa_J7Aw",
-    "typed-cert": "eyJ2IjoyLCJ0eXAiOiJ2b2lkYmluZC5jZXJ0IiwidXNyIjoiZWQyNTUxOTo4MjU2MzQ0YmZkZDkzNjgwYzYzNzM4NmFkMDE5NWYwMWFlOWJjNmE3ZWEzMmJjYjEyYzljMWI1MDBjYTdjODM5IiwiZGV2IjoiZWQyNTUxOTplMTcxMTYxNzBhNGRiMzY3MWQyMTFkMTcxMDIxYTMxNzA4YTQ1ZTFhOTdkMmY4ZDNjYTU0MmE3NWJkZjc3MzQ0IiwiY3J0IjoiVTRhWVVnLWd1cXlmZFQ5dkdicmQzOUJXeEVRVG54VVBHZHhaYVhEdXhtOCIsImlhdCI6MTc5MDI1MTIwMCwiZXhwIjoxNzkwMjU0ODAwfQ.2DSzta2s8jngcHn-qlkekVeVbqZ5TDIbqNM8RxOZm6Q5ioDZewIsokyqBRNykeu31cDzJtK2Yki2tjd-WA85Dg",
-    "typed-possession": "eyJ2IjoyLCJ0eXAiOiJ2b2lkYmluZC5wb3NzZXNzaW9uIiwidXNyIjoiZWQyNTUxOTo4MjU2MzQ0YmZkZDkzNjgwYzYzNzM4NmFkMDE5NWYwMWFlOWJjNmE3ZWEzMmJjYjEyYzljMWI1MDBjYTdjODM5IiwiZGV2IjoiZWQyNTUxOTplMTcxMTYxNzBhNGRiMzY3MWQyMTFkMTcxMDIxYTMxNzA4YTQ1ZTFhOTdkMmY4ZDNjYTU0MmE3NWJkZjc3MzQ0IiwiY3J0IjoiVTRhWVVnLWd1cXlmZFQ5dkdicmQzOUJXeEVRVG54VVBHZHhaYVhEdXhtOCIsImlhdCI6MTc5MDI1MTIwMCwiZXhwIjoxNzkwMjU0ODAwfQ.wa9AeWg5wYwSoaHAEsSQ8r0gjk6L-ecBA66fAAWQYs1H_mJ_23PKyd0cMnH0_Jaifq9Xu4bH9pRfS7syPXu6AA",
-    "untyped": "eyJ2IjoyLCJ1c3IiOiJlZDI1NTE5OjgyNTYzNDRiZmRkOTM2ODBjNjM3Mzg2YWQwMTk1ZjAxYWU5YmM2YTdlYTMyYmNiMTJjOWMxYjUwMGNhN2M4MzkiLCJkZXYiOiJlZDI1NTE5OmUxNzExNjE3MGE0ZGIzNjcxZDIxMWQxNzEwMjFhMzE3MDhhNDVlMWE5N2QyZjhkM2NhNTQyYTc1YmRmNzczNDQiLCJjcnQiOiJVNGFZVWctZ3VxeWZkVDl2R2JyZDM5Qld4RVFUbnhVUEdkeFphWER1eG04IiwiaWF0IjoxNzkwMjUxMjAwLCJleHAiOjE3OTAyNTQ4MDB9.kcAgPhazPvH9-kEoPIFfIrQrIAeOBewDKwaY9BjEHzqguO6wvzhGwdSO7bIV4eVIyEJZPdZk_JOdO3QUFl1UBg"
+    "anchor": "eyJ2IjoyLCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLmNlcnQiLCJ1c3IiOiJlZDI1NTE5OjUxYzAyODE3NTYyOGIxM2FkODY4ZWMzY2ZkNWM0YTdkM2RmNTViMjdmZWNiYTgzMmMzM2YxYmRjYzBlNTM2MDIiLCJkZXYiOiJlZDI1NTE5OmNkNTE1ZjBjZGZmZDYzM2Q2ZjgxZjBlYzc5Zjk5YWQyNjA5ODUyODA2ZWUxZDk3ODljZjAyNTM2OTUxNmYzYjMiLCJpYXQiOjE3OTAyNTEyMDAsImV4cCI6MTc5MDI1NDgwMH0.1sgEcv-lySICkVqVg6xGAhQbuRfsK-TBwHHcTEKGzNYKEJgKjA7oBE6G-9mi2cOgKPQAHNUYx8_e8xw_mB2ECg",
+    "typed-cert": "eyJ2IjoyLCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLmNlcnQiLCJ1c3IiOiJlZDI1NTE5OjUxYzAyODE3NTYyOGIxM2FkODY4ZWMzY2ZkNWM0YTdkM2RmNTViMjdmZWNiYTgzMmMzM2YxYmRjYzBlNTM2MDIiLCJkZXYiOiJlZDI1NTE5OmNkNTE1ZjBjZGZmZDYzM2Q2ZjgxZjBlYzc5Zjk5YWQyNjA5ODUyODA2ZWUxZDk3ODljZjAyNTM2OTUxNmYzYjMiLCJjcnQiOiJvdnh2TWhzMGxybUY4N1Rjc0REV2t6d2swNl85Rmo4OWJUQndDUFVWMWJnIiwiaWF0IjoxNzkwMjUxMjAwLCJleHAiOjE3OTAyNTQ4MDB9.ke1p2-9AHT55lI-DG6RM5_-3j9LD_-qNHFrV9mZakSHuBLPeKUHgPmM3mdlscRNdqmpy08F81emscffxgKr0DQ",
+    "typed-possession": "eyJ2IjoyLCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLnBvc3Nlc3Npb24iLCJ1c3IiOiJlZDI1NTE5OjUxYzAyODE3NTYyOGIxM2FkODY4ZWMzY2ZkNWM0YTdkM2RmNTViMjdmZWNiYTgzMmMzM2YxYmRjYzBlNTM2MDIiLCJkZXYiOiJlZDI1NTE5OmNkNTE1ZjBjZGZmZDYzM2Q2ZjgxZjBlYzc5Zjk5YWQyNjA5ODUyODA2ZWUxZDk3ODljZjAyNTM2OTUxNmYzYjMiLCJjcnQiOiJvdnh2TWhzMGxybUY4N1Rjc0REV2t6d2swNl85Rmo4OWJUQndDUFVWMWJnIiwiaWF0IjoxNzkwMjUxMjAwLCJleHAiOjE3OTAyNTQ4MDB9.zombrNT0oyUITNWt5XDKqWMJ5W2OZldqzrFpyyedZiKIpSr0llVY2o4vSNR85-WDAumRcK0_fwNjAxpQKsS_Bg",
+    "untyped": "eyJ2IjoyLCJ1c3IiOiJlZDI1NTE5OjUxYzAyODE3NTYyOGIxM2FkODY4ZWMzY2ZkNWM0YTdkM2RmNTViMjdmZWNiYTgzMmMzM2YxYmRjYzBlNTM2MDIiLCJkZXYiOiJlZDI1NTE5OmNkNTE1ZjBjZGZmZDYzM2Q2ZjgxZjBlYzc5Zjk5YWQyNjA5ODUyODA2ZWUxZDk3ODljZjAyNTM2OTUxNmYzYjMiLCJjcnQiOiJvdnh2TWhzMGxybUY4N1Rjc0REV2t6d2swNl85Rmo4OWJUQndDUFVWMWJnIiwiaWF0IjoxNzkwMjUxMjAwLCJleHAiOjE3OTAyNTQ4MDB9.CKzqJodVXkJp_8-QbShvNZPrvZm9YN5QSHhnqp7jV7PMTWc7HCfoWbw9d9MrpVoFFTky_dVFoQrRxdjN2_X_BQ"
   },
   "grant_request": {
     "principal": "device:alpha",
@@ -28,64 +28,40 @@
       "verifier": "cert",
       "token": "untyped",
       "key": "device",
-      "expect": {
-        "accept": "ok",
-        "emit": "ok",
-        "require": "untyped"
-      }
+      "expect": "wrong_type"
     },
     {
       "verifier": "possession",
       "token": "untyped",
       "key": "device",
       "cert": "anchor",
-      "expect": {
-        "accept": "ok",
-        "emit": "ok",
-        "require": "untyped"
-      }
+      "expect": "wrong_type"
     },
     {
       "verifier": "possession",
       "token": "typed-possession",
       "key": "device",
       "cert": "anchor",
-      "expect": {
-        "accept": "ok",
-        "emit": "ok",
-        "require": "ok"
-      }
+      "expect": "ok"
     },
     {
       "verifier": "cert",
       "token": "typed-possession",
       "key": "device",
-      "expect": {
-        "accept": "wrong_type",
-        "emit": "wrong_type",
-        "require": "wrong_type"
-      }
+      "expect": "wrong_type"
     },
     {
       "verifier": "cert",
       "token": "typed-cert",
       "key": "device",
-      "expect": {
-        "accept": "ok",
-        "emit": "ok",
-        "require": "ok"
-      }
+      "expect": "ok"
     },
     {
       "verifier": "possession",
       "token": "typed-cert",
       "key": "device",
       "cert": "anchor",
-      "expect": {
-        "accept": "wrong_type",
-        "emit": "wrong_type",
-        "require": "wrong_type"
-      }
+      "expect": "wrong_type"
     }
   ]
 }

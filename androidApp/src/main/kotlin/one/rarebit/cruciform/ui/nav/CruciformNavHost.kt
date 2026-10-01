@@ -90,7 +90,7 @@ object Routes {
 
 /**
  * [handoff] is a login/pairing the activity was woken into from outside (a push ping
- * or another app's `voidbind:` deep link); the graph runs the SAME approval flow a
+ * or another app's `void-which-binds:` deep link); the graph runs the SAME approval flow a
  * scan does and reports the decision through [onHandoffFinished] — which, for a
  * deep link, finishes the activity so the calling app resumes.
  *
@@ -397,7 +397,7 @@ fun CruciformNavHost(
         }
     }
 
-    // A wake from outside — a push ping, or another app's `voidbind:` deep link (the
+    // A wake from outside — a push ping, or another app's `void-which-binds:` deep link (the
     // same-device handoff). The tuple is the bare QR string, so this is EXACTLY the scan
     // path: fetch the request from the RP (the origin is shown, nothing auto-approves)
     // and open the same LOGIN destination, so the number-match (v2) grid vs.
@@ -412,8 +412,8 @@ fun CruciformNavHost(
             // no route to the relay, most likely — is a dialog with Retry, never a crash.
             is ScannedCode.PairInvite -> pairVm.join(code, fromScan = false)
 
-            // A recovery secret is never taken from another app or a push.
-            is ScannedCode.RecoverySecret, is ScannedCode.Unknown -> loginVm.showError("Not a Voidbind code.")
+            // A recovery secret (gen1 or gen2) is never taken from another app or a push.
+            else -> loginVm.showError("$NOT_A_VOID_WHICH_BINDS_CODE.")
         }
     }
 

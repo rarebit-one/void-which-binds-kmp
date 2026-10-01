@@ -5,15 +5,15 @@ import one.rarebit.voidwhichbinds.crypto.UrlQuery
 
 /**
  * The cruciform-OFFLOAD deep links the phone half consumes (ADR-0098). These are a
- * heyarr-SPECIFIC extension, NOT the voidbind protocol proper, so they live in this
+ * heyarr-SPECIFIC extension, NOT the Void-Which-Binds protocol proper, so they live in this
  * `offload` package and mirror heyarr-core's `internal/personalstate/client/cruciform`
  * wire byte-for-byte rather than a void-which-binds-go encoding:
  *
  *  - the one-time PAIRING invite the desktop shows as a QR and the phone scans:
- *      voidbind:offload-pair?v=1&relay=<origin>&session=<id>&salt=<hex>
+ *      void-which-binds:offload-pair?v=1&relay=<origin>&session=<id>&salt=<hex>
  *  - the recurring UNWRAP wake ping the phone receives over push (or discovers on
  *    the LAN), an opaque pointer to the relay session the desktop opened:
- *      voidbind:unwrap?relay=<origin>&session=<id>
+ *      void-which-binds:unwrap?relay=<origin>&session=<id>
  *
  * Both carry only public values — a relay/session pointer and a fresh salt — never
  * a key or a secret; the visual channel (the scanned QR) and the SAS are what
@@ -21,7 +21,7 @@ import one.rarebit.voidwhichbinds.crypto.UrlQuery
  * signed.
  */
 public object OffloadDeepLink {
-    private const val SCHEME = "voidbind"
+    private const val SCHEME = "void-which-binds"
     private const val PAIR_OPAQUE = "offload-pair"
     private const val UNWRAP_OPAQUE = "unwrap"
     private const val PAIR_VERSION = "1"
@@ -58,7 +58,7 @@ public object OffloadDeepLink {
         return "$SCHEME:$PAIR_OPAQUE?" + UrlQuery.encode(params)
     }
 
-    /** Parse a `voidbind:offload-pair?…` invite, or throw [IllegalArgumentException]. */
+    /** Parse a `void-which-binds:offload-pair?…` invite, or throw [IllegalArgumentException]. */
     public fun parsePairInvite(uri: String): PairInvite {
         val q = queryOf(uri, PAIR_OPAQUE)
         require(q["v"] == PAIR_VERSION) { "offload invite version ${q["v"]}, want $PAIR_VERSION" }
@@ -76,7 +76,7 @@ public object OffloadDeepLink {
         return "$SCHEME:$UNWRAP_OPAQUE?" + UrlQuery.encode(listOf("relay" to relayBase, "session" to session))
     }
 
-    /** Parse a `voidbind:unwrap?…` wake-ping, or throw [IllegalArgumentException]. */
+    /** Parse a `void-which-binds:unwrap?…` wake-ping, or throw [IllegalArgumentException]. */
     public fun parseWakePing(uri: String): WakePing {
         val q = queryOf(uri, UNWRAP_OPAQUE)
         val relay = q["relay"].orEmpty()
@@ -85,7 +85,7 @@ public object OffloadDeepLink {
         return WakePing(relay, session)
     }
 
-    /** Split "voidbind:<opaque>?<query>" and decode the query, refusing a wrong scheme/opaque. */
+    /** Split "void-which-binds:<opaque>?<query>" and decode the query, refusing a wrong scheme/opaque. */
     private fun queryOf(uri: String, opaque: String): Map<String, String> {
         val prefix = "$SCHEME:$opaque?"
         require(uri.startsWith(prefix)) { "not a $SCHEME:$opaque link" }

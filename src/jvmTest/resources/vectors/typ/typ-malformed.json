@@ -4,23 +4,23 @@
   "now": 1790251200,
   "keys": {
     "device": {
-      "sign_seed": "d721c834b1d967bcf2c1635686ad8817c0577e452279f4a7f4f4743882d772eb",
-      "id": "ed25519:8256344bfdd93680c637386ad0195f01ae9bc6a7ea32bcb12c9c1b500ca7c839"
+      "sign_seed": "51d258eed93173eb8efffa1f6160fd18100e0e6ee753a53ae525d687595079da",
+      "id": "ed25519:51c028175628b13ad868ec3cfd5c4a7d3df55b27fecba832c33f1bdcc0e53602"
     },
     "user": {
-      "sign_seed": "99d56175dc3aa4346d6226043ae922888feb59e6c0bc0ef1e155356a4f103879",
-      "id": "ed25519:e17116170a4db3671d211d171021a31708a45e1a97d2f8d3ca542a75bdf77344"
+      "sign_seed": "c8aa23904f385b53e1b7d782d62610c027b1f1127a845eeb2104dec70dd881e6",
+      "id": "ed25519:cd515f0cdffd633d6f81f0ec79f99ad2609852806ee1d9789cf025369516f3b3"
     }
   },
   "tokens": {
-    "case-key": "eyJ2IjoyLCJUeXAiOiJ2b2lkYmluZC5jZXJ0IiwidXNyIjoiZWQyNTUxOTplMTcxMTYxNzBhNGRiMzY3MWQyMTFkMTcxMDIxYTMxNzA4YTQ1ZTFhOTdkMmY4ZDNjYTU0MmE3NWJkZjc3MzQ0IiwiZGV2IjoiZWQyNTUxOTo4MjU2MzQ0YmZkZDkzNjgwYzYzNzM4NmFkMDE5NWYwMWFlOWJjNmE3ZWEzMmJjYjEyYzljMWI1MDBjYTdjODM5IiwiaWF0IjoxNzkwMjUxMjAwLCJleHAiOjE3OTAyNTQ4MDB9.-Bqm8oC1PlBnkwb7JzoKxxWky6Gv1WXS7UqANXggk1rB_4dt2Eu6a8e33aVXumclQ_q6vvoA2k1W6QMhDBnPBw",
-    "cert-v3": "eyJ2IjozLCJ0eXAiOiJ2b2lkYmluZC5jZXJ0IiwidXNyIjoiZWQyNTUxOTplMTcxMTYxNzBhNGRiMzY3MWQyMTFkMTcxMDIxYTMxNzA4YTQ1ZTFhOTdkMmY4ZDNjYTU0MmE3NWJkZjc3MzQ0IiwiZGV2IjoiZWQyNTUxOTo4MjU2MzQ0YmZkZDkzNjgwYzYzNzM4NmFkMDE5NWYwMWFlOWJjNmE3ZWEzMmJjYjEyYzljMWI1MDBjYTdjODM5IiwiaWF0IjoxNzkwMjUxMjAwLCJleHAiOjE3OTAyNTQ4MDB9.pbZKNCDmZWOllJ-PXP4O8jOM1JenWe7YW1bY91884-22nQM9BbVbrQVB_H5j8hglOLJ4A5J3zLY_vyiy4iP7AQ",
-    "cert-v9-hint": "eyJ2Ijo5LCJ0eXAiOiJ2b2lkYmluZC5jZXJ0IiwidXNyIjoiZWQyNTUxOTplMTcxMTYxNzBhNGRiMzY3MWQyMTFkMTcxMDIxYTMxNzA4YTQ1ZTFhOTdkMmY4ZDNjYTU0MmE3NWJkZjc3MzQ0IiwiZGV2IjoiZWQyNTUxOTo4MjU2MzQ0YmZkZDkzNjgwYzYzNzM4NmFkMDE5NWYwMWFlOWJjNmE3ZWEzMmJjYjEyYzljMWI1MDBjYTdjODM5IiwiaWF0IjoxNzkwMjUxMjAwLCJleHAiOjE3OTAyNTQ4MDB9.YzKjcff1l8If48Sw8HBL-peibZxPLDlwR8zAHPPYnRfSzBwUObO5qa3Gu0l5YRVdzlvmzlgvv0ytoKRkbr3cAQ",
-    "null": "eyJ2IjoyLCJ0eXAiOm51bGwsInVzciI6ImVkMjU1MTk6ZTE3MTE2MTcwYTRkYjM2NzFkMjExZDE3MTAyMWEzMTcwOGE0NWUxYTk3ZDJmOGQzY2E1NDJhNzViZGY3NzM0NCIsImRldiI6ImVkMjU1MTk6ODI1NjM0NGJmZGQ5MzY4MGM2MzczODZhZDAxOTVmMDFhZTliYzZhN2VhMzJiY2IxMmM5YzFiNTAwY2E3YzgzOSIsImlhdCI6MTc5MDI1MTIwMCwiZXhwIjoxNzkwMjU0ODAwfQ.RcDrE_T7hOjw188OKhRydkjmZKjGOIBwYsq07sxn-MTFtsmlk1v8pJBLnsEG8xiuNQ1oMv8TF0kXzw51JlZoCQ",
-    "number": "eyJ2IjoyLCJ0eXAiOjcsInVzciI6ImVkMjU1MTk6ZTE3MTE2MTcwYTRkYjM2NzFkMjExZDE3MTAyMWEzMTcwOGE0NWUxYTk3ZDJmOGQzY2E1NDJhNzViZGY3NzM0NCIsImRldiI6ImVkMjU1MTk6ODI1NjM0NGJmZGQ5MzY4MGM2MzczODZhZDAxOTVmMDFhZTliYzZhN2VhMzJiY2IxMmM5YzFiNTAwY2E3YzgzOSIsImlhdCI6MTc5MDI1MTIwMCwiZXhwIjoxNzkwMjU0ODAwfQ.eNYZVO0b4hq-jyJHm8spGmtYqWhLO377tsHwLr8XFRGEAPpp6Ed3mXWmLkOgNCvGTbN4XYRT-y8cgv9bgyztDw",
-    "op-at-v2": "eyJ2IjoyLCJ0eXAiOiJ2b2lkYmluZC5vcCIsInVzciI6ImVkMjU1MTk6ZTE3MTE2MTcwYTRkYjM2NzFkMjExZDE3MTAyMWEzMTcwOGE0NWUxYTk3ZDJmOGQzY2E1NDJhNzViZGY3NzM0NCIsImRldiI6ImVkMjU1MTk6ODI1NjM0NGJmZGQ5MzY4MGM2MzczODZhZDAxOTVmMDFhZTliYzZhN2VhMzJiY2IxMmM5YzFiNTAwY2E3YzgzOSIsImRlbmMiOiJ4MjU1MTk6MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNyIsImlhdCI6MTc5MDI1MTIwMCwiZXhwIjoxNzkwMjU0ODAwfQ.OG9fVGaLyjXGzwmrM4080VCKM7FdUk_xTiMLWcK3bSZL00-yWRs_DNfe9BuePEGWWHdoVmU99V9qYPMc0d88BA",
-    "unknown": "eyJ2IjoyLCJ0eXAiOiJ2b2lkYmluZC5ub3BlIiwidXNyIjoiZWQyNTUxOTplMTcxMTYxNzBhNGRiMzY3MWQyMTFkMTcxMDIxYTMxNzA4YTQ1ZTFhOTdkMmY4ZDNjYTU0MmE3NWJkZjc3MzQ0IiwiZGV2IjoiZWQyNTUxOTo4MjU2MzQ0YmZkZDkzNjgwYzYzNzM4NmFkMDE5NWYwMWFlOWJjNmE3ZWEzMmJjYjEyYzljMWI1MDBjYTdjODM5IiwiZGVuYyI6IngyNTUxOTowNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3IiwiaWF0IjoxNzkwMjUxMjAwLCJleHAiOjE3OTAyNTQ4MDB9.5Krq2FFrvGccflHfZzY6JzX2GE-HpbZGQJ7I7IsVucGNcSLkYDf9d3TN9JBaUQIYhz1ODLusZW-TlZ991H9_AQ",
-    "wrong-case": "eyJ2IjoyLCJ0eXAiOiJWb2lkYmluZC5jZXJ0IiwidXNyIjoiZWQyNTUxOTplMTcxMTYxNzBhNGRiMzY3MWQyMTFkMTcxMDIxYTMxNzA4YTQ1ZTFhOTdkMmY4ZDNjYTU0MmE3NWJkZjc3MzQ0IiwiZGV2IjoiZWQyNTUxOTo4MjU2MzQ0YmZkZDkzNjgwYzYzNzM4NmFkMDE5NWYwMWFlOWJjNmE3ZWEzMmJjYjEyYzljMWI1MDBjYTdjODM5IiwiZGVuYyI6IngyNTUxOTowNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3IiwiaWF0IjoxNzkwMjUxMjAwLCJleHAiOjE3OTAyNTQ4MDB9.OgOP6ge8B6Zn4PpqHYJMKI4d2z11PN2ZynbOwN81SVhUSKbfumEr5nz1smwhQHXIyewC-kB0TeS7e7-mH7eICg"
+    "case-key": "eyJ2IjoyLCJUeXAiOiJ2b2lkLXdoaWNoLWJpbmRzLmNlcnQiLCJ1c3IiOiJlZDI1NTE5OmNkNTE1ZjBjZGZmZDYzM2Q2ZjgxZjBlYzc5Zjk5YWQyNjA5ODUyODA2ZWUxZDk3ODljZjAyNTM2OTUxNmYzYjMiLCJkZXYiOiJlZDI1NTE5OjUxYzAyODE3NTYyOGIxM2FkODY4ZWMzY2ZkNWM0YTdkM2RmNTViMjdmZWNiYTgzMmMzM2YxYmRjYzBlNTM2MDIiLCJpYXQiOjE3OTAyNTEyMDAsImV4cCI6MTc5MDI1NDgwMH0.TMWDzz5Uah8Mf-rsy3ZPiJ2WaZgidym9Ziml16335EQv4nIg7pMwtfn48rjs0sRDiLKQ3e1qgu9CPpKmYxVcBw",
+    "cert-v3": "eyJ2IjozLCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLmNlcnQiLCJ1c3IiOiJlZDI1NTE5OmNkNTE1ZjBjZGZmZDYzM2Q2ZjgxZjBlYzc5Zjk5YWQyNjA5ODUyODA2ZWUxZDk3ODljZjAyNTM2OTUxNmYzYjMiLCJkZXYiOiJlZDI1NTE5OjUxYzAyODE3NTYyOGIxM2FkODY4ZWMzY2ZkNWM0YTdkM2RmNTViMjdmZWNiYTgzMmMzM2YxYmRjYzBlNTM2MDIiLCJpYXQiOjE3OTAyNTEyMDAsImV4cCI6MTc5MDI1NDgwMH0.q9Zn6-L5Q1_TgrSUveqodoBGdxgtldAtH_Upf7UAFDmjGGJLeMuKmO3Ak1nFUXGEwIym-Ue0tSCy65Qtdf2mBA",
+    "cert-v9-hint": "eyJ2Ijo5LCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLmNlcnQiLCJ1c3IiOiJlZDI1NTE5OmNkNTE1ZjBjZGZmZDYzM2Q2ZjgxZjBlYzc5Zjk5YWQyNjA5ODUyODA2ZWUxZDk3ODljZjAyNTM2OTUxNmYzYjMiLCJkZXYiOiJlZDI1NTE5OjUxYzAyODE3NTYyOGIxM2FkODY4ZWMzY2ZkNWM0YTdkM2RmNTViMjdmZWNiYTgzMmMzM2YxYmRjYzBlNTM2MDIiLCJpYXQiOjE3OTAyNTEyMDAsImV4cCI6MTc5MDI1NDgwMH0.CwrEQjL6IyCP9fm4LkA7v0_J4V3qSaTuy3qKiTRvzJ5KwRS6gLJnmWyP4IyOUqppAvecbnV2gR_r3-iUk317AQ",
+    "null": "eyJ2IjoyLCJ0eXAiOm51bGwsInVzciI6ImVkMjU1MTk6Y2Q1MTVmMGNkZmZkNjMzZDZmODFmMGVjNzlmOTlhZDI2MDk4NTI4MDZlZTFkOTc4OWNmMDI1MzY5NTE2ZjNiMyIsImRldiI6ImVkMjU1MTk6NTFjMDI4MTc1NjI4YjEzYWQ4NjhlYzNjZmQ1YzRhN2QzZGY1NWIyN2ZlY2JhODMyYzMzZjFiZGNjMGU1MzYwMiIsImlhdCI6MTc5MDI1MTIwMCwiZXhwIjoxNzkwMjU0ODAwfQ.YjzvNmyXlB8sNmHf1Lg3ix1Gm55uToR5-rkeoIJT-VgTEc9DA2bK3edPgBJmOjOkw9TliGcCX-jgMPtFNTl3BQ",
+    "number": "eyJ2IjoyLCJ0eXAiOjcsInVzciI6ImVkMjU1MTk6Y2Q1MTVmMGNkZmZkNjMzZDZmODFmMGVjNzlmOTlhZDI2MDk4NTI4MDZlZTFkOTc4OWNmMDI1MzY5NTE2ZjNiMyIsImRldiI6ImVkMjU1MTk6NTFjMDI4MTc1NjI4YjEzYWQ4NjhlYzNjZmQ1YzRhN2QzZGY1NWIyN2ZlY2JhODMyYzMzZjFiZGNjMGU1MzYwMiIsImlhdCI6MTc5MDI1MTIwMCwiZXhwIjoxNzkwMjU0ODAwfQ.mEO9A-yGtlSVEFP_fDs1gHBgJqAnawzxz_3july4EKiMQyuZ3sH8PyhPbATVQt1mFZowBkD5ZXQhDg8SQittAg",
+    "op-at-v2": "eyJ2IjoyLCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLm9wIiwidXNyIjoiZWQyNTUxOTpjZDUxNWYwY2RmZmQ2MzNkNmY4MWYwZWM3OWY5OWFkMjYwOTg1MjgwNmVlMWQ5Nzg5Y2YwMjUzNjk1MTZmM2IzIiwiZGV2IjoiZWQyNTUxOTo1MWMwMjgxNzU2MjhiMTNhZDg2OGVjM2NmZDVjNGE3ZDNkZjU1YjI3ZmVjYmE4MzJjMzNmMWJkY2MwZTUzNjAyIiwiZGVuYyI6IngyNTUxOTowNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3IiwiaWF0IjoxNzkwMjUxMjAwLCJleHAiOjE3OTAyNTQ4MDB9.m0R3mh1QQkcOfuah_d5Ta3wQ_tis7mRt-_PUivAiSxPygm006rQiBRBgELWUr4J6x51Vxv7eBGyxo-qSCp0hAw",
+    "unknown": "eyJ2IjoyLCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLm5vcGUiLCJ1c3IiOiJlZDI1NTE5OmNkNTE1ZjBjZGZmZDYzM2Q2ZjgxZjBlYzc5Zjk5YWQyNjA5ODUyODA2ZWUxZDk3ODljZjAyNTM2OTUxNmYzYjMiLCJkZXYiOiJlZDI1NTE5OjUxYzAyODE3NTYyOGIxM2FkODY4ZWMzY2ZkNWM0YTdkM2RmNTViMjdmZWNiYTgzMmMzM2YxYmRjYzBlNTM2MDIiLCJkZW5jIjoieDI1NTE5OjA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDciLCJpYXQiOjE3OTAyNTEyMDAsImV4cCI6MTc5MDI1NDgwMH0.oN2AgSMPDA9wiqSkmJxO22zEoplah9Q5ve3njjE77Ts_UAPHJmpxJLo6DYPBgViSgrsA6iOwtCkUYy2aOveDAQ",
+    "wrong-case": "eyJ2IjoyLCJ0eXAiOiJWb2lkLVdoaWNoLUJpbmRzLmNlcnQiLCJ1c3IiOiJlZDI1NTE5OmNkNTE1ZjBjZGZmZDYzM2Q2ZjgxZjBlYzc5Zjk5YWQyNjA5ODUyODA2ZWUxZDk3ODljZjAyNTM2OTUxNmYzYjMiLCJkZXYiOiJlZDI1NTE5OjUxYzAyODE3NTYyOGIxM2FkODY4ZWMzY2ZkNWM0YTdkM2RmNTViMjdmZWNiYTgzMmMzM2YxYmRjYzBlNTM2MDIiLCJkZW5jIjoieDI1NTE5OjA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDciLCJpYXQiOjE3OTAyNTEyMDAsImV4cCI6MTc5MDI1NDgwMH0.0ZbTQAioUJgi_-JWtnAMQLDXveZHFUs_TQSvGpI_lMXxhyToeGJUzjtDy_hCuDbCXQcLJApESdt0WtaoURKDBA"
   },
   "grant_request": {
     "principal": "device:alpha",
@@ -32,143 +32,83 @@
       "verifier": "cert",
       "token": "wrong-case",
       "key": "user",
-      "expect": {
-        "accept": "wrong_type",
-        "emit": "wrong_type",
-        "require": "wrong_type"
-      }
+      "expect": "wrong_type"
     },
     {
       "verifier": "op",
       "token": "wrong-case",
-      "expect": {
-        "accept": "wrong_type",
-        "emit": "wrong_type",
-        "require": "wrong_type"
-      }
+      "expect": "wrong_type"
     },
     {
       "verifier": "cert",
       "token": "unknown",
       "key": "user",
-      "expect": {
-        "accept": "wrong_type",
-        "emit": "wrong_type",
-        "require": "wrong_type"
-      }
+      "expect": "wrong_type"
     },
     {
       "verifier": "cert_user",
       "token": "unknown",
-      "expect": {
-        "accept": "wrong_type",
-        "emit": "wrong_type",
-        "require": "wrong_type"
-      }
+      "expect": "wrong_type"
     },
     {
       "verifier": "cert",
       "token": "number",
       "key": "user",
-      "expect": {
-        "accept": "malformed",
-        "emit": "malformed",
-        "require": "malformed"
-      }
+      "expect": "malformed"
     },
     {
       "verifier": "op",
       "token": "number",
-      "expect": {
-        "accept": "malformed",
-        "emit": "malformed",
-        "require": "malformed"
-      }
+      "expect": "malformed"
     },
     {
       "verifier": "cert",
       "token": "null",
       "key": "user",
-      "expect": {
-        "accept": "malformed",
-        "emit": "malformed",
-        "require": "malformed"
-      }
+      "expect": "malformed"
     },
     {
       "verifier": "cert",
       "token": "case-key",
       "key": "user",
-      "expect": {
-        "accept": "malformed",
-        "emit": "malformed",
-        "require": "malformed"
-      }
+      "expect": "malformed"
     },
     {
       "verifier": "op_user",
       "token": "case-key",
-      "expect": {
-        "accept": "malformed",
-        "emit": "malformed",
-        "require": "malformed"
-      }
+      "expect": "malformed"
     },
     {
       "verifier": "op",
       "token": "cert-v3",
-      "expect": {
-        "accept": "malformed",
-        "emit": "malformed",
-        "require": "malformed"
-      }
+      "expect": "malformed"
     },
     {
       "verifier": "op_user",
       "token": "cert-v3",
-      "expect": {
-        "accept": "malformed",
-        "emit": "malformed",
-        "require": "malformed"
-      }
+      "expect": "malformed"
     },
     {
       "verifier": "op",
       "token": "op-at-v2",
-      "expect": {
-        "accept": "malformed",
-        "emit": "malformed",
-        "require": "malformed"
-      }
+      "expect": "malformed"
     },
     {
       "verifier": "cert",
       "token": "op-at-v2",
       "key": "user",
-      "expect": {
-        "accept": "wrong_type",
-        "emit": "wrong_type",
-        "require": "wrong_type"
-      }
+      "expect": "wrong_type"
     },
     {
       "verifier": "cert",
       "token": "cert-v9-hint",
       "key": "user",
-      "expect": {
-        "accept": "malformed",
-        "emit": "malformed",
-        "require": "malformed"
-      }
+      "expect": "malformed"
     },
     {
       "verifier": "cert_user",
       "token": "cert-v9-hint",
-      "expect": {
-        "accept": "malformed",
-        "emit": "malformed",
-        "require": "malformed"
-      }
+      "expect": "malformed"
     }
   ]
 }

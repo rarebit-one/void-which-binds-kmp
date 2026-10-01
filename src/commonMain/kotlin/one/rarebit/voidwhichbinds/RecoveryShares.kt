@@ -6,7 +6,7 @@ import one.rarebit.voidwhichbinds.slip39.Slip39Exception
 import one.rarebit.voidwhichbinds.slip39.Slip39Scheme
 
 /**
- * The voidbind SLIP-39 profile (void-which-binds-go ADR-0011): a [RecoverySecret]'s 32
+ * The Void-Which-Binds SLIP-39 profile (void-which-binds-go ADR-0011): a [RecoverySecret]'s 32
  * bytes split k-of-n as a single group, iteration exponent 1, extendable, no
  * passphrase by default. Combining yields the identical secret, so the identical
  * identity: nothing about the secret, its labels or its bech32m form changes. A
@@ -92,7 +92,7 @@ object RecoveryShares {
     /**
      * [given] shares entered of the [needed] the set's threshold asks for. [needed] is
      * null before the first share, and for a multi-group backup, whose total no one
-     * share states (voidbind makes single-group sets; [combine] still takes others).
+     * share states (Void-Which-Binds makes single-group sets; [combine] still takes others).
      */
     data class Progress(val given: Int, val needed: Int?) {
         /** Exactly enough shares to combine. */
@@ -107,6 +107,6 @@ object RecoveryShares {
  */
 class NotARecoverySecretException(val secretLength: Int) :
     IllegalArgumentException(
-        "recovery: these shares hold a $secretLength-byte secret, so they are not a voidbind recovery secret " +
+        "recovery: these shares hold a $secretLength-byte secret, so they are not a void-which-binds recovery secret " +
             "(a wallet backup?)",
     )

@@ -14,10 +14,16 @@ plugins {
 // (the tag, e.g. `app-v0.7.2`); a plain local build falls back to the constant below.
 // `versionCode` is DERIVED from it (major*10000 + minor*100 + patch) so it is
 // monotonic with the tag and never has to be hand-bumped.
+// 1.0.0 is the first gen2-only (void-which-binds) build — void-which-binds-go ADR-0022: a
+// new identity on install, the `void-which-binds:` scheme only, no gen1 state reader. Gen1
+// Cruciform is 0.x (last app-v0.11.2, versionCode 1102), so every gen2 code is above it.
+// Gen2 is kept off F-Droid until C2 (ADR-0022 C1) so gen1 phones do not auto-update: stage it
+// with a prerelease tag (app-v1.0.0-rc.N), which release.yml publishes as a GitHub prerelease
+// that the F-Droid puller skips; tag app-v1.0.0 at C2. versionCodeOf ignores the -rc suffix.
 val releaseVersionName: String =
     providers.gradleProperty("releaseVersionName").orNull
         ?.trim()?.removePrefix("app-v")?.takeIf { it.isNotEmpty() }
-        ?: "0.7.2"
+        ?: "1.0.0"
 
 fun versionCodeOf(name: String): Int {
     val parts = name.substringBefore('-').split('.').map { it.toIntOrNull() ?: 0 }

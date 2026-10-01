@@ -39,7 +39,7 @@ class SealedSecretStore internal constructor(
     private val wrapKeys: WrapKeys,
 ) : SecretSealer {
 
-    constructor(context: Context) : this({ File(context.filesDir, "voidbind") }, AndroidKeyStoreWrapKeys)
+    constructor(context: Context) : this({ File(context.filesDir, "void-which-binds") }, AndroidKeyStoreWrapKeys)
 
     override fun exists(name: String): Boolean = file(name).exists()
 
@@ -136,8 +136,8 @@ class SealedSecretStore internal constructor(
     private companion object {
         const val TRANSFORMATION = "AES/GCM/NoPadding"
         const val GCM_TAG_BITS = 128
-        fun wrapAlias(name: String) = "voidbind.secret.wrap.$name"
-        fun strongAlias(name: String) = "voidbind.secret.wrap-strong.$name"
+        fun wrapAlias(name: String) = "void-which-binds.secret.wrap.$name"
+        fun strongAlias(name: String) = "void-which-binds.secret.wrap-strong.$name"
     }
 }
 

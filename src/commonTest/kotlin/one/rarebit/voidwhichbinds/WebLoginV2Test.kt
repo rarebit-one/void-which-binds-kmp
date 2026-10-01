@@ -51,7 +51,7 @@ class WebLoginV2Test {
         val chosen = 42
         val expected = frame(
             listOf(
-                "voidbind/weblogin/challenge/v2".encodeToByteArray(),
+                "void-which-binds/weblogin/challenge/v2".encodeToByteArray(),
                 challenge.id.encodeToByteArray(),
                 challenge.nonce,
                 challenge.audience.encodeToByteArray(),
@@ -70,7 +70,7 @@ class WebLoginV2Test {
         // longer by the framed 8-byte match number (8-byte length prefix + 8 bytes).
         assertFalse(v1.contentEquals(v2), "v1 and v2 preimages must never coincide")
         assertEquals(v1.size + 16, v2.size, "v2 appends a framed 8-byte match number")
-        assertTrue(v2.decodeToString().contains("voidbind/weblogin/challenge/v2"))
+        assertTrue(v2.decodeToString().contains("void-which-binds/weblogin/challenge/v2"))
     }
 
     @Test

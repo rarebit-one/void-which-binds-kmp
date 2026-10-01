@@ -15,7 +15,7 @@ import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
 /**
- * Regression for the on-device crash: joining a `voidbind:pair?…` invite while the phone
+ * Regression for the on-device crash: joining a `void-which-binds:pair?…` invite while the phone
  * had no route to the relay threw `SocketTimeoutException` out of the blocking
  * transport, through [DevicePairing.begin], and killed the app (FATAL EXCEPTION main).
  * Every network-touching pairing step must instead resolve to a [PairingOutcome.Failed]
@@ -127,9 +127,9 @@ class PairingErrorTest {
     @Test
     fun joinFromAMalformedInviteStringIsProtocolNotACrash() {
         val pairing = DevicePairing(ThrowingTransport { RuntimeException("never reached") }, device(), { 1L })
-        val failed = assertIs<PairingOutcome.Failed>(pairing.beginCatching("voidbind:pair?relay=&session="))
+        val failed = assertIs<PairingOutcome.Failed>(pairing.beginCatching("void-which-binds:pair?relay=&session="))
         assertEquals(PairingFailureKind.PROTOCOL, failed.kind)
-        val failed2 = assertIs<PairingOutcome.Failed>(pairing.beginCatching("not a voidbind uri at all"))
+        val failed2 = assertIs<PairingOutcome.Failed>(pairing.beginCatching("not a void-which-binds uri at all"))
         assertEquals(PairingFailureKind.PROTOCOL, failed2.kind)
     }
 

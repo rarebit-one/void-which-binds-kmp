@@ -17,7 +17,7 @@ class DeepLinkTest {
 
     private val rp = "http://192.168.16.224:7777"
     private val id = "d0865b8fd4dd6174b0c35e514a0a5e37"
-    private val brokerQr = "voidbind:login?id=$id&rp=http%3A%2F%2F192.168.16.224%3A7777"
+    private val brokerQr = "void-which-binds:login?id=$id&rp=http%3A%2F%2F192.168.16.224%3A7777"
 
     @Test
     fun loginUriWithoutCallbackIsTheQrTuple() {
@@ -45,7 +45,7 @@ class DeepLinkTest {
             VoidbindDeepLink.loginUriFromTuple(brokerQr, "allthing://signin"),
         )
         assertFailsWith<IllegalArgumentException> {
-            VoidbindDeepLink.loginUriFromTuple("voidbind:pair?v=3", "allthing://x")
+            VoidbindDeepLink.loginUriFromTuple("void-which-binds:pair?v=4", "allthing://x")
         }
     }
 
@@ -59,18 +59,18 @@ class DeepLinkTest {
     @Test
     fun parseToleratesKeyOrderAndDropsAMalformedCallback() {
         // rp first, callback in the middle — a deep link built by hand.
-        val hand = "voidbind:login?rp=http%3A%2F%2Fh&callback=myapp%3A%2F%2Fback&id=XYZ"
+        val hand = "void-which-binds:login?rp=http%3A%2F%2Fh&callback=myapp%3A%2F%2Fback&id=XYZ"
         val p = VoidbindDeepLink.parse(hand) as VoidbindDeepLink.Parsed.Login
         assertEquals("http://h", p.rp)
         assertEquals("XYZ", p.id)
         assertEquals("myapp://back", p.callback)
 
-        // A web / javascript / intent / voidbind callback is dropped, the login kept.
+        // A web / javascript / intent / void-which-binds callback is dropped, the login kept.
         for (bad in listOf(
             "https://evil.example/x",
             "javascript:alert(1)",
             "intent://x#Intent;end",
-            "voidbind:login?rp=a&id=b",
+            "void-which-binds:login?rp=a&id=b",
             "file:///etc/passwd",
             "content://media/1",
         )) {
@@ -87,9 +87,9 @@ class DeepLinkTest {
     fun parseIsAsStrictAsAScan() {
         assertFailsWith<IllegalArgumentException> { VoidbindDeepLink.parse("https://example.com/login") }
         assertFailsWith<IllegalArgumentException> {
-            VoidbindDeepLink.parse("voidbind:login?rp=x&callback=myapp%3A%2F%2Fx")
+            VoidbindDeepLink.parse("void-which-binds:login?rp=x&callback=myapp%3A%2F%2Fx")
         } // no id
-        assertFailsWith<IllegalArgumentException> { VoidbindDeepLink.parse("voidbind:other?rp=x&id=y") }
+        assertFailsWith<IllegalArgumentException> { VoidbindDeepLink.parse("void-which-binds:other?rp=x&id=y") }
         assertNull(VoidbindDeepLink.parseOrNull("nope"))
     }
 
@@ -123,7 +123,7 @@ class DeepLinkTest {
         assertFalse(VoidbindDeepLink.isWellFormedCallback("my app://x"))
         assertFalse(VoidbindDeepLink.isWellFormedCallback("myapp://x\ny"))
         assertFalse(VoidbindDeepLink.isWellFormedCallback("HTTPS://x"))
-        assertFalse(VoidbindDeepLink.isWellFormedCallback("Voidbind:login?rp=a&id=b"))
+        assertFalse(VoidbindDeepLink.isWellFormedCallback("Void-Which-Binds:login?rp=a&id=b"))
         assertFalse(VoidbindDeepLink.isWellFormedCallback("noscheme"))
         assertFalse(VoidbindDeepLink.isWellFormedCallback("myapp:" + "a".repeat(VoidbindDeepLink.MAX_CALLBACK_LENGTH)))
     }

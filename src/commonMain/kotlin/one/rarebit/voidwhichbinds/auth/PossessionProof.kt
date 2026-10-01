@@ -21,7 +21,8 @@ import one.rarebit.voidwhichbinds.crypto.MiniJson
  * Wire (Go `encoding/json`, struct field order, compact — the JSON body IS the
  * signed message, there is no domain label):
  * ```
- * body  = {"v":2,"crt":"<base64url(sha256(cert token bytes))>","iat":<unix s>,"exp":<unix s>}
+ * body  = {"v":2,"typ":"void-which-binds.possession",
+ *          "crt":"<base64url(sha256(cert token bytes))>","iat":<unix s>,"exp":<unix s>}
  * proof = base64url(body) + "." + base64url(ed25519(deviceKey, body))
  * ```
  * `base64url` is RFC 4648 §5 **without padding** (Go's `RawURLEncoding`). `crt` hashes
@@ -60,7 +61,7 @@ object PossessionProof {
         val certHash: String,
         val issuedAt: Long,
         val expiresAt: Long,
-        /** ADR-0009 `typ`: [TokenType.POSSESSION], or `""` for an untyped proof. */
+        /** ADR-0009 `typ` as read; [verify] only returns a proof whose `typ` is [TokenType.POSSESSION]. */
         val typ: String = "",
     )
 
@@ -70,21 +71,14 @@ object PossessionProof {
     fun certHash(certToken: String): String = Base64Url.encode(sha256.hashBlocking(certToken.encodeToByteArray()))
 
     /**
-     * The exact JSON bytes the device signs: `{"v":2,"typ":"voidbind.possession","crt":…,"iat":…,"exp":…}`
-     * (ADR-0009 phase 2: `typ` second, after `v`).
+     * The exact JSON bytes the device signs:
+     * `{"v":2,"typ":"void-which-binds.possession","crt":…,"iat":…,"exp":…}` (ADR-0009:
+     * `typ` second, after `v`; gen2 always emits it).
      */
-    fun signingBytes(certToken: String, issuedAt: Long, expiresAt: Long): ByteArray = signingBytesTyped(
-        TokenType.POSSESSION,
-        certToken,
-        issuedAt,
-        expiresAt,
-    )
-
-    /** [signingBytes] with an ADR-0009 `typ` (second, after `v`; `""` omits it). */
-    internal fun signingBytesTyped(typ: String, certToken: String, issuedAt: Long, expiresAt: Long): ByteArray {
-        val fields = listOfNotNull(
+    fun signingBytes(certToken: String, issuedAt: Long, expiresAt: Long): ByteArray {
+        val fields = listOf(
             "v" to VERSION,
-            if (typ.isNotEmpty()) "typ" to typ else null,
+            "typ" to TokenType.POSSESSION,
             "crt" to certHash(certToken),
             "iat" to issuedAt,
             "exp" to expiresAt,
@@ -98,30 +92,18 @@ object PossessionProof {
      * `DeviceKeyStore.asSigner()`, which may block on user presence. A non-positive
      * ttl means [DEFAULT_TTL_SECONDS], as in Go.
      */
-    fun mint(certToken: String, signer: Ed25519Signer, now: Long, ttlSeconds: Long = DEFAULT_TTL_SECONDS): String =
-        mintTyped(TokenType.POSSESSION, certToken, signer, now, ttlSeconds)
-
-    /**
-     * [mint] with an explicit ADR-0009 `typ`. Since phase 2 [mint] passes
-     * [TokenType.POSSESSION]; `""` mints the untyped legacy body (legacy fixtures only).
-     */
-    internal fun mintTyped(
-        typ: String,
-        certToken: String,
-        signer: Ed25519Signer,
-        now: Long,
-        ttlSeconds: Long = DEFAULT_TTL_SECONDS,
-    ): String {
+    fun mint(certToken: String, signer: Ed25519Signer, now: Long, ttlSeconds: Long = DEFAULT_TTL_SECONDS): String {
         require(certToken.isNotEmpty()) { "possession proof needs a cert token to bind to" }
         val ttl = if (ttlSeconds <= 0) DEFAULT_TTL_SECONDS else ttlSeconds
-        val body = signingBytesTyped(typ, certToken, now, now + ttl)
+        val body = signingBytes(certToken, now, now + ttl)
         val sig = signer.sign(body)
         require(sig.size == 64) { "device signer returned ${sig.size} bytes, want a 64-byte Ed25519 signature" }
         return Base64Url.encode(body) + "." + Base64Url.encode(sig)
     }
 
     /**
-     * ADR-0009: a present `typ` must say possession. It can only refuse, so, as in
+     * ADR-0009/ADR-0022: `typ` must be present and say possession (an untyped or
+     * gen1-typed proof is [Reason.WRONG_TYPE]). It can only refuse, so, as in
      * void-which-binds-go, [verify] reads it before the signature. A cert or op this device key
      * signed is not a possession proof, whatever fields it carries.
      */

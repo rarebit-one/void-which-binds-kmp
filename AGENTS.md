@@ -18,18 +18,24 @@ two sides:
 
 ## Naming: Void-Which-Binds is the protocol, Cruciform is the app
 
-<!-- k0:keep-begin naming -->
-> **Renamed at 0.10.0 (void-which-binds-go ADR-0013 R1).** Only packaging moved:
-> the repo, the Kotlin package `one.rarebit.voidwhichbinds`, the Maven coordinates
-> `one.rarebit.voidwhichbinds:void-which-binds-client` and the `VoidWhichBinds`
-> XCFramework. Class names (`VoidbindDeepLink`, `VoidbindQr`, …) and every gen1
-> wire or device-local string (the `voidbind:` scheme, `voidbind.*` typ, labels,
-> the `heyarr` HRP, headers, `one.rarebit.voidbind.category.RP_HANDOFF`, keystore
-> aliases, prefs, dirs) keep their spelling until gen2 (ADR-0022).
-<!-- k0:keep-end -->
+> **Renamed at 0.10.0 (void-which-binds-go ADR-0013 R1); gen2-only at 0.11.0
+> (ADR-0022, matching void-which-binds-go v0.19.0).** 0.10.0 moved the packaging (the
+> repo, the Kotlin package `one.rarebit.voidwhichbinds`, the Maven coordinates
+> `one.rarebit.voidwhichbinds:void-which-binds-client`, the `VoidWhichBinds`
+> XCFramework). 0.11.0 moved every library-owned wire and device-local string to its
+> gen2 spelling (the table below, the `void-which-binds:` scheme, invite `v=4`,
+> `void-which-binds.*` typ, the `Void-Which-Binds-Membership` header, the Android
+> keystore alias and key dir) and refuses gen1 material: there is no dual parsing and
+> no gen1 reader. Class names (`VoidbindDeepLink`, `VoidbindQr`, `VoidbindEncryption`,
+> `VoidbindCertSealer`, `VoidbindAndroid`, `VoidbindIos`) keep their prefix, as Go
+> kept its package names. Cruciform 1.0.0 (`androidApp/`, `iosApp/`) is the app's
+> gen2 change: the `void-which-binds:` filter alone,
+> `one.rarebit.voidwhichbinds.category.RP_HANDOFF` and `…rp.pair_scheme`, and fresh
+> `void-which-binds.*` keystore aliases, prefs, dirs, SE tags and keychain service
+> (`one.rarebit.voidwhichbinds`); nothing reads the gen1 names.
 
 **Void-Which-Binds** names the protocol / security model and everything on the wire (the
-`voidbind:` scheme, `one.rarebit.voidwhichbinds:void-which-binds-client`, the library package,
+`void-which-binds:` scheme, `one.rarebit.voidwhichbinds:void-which-binds-client`, the library package,
 the ADR terminology). **Cruciform** names the first-party authenticator app
 (`androidApp/`, package + applicationId `one.rarebit.cruciform`; the iOS scaffold
 target) — see ADR-0004. Do not rename protocol identifiers to Cruciform, and do not
@@ -47,15 +53,21 @@ design fresh.
 
 These live in [`Labels.kt`](src/commonMain/kotlin/one/rarebit/voidwhichbinds/Labels.kt).
 Changing any string silently derives different keys / incompatible tokens. It is a
-total break, not a cosmetic edit. The `heyarr` heritage in the names/HRP is
-deliberate and load-bearing.
+total break, not a cosmetic edit. These are the gen2 spellings (void-which-binds-go
+ADR-0013's table, ADR-0022); the gen1 `heyarr`/`voidbind` values are retired and
+refused, never read.
 
 | Constant | Value | Role |
 |---|---|---|
-| HKDF label | `heyarr/recovery/v1/user-identity-ed25519-seed` | derives the user identity Ed25519 seed from the recovery secret |
-| Recovery HRP | `heyarr` | bech32m human-readable-part for the recovery secret |
-| User fingerprint label | `voidbind/user-fingerprint/v1` | domain tag of the printable user fingerprint (`UserFingerprint`, void-which-binds-go ADR-0010); pinned by `vectors/recovery/` |
-| Pairing labels | `heyarr/pairing/v1/{commit,sas}` | pairing transcript domain separation |
+| HKDF label | `void-which-binds/recovery/v1/user-identity-ed25519-seed` (`Labels`) | derives the user identity Ed25519 seed from the recovery secret |
+| Recovery HRP | `void-which-binds` (`Labels`) | bech32m human-readable-part for the recovery secret (75 chars); a gen1 `heyarr1…` secret is `RecoverySecret.GenerationRetiredException` |
+| User fingerprint label | `void-which-binds/user-fingerprint/v1` (`UserFingerprint`) | domain tag of the printable user fingerprint (void-which-binds-go ADR-0010); pinned by `vectors/recovery/` |
+| Pairing domains | `void-which-binds/pairing/{commit,sas}/v2` (`Pairing`) | pairing transcript domain separation |
+| Space-key wrap label | `void-which-binds/space-key-wrap/v1` (`VoidbindEncryption`) | HKDF info of the sealed space key (cert delivery, offload unwrap) |
+| Cosig domain | `void-which-binds-cosig-v1\u0000` (`MembershipOp.cosigDomain`) | prefix of a co-signature preimage (ADR-0008) |
+| Web-login domains | `void-which-binds/weblogin/challenge/{v1,v2}` (`WebLogin`) | login-assertion preimage |
+| Refusal session label | `void-which-binds/pairflow/refusal/session/v1` (`PairRefusal`) | binds a pairing refusal to its session |
+| `typ` | `void-which-binds.{cert,possession,op,grant,pair-refusal}` (`TokenType`) | token kind; untyped tokens are refused |
 
 ### Algorithms (fixed)
 
@@ -74,7 +86,7 @@ Full detail (field orders, `typ`, pairing): [`docs/agents/wire-formats.md`](docs
   `src/jvmTest/resources/vectors/VOID_WHICH_BINDS_GO_REF`; the `vector-drift` CI job
   (`scripts/check-vector-drift.sh`) fails on any difference.
 - **Recovery secret** = 256-bit, **bech32m** (BIP-350, *not* bech32) with HRP
-  `heyarr`.
+  `void-which-binds`.
 
 ## The hardware keystore is the whole point
 

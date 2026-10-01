@@ -25,7 +25,7 @@ class ApprovalPolicyStore(private val prefs: SharedPreferences) :
     SitePolicyStore,
     ApprovalAuditLog {
 
-    constructor(context: Context) : this(context.getSharedPreferences("voidbind.policy", Context.MODE_PRIVATE))
+    constructor(context: Context) : this(context.getSharedPreferences("void-which-binds.policy", Context.MODE_PRIVATE))
 
     // --- SitePolicyStore ------------------------------------------------------
 

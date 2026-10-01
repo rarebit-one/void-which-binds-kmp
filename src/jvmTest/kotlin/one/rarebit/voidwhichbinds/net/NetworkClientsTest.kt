@@ -73,7 +73,7 @@ class NetworkClientsTest {
             }
 
             m == "POST" && p == "/login" ->
-                send(ex, 200, """{"id":"L1","qr":"voidbind:login?rp=$base&id=L1"}""".encodeToByteArray())
+                send(ex, 200, """{"id":"L1","qr":"void-which-binds:login?rp=$base&id=L1"}""".encodeToByteArray())
 
             p == "/login/L1/challenge" -> {
                 val nonce = Base64Url.encode(ByteArray(32) { 0x11 })
@@ -150,7 +150,7 @@ class NetworkClientsTest {
         val rp = WebLoginClient(http, base)
         val created = rp.createLogin()
         assertEquals("L1", created.id)
-        assertTrue(created.qr.startsWith("voidbind:login?"))
+        assertTrue(created.qr.startsWith("void-which-binds:login?"))
         assertEquals("pending", rp.poll(created.id).status)
 
         // Device: fetch the challenge and approve with a signed assertion.

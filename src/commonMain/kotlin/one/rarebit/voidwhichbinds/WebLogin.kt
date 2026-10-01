@@ -5,7 +5,7 @@ import one.rarebit.voidwhichbinds.crypto.Base64Url
 /**
  * The device side of Void-Which-Binds's **web QR-login** (WhatsApp-Web pattern), ported
  * byte-for-byte from void-which-binds-go's `weblogin` package. A relying party (All Thing,
- * a homelab web app) shows a QR `voidbind:login?rp=<base>&id=<id>`; the device
+ * a homelab web app) shows a QR `void-which-binds:login?rp=<base>&id=<id>`; the device
  * fetches the challenge, **signs it with its hardware device key**, and posts the
  * assertion; the RP verifies it offline against the pinned user key (via
  * void-which-binds-go/rp) and issues a short-lived session token.
@@ -18,7 +18,7 @@ import one.rarebit.voidwhichbinds.crypto.Base64Url
 object WebLogin {
 
     /** Domain separation for the signed challenge preimage (matches void-which-binds-go). */
-    const val ASSERTION_DOMAIN = "voidbind/weblogin/challenge/v1"
+    const val ASSERTION_DOMAIN = "void-which-binds/weblogin/challenge/v1"
 
     /**
      * Domain separation for a **number-matching (v2)** challenge preimage (ADR-0006).
@@ -26,7 +26,7 @@ object WebLogin {
      * signature can never be replayed as a v2 approval, or a v2 as a v1. Matches
      * void-which-binds-go's `assertionDomainV2`.
      */
-    const val ASSERTION_DOMAIN_V2 = "voidbind/weblogin/challenge/v2"
+    const val ASSERTION_DOMAIN_V2 = "void-which-binds/weblogin/challenge/v2"
 
     /** Challenge nonce length — 256 bits of freshness (anti-replay). */
     const val NONCE_LEN = 32

@@ -2,7 +2,7 @@ package one.rarebit.voidwhichbinds.crypto
 
 /**
  * A tiny reproduction of Go's `net/url` query encoding, so a KMP-rendered
- * `voidbind:` QR is byte-identical to a void-which-binds-go-rendered one. [encode] matches
+ * `void-which-binds:` QR is byte-identical to a void-which-binds-go-rendered one. [encode] matches
  * `url.Values.Encode()` (keys sorted, values query-escaped); [escape]/[unescape]
  * match `url.QueryEscape`/`QueryUnescape` (query-component mode: unreserved
  * `A-Za-z0-9-_.~` kept, space as `+`, everything else uppercase `%XX` over UTF-8).

@@ -14,7 +14,7 @@ import android.content.Context
  */
 class NotifySettings(context: Context) : EndpointSetting {
 
-    private val prefs = context.getSharedPreferences("voidbind.notify", Context.MODE_PRIVATE)
+    private val prefs = context.getSharedPreferences("void-which-binds.notify", Context.MODE_PRIVATE)
 
     /** The configured plane base, or [NotifyConfig.DEFAULT_NOTIFY] when none is set. */
     override fun current(): String = stored() ?: NotifyConfig.DEFAULT_NOTIFY

@@ -5,13 +5,13 @@ package one.rarebit.cruciform.handoff
  * authenticator holds a pairing invite it just minted (Settings → Devices → "Add a
  * device") and the NEW device is a relying-party app on the SAME phone — heyarr-mobile,
  * All Thing — which cannot scan our screen. ADR-0003 already lets an RP open us with a
- * `voidbind:` link; this is the mirror: we open the RP with its own **pair-callback**
+ * `void-which-binds:` link; this is the mirror: we open the RP with its own **pair-callback**
  * URI carrying the invite.
  *
- *     heyarr-mobile://pair?invite=<percent-encoded voidbind:pair?… tuple>
+ *     heyarr-mobile://pair?invite=<percent-encoded void-which-binds:pair?… tuple>
  *     allthing://pair?invite=<…>
  *
- * The scheme is the RP's, never `voidbind:` — that one is ours, and firing it would
+ * The scheme is the RP's, never `void-which-binds:` — that one is ours, and firing it would
  * only loop back into this app. The invite tuple travels verbatim (byte-identical to
  * the QR), so the RP feeds it to the same `Invite.decode` a scan would; nothing here
  * is a new wire format.
@@ -59,7 +59,7 @@ object RpPairHandoff {
      * data), so the RP declares a dedicated data-less filter for discovery alongside its
      * real `scheme://pair` handoff filter.
      */
-    const val CATEGORY_RP_HANDOFF = "one.rarebit.voidbind.category.RP_HANDOFF"
+    const val CATEGORY_RP_HANDOFF = "one.rarebit.voidwhichbinds.category.RP_HANDOFF"
 
     /**
      * The `<meta-data>` key on the RP's advertised activity carrying its pair scheme
@@ -67,21 +67,25 @@ object RpPairHandoff {
      * filters' data, so the scheme Cruciform fires — `<scheme>://pair` — is read from
      * this meta-data, and the button label from the activity's `android:label`.
      */
-    const val META_PAIR_SCHEME = "one.rarebit.voidbind.rp.pair_scheme"
+    const val META_PAIR_SCHEME = "one.rarebit.voidwhichbinds.rp.pair_scheme"
 
     /** The host every RP pair callback uses: `<scheme>://pair`. */
     const val PAIR_HOST = "pair"
 
+    /** Schemes an RP may not advertise as its pair callback: ours, and gen1's. */
+    private val REFUSED_SCHEMES = setOf("void-which-binds", "voidbind")
+
     /**
      * Turn one RP self-advert into a [RpPairTarget], or null when it is unusable:
-     * no scheme declared, a blank/whitespace scheme, or the `voidbind` scheme (ours —
-     * firing it would loop straight back into Cruciform). The scheme is lower-cased
+     * no scheme declared, a blank/whitespace scheme, the `void-which-binds` scheme (ours —
+     * firing it would loop straight back into Cruciform), or the retired gen1 `voidbind`
+     * scheme (it would hand a gen2 invite to a gen1 authenticator; ADR-0022). The scheme is lower-cased
      * (schemes are case-insensitive; we render one canonically); the label falls back to
      * a generic name so a button still has text.
      */
     fun targetFrom(advert: RpHandoffAdvert): RpPairTarget? {
         val scheme = advert.pairScheme?.trim()?.lowercase()?.takeIf { it.isNotEmpty() } ?: return null
-        if (scheme == "voidbind") return null
+        if (scheme in REFUSED_SCHEMES) return null
         val label = advert.label?.trim()?.takeIf { it.isNotEmpty() } ?: "this app"
         return RpPairTarget(appName = label, callbackBase = "$scheme://$PAIR_HOST")
     }
@@ -107,14 +111,14 @@ object RpPairHandoff {
         callerPackage?.takeIf { it.isNotBlank() }?.let { p -> adverts.firstOrNull { it.packageName == p } }
 
     /**
-     * Build the URI that hands [inviteTuple] (the exact `voidbind:pair?…` string the QR
+     * Build the URI that hands [inviteTuple] (the exact `void-which-binds:pair?…` string the QR
      * shows) to [target]. The tuple is percent-encoded as a single query value so its
      * own `?`/`&`/`=` survive; the RP decodes it back to the byte-identical invite.
      * Refuses anything that is not a pair invite — an RP must never receive a login
      * tuple through this door.
      */
     fun uriFor(target: RpPairTarget, inviteTuple: String): String {
-        require(inviteTuple.startsWith("voidbind:pair?")) { "not a voidbind pairing invite" }
+        require(inviteTuple.startsWith("void-which-binds:pair?")) { "not a void-which-binds pairing invite" }
         return "${target.callbackBase}?$INVITE=${percentEncode(inviteTuple)}"
     }
 

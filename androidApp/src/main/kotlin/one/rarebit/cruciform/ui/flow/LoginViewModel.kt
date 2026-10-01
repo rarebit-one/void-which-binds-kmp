@@ -22,7 +22,7 @@ import one.rarebit.cruciform.domain.valueOrNull
  * The web-login approval flow: a scanned / push-woken / deep-linked login code →
  * the RP's request → approve (v1 or number-match) or deny.
  *
- * **Survives process death:** the login code being approved (the raw `voidbind:login`
+ * **Survives process death:** the login code being approved (the raw `void-which-binds:login`
  * tuple — the RP's base URL and its short-lived login id, the same string the QR
  * carries). It is not a secret: approving still needs a fresh challenge from the RP
  * and a biometric-gated signature by the hardware key. If the process dies with the

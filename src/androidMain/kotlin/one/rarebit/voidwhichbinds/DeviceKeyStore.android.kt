@@ -117,7 +117,7 @@ actual class DeviceKeyStore private constructor(private val alias: String, priva
 
         // --- hardware wrapping key -----------------------------------------
 
-        private fun wrapKeyAlias(alias: String) = "voidbind.wrap.$alias"
+        private fun wrapKeyAlias(alias: String) = "void-which-binds.wrap.$alias"
 
         /**
          * Create the AES-GCM wrapping key, StrongBox-backed where available.
@@ -167,7 +167,7 @@ actual class DeviceKeyStore private constructor(private val alias: String, priva
         private class Sealed(val publicKey: ByteArray, val iv: ByteArray, val ciphertext: ByteArray)
 
         private fun keyFile(alias: String): File {
-            val dir = File(VoidbindAndroid.requireContext().filesDir, "voidbind").apply { mkdirs() }
+            val dir = File(VoidbindAndroid.requireContext().filesDir, "void-which-binds").apply { mkdirs() }
             return File(dir, "$alias.key")
         }
 

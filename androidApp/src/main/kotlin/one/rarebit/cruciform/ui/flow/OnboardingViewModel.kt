@@ -45,8 +45,8 @@ class OnboardingViewModel(private val engine: VoidbindEngine, private val saved:
 
     /**
      * The group positions (1-based) the user re-enters from their paper to confirm the
-     * backup: [CHALLENGE_SIZE] random groups, never the first two (`heya`, `rr1…` are
-     * the same in every secret).
+     * backup: [CHALLENGE_SIZE] random groups, never one that touches the fixed
+     * `void-which-binds1` prefix (`void -whi ch-b inds 1…` are the same in every secret).
      */
     val challenge: StateFlow<List<Int>> = _challenge.asStateFlow()
 
@@ -140,7 +140,13 @@ class OnboardingViewModel(private val engine: VoidbindEngine, private val saved:
         const val KEY_STARTED = "onboarding.create.started"
         const val CHALLENGE_SIZE = 3
         const val CONFIRMED = "Your written secret matches. Keep it somewhere safe and offline."
-        const val FIRST_CHECKED_GROUP = 3
+
+        /** Every secret starts with the HRP and the `1` separator (void-which-binds-go ADR-0013). */
+        private const val FIXED_PREFIX = "void-which-binds1"
+        private const val GROUP_SIZE = 4
+
+        /** The first 1-based group with no prefix character in it: group 6 (the 5th holds the `1`). */
+        const val FIRST_CHECKED_GROUP = (FIXED_PREFIX.length + GROUP_SIZE - 1) / GROUP_SIZE + 1
         const val NO_BACKUP = "The secret is no longer on screen. Check it later from Settings → Test recovery secret."
         const val INTERRUPTED =
             "Cruciform was closed while your identity was being created. If it was created, " +

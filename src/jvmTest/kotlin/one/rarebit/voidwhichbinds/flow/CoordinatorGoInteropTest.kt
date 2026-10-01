@@ -36,7 +36,7 @@ import kotlin.test.assertTrue
  *    presenting the ops — Go's `rp.Verifier` evaluates the KMP-minted v3 add (signed
  *    by the phone, citing its heads) and mints a token. Without the ops the same
  *    credential is refused (the RP cannot judge an admission whose past it has not
- *    seen) — the `Voidbind-Membership` / `ops` mechanism, proven end to end.
+ *    seen) — the `Void-Which-Binds-Membership` / `ops` mechanism, proven end to end.
  *  - pairing (phone → Go): the real Go CLI (`void-which-binds pair-join`) joins a KMP member
  *    phone's invite and records the admission in its device store.
  */
@@ -49,7 +49,7 @@ class CoordinatorGoInteropTest {
 
     private fun buildCli(): File {
         val out = File.createTempFile("vb-coord-interop", "").apply { delete() }
-        val p = ProcessBuilder("go", "build", "-o", out.absolutePath, GoCheckout.cliPackage)
+        val p = ProcessBuilder("go", "build", "-o", out.absolutePath, GoCheckout.CLI_PACKAGE)
             .directory(goDir).redirectErrorStream(true).start()
         val log = p.inputStream.readBytes().decodeToString()
         assertEquals(0, p.waitFor(), "go build failed: $log")
@@ -102,7 +102,7 @@ class CoordinatorGoInteropTest {
 
     @Test
     fun loginApprovalApprovesOnLiveGoRpForARecoveryDerivedIdentity() {
-        assumeTrue(goAvailable(), "voidbind-go / go not available — skipping cross-language test")
+        assumeTrue(goAvailable(), "void-which-binds-go / go not available — skipping cross-language test")
         val cli = buildCli()
         val port = freePort()
         val base = "http://127.0.0.1:$port"
@@ -125,7 +125,7 @@ class CoordinatorGoInteropTest {
             val http = JdkHttpTransport()
             waitReady { http.post("$base/login").status == 200 }
 
-            // Browser side opens a login → a real voidbind:login QR.
+            // Browser side opens a login → a real void-which-binds:login QR.
             val created = WebLoginClient(http, base).createLogin()
 
             // The device approves it through the coordinator.
@@ -144,7 +144,7 @@ class CoordinatorGoInteropTest {
 
     @Test
     fun coordinatorsPairANewDeviceThroughTheLiveGoRelay() {
-        assumeTrue(goAvailable(), "voidbind-go / go not available — skipping cross-language test")
+        assumeTrue(goAvailable(), "void-which-binds-go / go not available — skipping cross-language test")
         val cli = buildCli()
         val port = freePort()
         val base = "http://127.0.0.1:$port"
@@ -181,7 +181,7 @@ class CoordinatorGoInteropTest {
 
     @Test
     fun memberPhoneAdmitsTheNextPhoneThroughTheLiveGoRelayAndTheGoRpHonoursTheOps() {
-        assumeTrue(goAvailable(), "voidbind-go / go not available — skipping cross-language test")
+        assumeTrue(goAvailable(), "void-which-binds-go / go not available — skipping cross-language test")
         val cli = buildCli()
         val relayPort = freePort()
         val relayBase = "http://127.0.0.1:$relayPort"
@@ -269,7 +269,7 @@ class CoordinatorGoInteropTest {
 
     @Test
     fun theGoCliJoinsAKmpMemberPhonesInvite() {
-        assumeTrue(goAvailable(), "voidbind-go / go not available — skipping cross-language test")
+        assumeTrue(goAvailable(), "void-which-binds-go / go not available — skipping cross-language test")
         val cli = buildCli()
         val relayPort = freePort()
         val relayBase = "http://127.0.0.1:$relayPort"

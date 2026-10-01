@@ -1,7 +1,7 @@
 import SwiftUI
 import VoidWhichBinds
 
-/// The **web-login approval** sheet. After scanning a `voidbind:login` QR, the app
+/// The **web-login approval** sheet. After scanning a `void-which-binds:login` QR, the app
 /// fetches the challenge (via ``LoginApproval/begin``), shows the human WHAT they
 /// are signing into and a live expiry countdown, and only on Approve signs the
 /// challenge with the biometric-gated device key (``LoginApproval/approve``).

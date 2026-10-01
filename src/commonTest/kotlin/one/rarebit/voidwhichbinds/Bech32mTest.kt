@@ -37,8 +37,37 @@ class Bech32mTest {
     fun wrongHrpRejected() {
         // A well-formed bech32m string under a different HRP must not parse as recovery.
         val fiveBit = Bech32m.convertBits(Bech32m.bytesToInts(ByteArray(32) { 1 }), 8, 5, pad = true)
-        val notHeyarr = Bech32m.encode("void", fiveBit)
-        assertFailsWith<IllegalArgumentException> { RecoverySecret.parse(notHeyarr) }
+        val foreign = Bech32m.encode("void", fiveBit)
+        val e = assertFailsWith<IllegalArgumentException> { RecoverySecret.parse(foreign) }
+        assertTrue(e !is RecoverySecret.GenerationRetiredException, "a foreign HRP is malformed, not retired")
+    }
+
+    /**
+     * void-which-binds-go `TestParseRefusesGen1` (ADR-0022): a gen1 secret (`heyarr1…`, the
+     * gen1 rendering of the counting-entropy known answer) is refused as retired in
+     * every form a person might type or scan it, a truncated one included, and the
+     * retired refusal is distinct from a malformed or mistyped secret.
+     */
+    @Test
+    fun aGen1SecretIsRefusedAsRetired() {
+        val gen1 = "heyarr1qqqsyqcyq5rqwzqfpg9scrgwpugpzysnzs23v9ccrydpk8qarc0s6e0ucu"
+        for (input in listOf(gen1, gen1.uppercase(), "heya rr1q qqsy qcyq 5rqw")) {
+            assertFailsWith<RecoverySecret.GenerationRetiredException>(input) { RecoverySecret.parse(input) }
+            assertFailsWith<RecoverySecret.GenerationRetiredException>(input) { UserIdentity.restore(input) }
+        }
+        // The same entropy under the gen2 HRP parses.
+        val gen2 = RecoverySecret.of(ByteArray(32) { it.toByte() }).format()
+        assertEquals("void-which-binds1qqqsyqcyq5rqwzqfpg9scrgwpugpzysnzs23v9ccrydpk8qarc0stska6c", gen2)
+        assertEquals(75, gen2.length)
+    }
+
+    @Test
+    fun hrpOfReadsStructureWithoutTheChecksum() {
+        assertEquals("heyarr", Bech32m.hrpOf("heyarr1qqqsyqcy"))
+        assertEquals("void-which-binds", Bech32m.hrpOf("VOID-WHICH-BINDS1QQQSYQCY"))
+        assertEquals(null, Bech32m.hrpOf("Heyarr1qqqsyqcy")) // mixed case
+        assertEquals(null, Bech32m.hrpOf("heyarr1qqqb")) // 'b' is not in the alphabet, and too short
+        assertEquals(null, Bech32m.hrpOf("1qqqqqqqq")) // empty prefix
     }
 
     @Test

@@ -36,7 +36,7 @@ internal fun assertMatchesGoToken(
     }
     val (expPayload, expSig) = expected.splitToken()
     val (actPayload, actSig) = actual.splitToken()
-    assertEquals(expPayload, actPayload, "${message ?: "token"}: payload must match voidbind-go byte-for-byte")
+    assertEquals(expPayload, actPayload, "${message ?: "token"}: payload must match void-which-binds-go byte-for-byte")
     val signed = Base64Url.decode(actPayload)
     assertGoSignatureVerifies(expSig, actSig, signerPublicKey, signed, message)
 }
@@ -74,7 +74,7 @@ private fun assertGoSignatureVerifies(
     )
     assertTrue(
         Ed25519Engine.verify(signerPublicKey, signed, Base64Url.decode(expectedSig)),
-        "$what: voidbind-go's signature must verify under our public key over our preimage",
+        "$what: void-which-binds-go's signature must verify under our public key over our preimage",
     )
 }
 

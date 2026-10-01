@@ -1,22 +1,26 @@
 package one.rarebit.voidwhichbinds
 
 /**
- * Identity-defining protocol constants shared with void-which-binds-go (and heyarr upstream).
+ * Identity-defining protocol constants shared with void-which-binds-go.
  *
  * ⚠️ These strings are part of the cryptographic identity. Changing any of them
  * derives *different* keys / *incompatible* tokens — it is a silent, total break
- * of wire compatibility, not a rename. DO NOT edit them to "clean them up"; the
- * `heyarr` heritage in the names and HRP is deliberate and load-bearing.
+ * of wire compatibility, not a rename. They carry the gen2 (Void-Which-Binds)
+ * spellings of void-which-binds-go ADR-0013's table; the gen1 (`heyarr`/`voidbind`)
+ * values were retired by the hard cutover of ADR-0022 and are not read anywhere.
  */
 object Labels {
     /**
      * HKDF `info` label used to derive the user identity Ed25519 seed from the
      * recovery secret. Byte-identical to void-which-binds-go.
      */
-    const val HKDF_USER_IDENTITY_ED25519_SEED = "heyarr/recovery/v1/user-identity-ed25519-seed"
+    const val HKDF_USER_IDENTITY_ED25519_SEED = "void-which-binds/recovery/v1/user-identity-ed25519-seed"
 
-    /** Human-readable-part for the bech32m recovery secret. */
-    const val RECOVERY_HRP = "heyarr"
+    /**
+     * Human-readable-part for the bech32m recovery secret: `void-which-binds1…`, 75
+     * characters. A gen1 `heyarr1…` secret is refused ([RecoverySecret.GenerationRetiredException]).
+     */
+    const val RECOVERY_HRP = "void-which-binds"
 
     /** Algorithm prefix for identity/signing keys (Ed25519). */
     const val ALG_ED25519 = "ed25519"

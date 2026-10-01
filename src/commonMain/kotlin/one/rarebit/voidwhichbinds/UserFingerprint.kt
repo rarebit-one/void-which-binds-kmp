@@ -8,7 +8,7 @@ import dev.whyoleg.cryptography.algorithms.SHA256
  * checking a written recovery secret against the identity it should derive
  * (void-which-binds-go ADR-0010). Byte-identical to void-which-binds-go `recovery.Fingerprint`:
  *
- *     base32(SHA-256("voidbind/user-fingerprint/v1" ‖ 0x00 ‖ userPublicKey)[:10])
+ *     base32(SHA-256("void-which-binds/user-fingerprint/v1" ‖ 0x00 ‖ userPublicKey)[:10])
  *
  * RFC 4648 base32 without padding (A–Z and 2–7, so no digit can be misread as an O,
  * I or B), 16 characters grouped four by four: `PYJI XGNZ K7ZH XHEJ`. Pinned by
@@ -16,7 +16,7 @@ import dev.whyoleg.cryptography.algorithms.SHA256
  */
 object UserFingerprint {
     /** The domain-separation label; part of the recovery format. Never rename. */
-    const val LABEL = "voidbind/user-fingerprint/v1"
+    const val LABEL = "void-which-binds/user-fingerprint/v1"
 
     private const val KEY_LEN = 32
     private const val BYTES = 10

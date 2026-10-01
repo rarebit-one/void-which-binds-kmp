@@ -2,9 +2,9 @@
   "name": "ff-entropy",
   "description": "32 0xff bytes: every bit set",
   "entropy": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-  "secret": "heyarr1llllllllllllllllllllllllllllllllllllllllllllllllllls3n803j",
-  "secret_upper": "HEYARR1LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLS3N803J",
-  "user_id": "ed25519:0ab02134b1cb56582e69aa8a0b7684d3ba676258acdc35765e7826b1612bdb33",
-  "encryption_recipient": "x25519:cae83750f510096ef2eb7ec7414f75b1bc940841fa0c7526a2a1e10cf8641a2d",
-  "fingerprint": "JXOP NDFG SIDE P3VI"
+  "secret": "void-which-binds1lllllllllllllllllllllllllllllllllllllllllllllllllllsq67wnk",
+  "secret_upper": "VOID-WHICH-BINDS1LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLSQ67WNK",
+  "user_id": "ed25519:d1fafe80d554a3182a52a3a7ca1f295e432689c10918aa96df04118e68f21f24",
+  "encryption_recipient": "x25519:03ae754ccc1e16867830a87c8a2128eed5e103ab66409fdba36179d169f12423",
+  "fingerprint": "PU43 HYNW OOZA EC55"
 }

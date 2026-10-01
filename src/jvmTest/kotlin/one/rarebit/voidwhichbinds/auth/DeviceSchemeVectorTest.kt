@@ -13,17 +13,16 @@ import kotlin.test.assertTrue
 
 /**
  * Replays `src/jvmTest/resources/vectors/device-scheme-vector.json` — the Device
- * authorization-scheme vector minted by a scratch Go test against void-which-binds-go v0.5.0
- * `enrolment` (see the README beside it for attribution) — byte-for-byte through the
+ * authorization-scheme vector void-which-binds-go's `enrolment.TestDeviceSchemeVector`
+ * mints from `SignCert` and `SignPossession` — byte-for-byte through the
  * library: cert hash, signing bytes, proof, `<cert>~<proof>` credential and the full
  * `Authorization` header. Then proves the same path through the real `DeviceKeyStore`
  * seam an app uses (a JVM software key here; the sealed hardware key on a phone).
  *
- * That file is the LEGACY (untyped) credential, reproduced through the untyped mint
- * path. `device-scheme-vector-typed.json` is the same credential as minted since
- * ADR-0009 phase 2 (`typ` in the cert and the proof). The public minters
- * ([PossessionProof.mint], [DeviceCredential.mint], a new [Cert]) must produce
- * exactly that file.
+ * Gen2 is typed-only (ADR-0022): the vector's cert and proof carry the
+ * `void-which-binds.*` `typ`, and the public minters ([PossessionProof.mint],
+ * [DeviceCredential.mint], a new [Cert]) must produce exactly that file. The
+ * untyped `-typed` duplicate of earlier releases is gone.
  */
 class DeviceSchemeVectorTest {
 
@@ -34,11 +33,9 @@ class DeviceSchemeVectorTest {
     )
 
     private val vector = load("device-scheme-vector.json")
-    private val typed = load("device-scheme-vector-typed.json")
 
     private fun str(k: String) = vector[k] as String
     private fun num(k: String) = vector[k] as Long
-    private fun typedStr(k: String) = typed[k] as String
 
     private val cert = str("cert")
     private val now = num("possession_now_unix")
@@ -62,32 +59,28 @@ class DeviceSchemeVectorTest {
         val payloadJson = str("possession_payload_json")
         val expected = MiniJson.parseObject(payloadJson)
         assertEquals(expected["crt"], PossessionProof.certHash(cert))
-        assertEquals(payloadJson, PossessionProof.signingBytesTyped("", cert, now, now + 120).decodeToString())
+        assertEquals(payloadJson, PossessionProof.signingBytes(cert, now, now + 120).decodeToString())
 
-        val proof = PossessionProof.mintTyped("", cert, signer, now)
+        val proof = PossessionProof.mint(cert, signer, now)
         assertEquals(str("possession_proof"), proof)
         assertEquals(str("possession_signature_b64url"), proof.substringAfter('.'))
     }
 
     @Test
-    fun publicMintersProduceTheTypedGoBytes() {
-        val typedCert = typedStr("cert")
-        val payload = PossessionProof.signingBytes(typedCert, now, now + 120).decodeToString()
-        assertEquals(typedStr("possession_payload_json"), payload)
-        assertEquals(typedStr("possession_proof"), PossessionProof.mint(typedCert, signer, now))
-        // A new Cert (default typ) signed by the user key is Go's typed cert.
+    fun aNewCertMintsTheGoCert() {
+        // A new Cert signed by the user key is Go's (typed) cert, byte for byte.
         val c = Cert.parse(cert).cert
         val userSeed = Hex.decode(str("user_seed_hex"))
         val fresh = Cert(c.version, c.user, c.device, c.deviceEnc, c.issuedAt, c.expiresAt)
-        assertEquals(typedCert, fresh.encode(Ed25519Signer { Ed25519Engine.sign(userSeed, it) }))
-        assertEquals(typedStr("cert_payload_json"), Cert.parse(typedCert).payload.decodeToString())
+        assertEquals(cert, fresh.encode(Ed25519Signer { Ed25519Engine.sign(userSeed, it) }))
+        assertEquals(str("cert_payload_json"), fresh.signingBytes().decodeToString())
     }
 
     @Test
     fun credentialAndHeaderMatchTheGoBytes() {
-        val p = DeviceCredential.mint(typedStr("cert"), signer, now)
-        assertEquals(typedStr("credential"), p.value)
-        assertEquals("Authorization: " + p.headerValue, typedStr("authorization_header"))
+        val p = DeviceCredential.mint(cert, signer, now)
+        assertEquals(str("credential"), p.value)
+        assertEquals("Authorization: " + p.headerValue, str("authorization_header"))
 
         val (c, pr) = DeviceCredential.parse(str("credential"))
         assertEquals(cert, c)

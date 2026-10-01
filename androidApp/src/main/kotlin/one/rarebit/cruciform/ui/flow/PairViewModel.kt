@@ -21,7 +21,7 @@ import one.rarebit.cruciform.domain.VoidbindEngine
  * or deep link) → compare the security code → confirm. (The initiator's invite lives in
  * the app-scoped [one.rarebit.cruciform.pairing.InviteCoordinator].)
  *
- * **Survives process death:** the invite being joined (the raw `voidbind:pair` tuple:
+ * **Survives process death:** the invite being joined (the raw `void-which-binds:pair` tuple:
  * relay URL, session id, salt, identity key — all public, the same string the QR
  * shows). The handshake itself (nonces, the SAS, the encryption key it will unseal
  * with) lives only in the engine's memory and dies with the process, so it is

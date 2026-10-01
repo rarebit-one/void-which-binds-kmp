@@ -6,7 +6,7 @@ import VoidWhichBinds
 /// library) and shows ``RootView`` — onboarding until this device is enrolled,
 /// then the Home dashboard.
 ///
-/// In DEBUG builds a `VOIDBIND_PREVIEW_SCREEN` environment variable renders a
+/// In DEBUG builds a `VOID_WHICH_BINDS_PREVIEW_SCREEN` environment variable renders a
 /// single screen with sample data (see ``PreviewHarness``), so each screen can be
 /// screenshotted headless in the Simulator without a device, camera, or network.
 ///
@@ -20,7 +20,7 @@ struct Cruciform: App {
     var body: some Scene {
         WindowGroup {
             #if DEBUG
-            if let screen = ProcessInfo.processInfo.environment["VOIDBIND_PREVIEW_SCREEN"] {
+            if let screen = ProcessInfo.processInfo.environment["VOID_WHICH_BINDS_PREVIEW_SCREEN"] {
                 PreviewHarness.view(for: screen)
             } else {
                 RootView(model: model)

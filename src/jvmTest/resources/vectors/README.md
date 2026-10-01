@@ -6,14 +6,21 @@ at the commit in [`VOID_WHICH_BINDS_GO_REF`](VOID_WHICH_BINDS_GO_REF). CI (`vect
 `.github/workflows/test.yml`, running `scripts/check-vector-drift.sh`) fails if
 they differ. To update: re-copy the files from void-which-binds-go at a newer commit and
 bump `VOID_WHICH_BINDS_GO_REF` in the same change — never hand-edit a vector here.
-`offload/` comes from heyarr-core and is not checked.
+`offload/` comes from heyarr-core and is not checked. Its void-which-binds-go-derived
+fields (the `void-which-binds:` invite URI, the pairing SAS and the sealed
+space key) were re-derived for gen2 with void-which-binds-go v0.19.0 from the same inputs
+(see its `note`); heyarr-core regenerates the file when it adopts v0.19.
+
+All of it is **gen2** (void-which-binds-go v0.19.0, ADR-0022): typed-only tokens under
+the `void-which-binds.*` `typ`, gen2 signature domains, KDF labels and the
+`void-which-binds` recovery HRP. The gen1 cases that remain are refusal cases.
 
 ## `device-scheme-vector.json`
 
 The **Device authorization-scheme** vector: an enrolment cert, a possession proof,
 the joined `<cert>~<proof>` credential and the full `Authorization` header, all
-minted by the **real Go code** — void-which-binds-go v0.5.0 `enrolment.SignCert` /
-`SignPossession` (what heyarr-core vendors) — with fixed seeds and clocks:
+minted by the **real Go code** — void-which-binds-go `enrolment.SignCert` /
+`SignPossession`, gen2 (typed cert and proof) — with fixed seeds and clocks:
 
 - user seed `00..1f`, device seed `80..9f` (Ed25519 is deterministic);
 - cert `iat` 1788307200 / `exp` 1796083200;
@@ -29,27 +36,24 @@ proves the library's `PossessionProof` / `DeviceCredential` bytes are exactly wh
 If a value in this file ever has to change to make a test pass, the wire format
 broke — stop and investigate against void-which-binds-go.
 
-## `typ/` and `membership/typed-*`
+## `typ/`
 
 These are the token-type (`typ`) vectors from void-which-binds-go ADR-0009, copied
 verbatim from void-which-binds-go `testvectors/vectors/` at `VOID_WHICH_BINDS_GO_REF`. See
-`typ/README.md` for the schema.
+`typ/README.md` for the schema. Each check has a single verdict: gen2 is typed-only,
+so the `legacy-untyped` and `gen1-typ` tokens are `wrong_type` everywhere, and
+`gen1-domain`'s gen1-domain cosig is `bad_signature`.
 
 `TypVectorTest` replays the checks this library can answer
-(`op`/`op_user`/`possession`) at their phase-1 verdicts. It also asserts that
-`Cert.parse` refuses every token Go's cert verifier calls `wrong_type`, and that
-the typed mint paths reproduce Go's typed tokens byte for byte.
-`MembershipVectorTest` picks up the `typed-*` membership cases on its own. They
-include a typed cosigned remove, which fails if `coreBytes` drops `typ`.
+(`op`/`op_user`/`possession`/`cosig`). It also asserts that `Cert.parse` refuses
+every token Go's cert verifier calls `wrong_type` or `malformed` and accepts every
+`ok` one, and that the minters reproduce Go's typed tokens byte for byte.
 
-## `device-scheme-vector-typed.json`
+## `membership/`
 
-This is the Device authorization-scheme credential as void-which-binds-go mints it since
-ADR-0009 phase 2: the same keys and clocks as `device-scheme-vector.json`, with
-`typ` in the cert and in the possession proof. It is copied verbatim from
-void-which-binds-go. `DeviceSchemeVectorTest` checks two things:
-- this library's public minters produce exactly this file;
-- the legacy file still reproduces through the untyped mint path.
+`MembershipVectorTest` replays every case (it enumerates the directory), including
+`gen1-tokens-rejected`, `gen1-cosig-domain-ignored` and the ADR-0018 `webauthn-*`
+high-water cases; `CosignVectorTest` re-mints every cosigned remove.
 
 ## `slip39/vectors.json`
 
@@ -63,7 +67,7 @@ refuses every invalid one for the reason its description names.
 
 ## `pair-refusal-vector.json`
 
-The pairing refusal of void-which-binds-go ADR-0012 (proposed; void-which-binds-go#64). It pins
+The pairing refusal of void-which-binds-go ADR-0012. It pins
 the exact token an initiator posts to its `refuse` relay slot. It also gives the
 verdict a responder must reach for each token: `refused` (Receive stops with
 `PairingRefusedException`) or `ignored` (Receive keeps waiting for the cert).

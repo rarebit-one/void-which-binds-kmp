@@ -29,7 +29,7 @@ import kotlin.test.assertTrue
  */
 class PairingRefusalTest {
 
-    /** An in-memory voidbind relay (write-once slots); [refuseSlot] false = a pre-ADR-0012 relay (400). */
+    /** An in-memory void-which-binds relay (write-once slots); [refuseSlot] false = a pre-ADR-0012 relay (400). */
     private class RelayTransport(private val refuseSlot: Boolean = true) : HttpTransport {
         val slots = ConcurrentHashMap<String, ByteArray>()
         private var seq = 0

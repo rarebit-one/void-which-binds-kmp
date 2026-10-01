@@ -19,8 +19,8 @@ import one.rarebit.voidwhichbinds.net.RelayClient
  * involved. (The genesis form — the recovery key itself — survives for the first
  * device and for re-admitting a removed device, which only genesis can do.)
  *
- * It opens a relay session, shows the new device a `voidbind:pair?…` invite QR
- * (v3, carrying the identity), runs the commit-before-reveal handshake, displays
+ * It opens a relay session, shows the new device a `void-which-binds:pair?…` invite QR
+ * (v4, carrying the identity), runs the commit-before-reveal handshake, displays
  * the 7-digit SAS, and — only after the human confirms both screens match — signs
  * the add op, seals it with the ops to the new device's X25519 key, and posts it.
  *

@@ -56,7 +56,7 @@ class Slip39VectorTest {
     @Test
     fun theVectorsArePinned() {
         val sum = Hex.encode(MessageDigest.getInstance("SHA-256").digest(raw))
-        assertEquals(vectorsSha256, sum, "vectors.json changed; re-copy it from voidbind-go, never edit it")
+        assertEquals(vectorsSha256, sum, "vectors.json changed; re-copy it from void-which-binds-go, never edit it")
     }
 
     @Test

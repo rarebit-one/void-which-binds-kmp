@@ -124,20 +124,22 @@ class CertSealerCryptoTest {
     }
 
     private companion object {
-        // Generated from live void-which-binds-go (encryption.Seal / EncryptChange).
+        // Generated from live void-which-binds-go v0.19.0 (encryption.Seal / EncryptChange,
+        // gen2 wrap label `void-which-binds/space-key-wrap/v1`).
         const val KAT_RECIPIENT_SEED = "0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20"
         const val KAT_RECIPIENT_PUB = "07a37cbc142093c8b755dc1b10e86cb426374ad16aa853ed0bdfc0b2b86d1c7c"
         const val KAT_WRAPPED_BLOB =
-            "81412bb18d31a79dcf33c1da25e7aa8aa6ece0295108a332af8325c820a2b04e" +
-                "51dfe48e692daf26a4f748f7bcc8e8c016f0338ca367db4d83ea9c5a5e454e765" +
-                "dc4d3dcda054c80723063a08dabc07b59903dc31fc1e85cec20a4be4e5d5f5c9a" +
-                "7dcab6d613e3e0"
+            "8876e45d108fbcc0d4a1e20849c5f9df38e63414d9172aab906d08e3bbfdc67f" +
+                "8781dd5fbe38e2a36893adbf6724687b12e091e29935dc9c1999c7f4bccb6665" +
+                "7c4040a28263d5aae14ea28eb9c3a8c9bee886d67a2d87583a1b0f10900e4fc3" +
+                "1957d13b74e808ec"
         const val KAT_CONTENT_CT =
-            "237e4cc8cb17477e4d0eb141bc809cda72b272f1c4e368ede9e6cbfe2694230b" +
-                "45e317720f78feb9072bdbe5438df96799ffd3837b45e894fd3c129a83243825" +
-                "fddf64bf4cb797ecdc789891acb8e6b4138f7cd526402104e76a04b62298c86c" +
-                "2743fb2fcaea3b3fbb39180aa3aa016d6e953139c7498fd5eb5d3f51dd91"
+            "bbb8e74870cace8f875e07d25d9c7b8716d17e8b553d7d32d755385d18b212b1" +
+                "644156016e7049f20cc08ed665fdfc22269eef2ade422e9f5c9aef1be4700e23" +
+                "0d469635b53f49a2f6131d97f1920dbfe9277a02ee77e2a3147fd967dfc31681" +
+                "09d2e999ef9b0f3142a62303c009763ab601cbe4c38f1dcc75e73a9710bb6d6e" +
+                "be7bf03da74c"
         const val KAT_PLAINTEXT =
-            "voidbind cert delivery KAT — the initiator seals the enrolment cert to the responder"
+            "void-which-binds cert delivery KAT — the initiator seals the enrolment cert to the responder"
     }
 }

@@ -1,5 +1,19 @@
 # void-which-binds-kmp
 
+> **0.11.0 is gen2-only (void-which-binds-go v0.19.0, ADR-0022) — a breaking wire
+> change.** Every gen1 string now has its ADR-0013 gen2 spelling and gen1 material is
+> refused, never dual-parsed: `typ` is `void-which-binds.*` and untyped tokens are
+> refused; the signature domains and the recovery, space-key-wrap and fingerprint
+> labels moved to `void-which-binds/…` (the same recovery secret now derives a
+> **different** identity); the recovery HRP is `void-which-binds` (a `heyarr1…`
+> secret throws `RecoverySecret.GenerationRetiredException`); the URI scheme is
+> `void-which-binds:` with invite `v=4`; the membership header is
+> `Void-Which-Binds-Membership`. Gen2 is a new identity on every device: there is
+> no gen1 reader here, and the Android keystore alias / key dir are fresh
+> `void-which-binds.*` names. Class names still keep their `Voidbind` prefix. The
+> RP-handoff category, its meta-data key and Cruciform's own aliases/prefs are app
+> strings, not library ones; they move with the gen2 Cruciform build.
+
 <!-- k0:keep-begin readme -->
 > **Renamed (void-which-binds-go ADR-0013 R1).** Voidbind is now
 > **Void-Which-Binds**. From **0.10.0** this repo is `rarebit-one/void-which-binds-kmp`
@@ -28,7 +42,7 @@ device keys, commit-before-reveal pairing, and account recovery, sharing **one
 wire contract** with [`void-which-binds-go`](https://github.com/rarebit-one/void-which-binds-go).
 The first-party authenticator **app** built on it is **Cruciform**
 ([`androidApp/`](androidApp/README.md), [`iosApp/`](iosApp/README.md)) — *Void-Which-Binds*
-names the protocol and the `voidbind:` scheme, *Cruciform* names the app
+names the protocol and the `void-which-binds:` scheme, *Cruciform* names the app
 ([ADR-0004](docs/adr/0004-authenticator-named-cruciform.md)).
 
 Void-Which-Binds is a device-authentication protocol extracted from **heyarr**.
@@ -39,7 +53,8 @@ element** (Secure Enclave / StrongBox).
 
 ## Status
 
-In use. `void-which-binds-client` is published (0.10.0) and consumed by heyarr-kmp. All
+In use. `void-which-binds-client` is published (0.10.0; 0.11.0 is the gen2-only
+release) and consumed by heyarr-kmp. All
 three targets are real. **Android** seals the Ed25519 seed with a StrongBox/TEE
 AndroidKeyStore key. **iOS** seals it with a Secure-Enclave P-256 key through the
 app-provided Swift `SecureEnclaveSealer`. **JVM** is software-only, for dev/test.
@@ -53,13 +68,15 @@ use no platform APIs. The only third-party dependency is
 [cryptography-kotlin](https://github.com/whyoleg/cryptography-kotlin), for SHA-256,
 HKDF, Ed25519 and X25519. The encodings themselves are hand-written:
 
-- **`RecoverySecret`** — 256-bit account secret as **bech32m** (HRP `heyarr`).
+- **`RecoverySecret`** — 256-bit account secret as **bech32m** (HRP `void-which-binds`;
+  a gen1 `heyarr1…` secret is refused as retired).
 - **`Cert`** — enrolment cert token `base64url(json).base64url(sig)`, payload
-  `{v, usr, dev, denc, iat, exp}`, signed by the user identity Ed25519 key.
+  `{v, typ, usr, dev, denc, iat, exp}` (`typ` = `void-which-binds.cert`), signed by
+  the user identity Ed25519 key.
 - **`Pairing`** — short-authentication-string derivation with **commit-before-reveal**.
-- **`Invite`** — the pairing QR `voidbind:pair?v=2&relay=&session=&salt=<hex>`;
+- **`Invite`** — the pairing QR `void-which-binds:pair?v=4&relay=&session=&salt=<hex>&usr=<ed25519:hex>`;
   `encode` is byte-identical to void-which-binds-go's `pairflow.EncodeInvite`.
-- **`LoginQr` / `VoidbindQr`** — the web-login QR `voidbind:login?rp=&id=`
+- **`LoginQr` / `VoidbindQr`** — the web-login QR `void-which-binds:login?rp=&id=`
   (byte-identical to void-which-binds-go's `weblogin.EncodeLogin`), and a single
   `VoidbindQr.parse` the Scan screen calls to dispatch a scanned code to the
   login-approval or pairing flow.
@@ -95,7 +112,7 @@ the JVM and the tests, and the apps bring their own (OkHttp on Android,
   (`Seal`/`Unwrap`/`EncryptChange`/`DecryptChange`). Pure-Kotlin X25519 (a
   TweetNaCl port, so `unwrap` can derive the recipient public key the JDK X25519
   provider will not) + a hand-written HChaCha20 over cryptography-kotlin's IETF
-  ChaCha20-Poly1305 and HKDF. Pinned by RFC vectors and a **live-voidbind-go
+  ChaCha20-Poly1305 and HKDF. Pinned by RFC vectors and a **live void-which-binds-go
   KAT** (`CertSealerCryptoTest.goSealKat`: Kotlin unwraps + decrypts a blob that
   Go sealed, to the exact bytes).
 - **`WebLoginClient`** — the QR web-login: device side (`fetchChallenge`,
@@ -119,11 +136,11 @@ secret") drives:
   `RecoverySecret` to back up once); `restore(secret)` reconstructs it, failing
   **loud** on a mistyped secret. The user key is derived byte-identically to
   void-which-binds-go's `recovery.DeriveUserSeed`
-  (`HKDF-SHA256(secret, info="heyarr/recovery/v1/user-identity-ed25519-seed")`),
+  (`HKDF-SHA256(secret, info="void-which-binds/recovery/v1/user-identity-ed25519-seed")`),
   and its **public half** is recovered with a pure-Kotlin Ed25519
   (`crypto.Ed25519Group`, a TweetNaCl port) **because neither the JDK nor Apple
   will derive an Ed25519 public key from a seed** — proven against a
-  live-voidbind-go KAT and cross-validated against Go stdlib + OpenSSL.
+  live void-which-binds-go KAT and cross-validated against Go stdlib + OpenSSL.
 - **`DeviceIdentity`** — this device's key material: the hardware Ed25519 signing
   key (a public key + a `sign` function, from `DeviceKeyStore`) and its X25519
   encryption keypair (`generateEncryptionKey()`; sealed at rest by the app).
@@ -155,7 +172,7 @@ Crypto backends (Ed25519, the pairing hash) are reached through interface seams 
 the encodings stay backend-free and portable.
 
 Identity/signing = **Ed25519**; device encryption = **X25519**. Certain constants
-(the HKDF label, the `heyarr` HRP, the pairing labels) are **identity-defining** —
+(the HKDF label, the `void-which-binds` HRP, the pairing labels) are **identity-defining** —
 see [`AGENTS.md`](AGENTS.md); changing them silently breaks wire compatibility.
 
 ## Consuming `void-which-binds-client` as a dependency
@@ -234,8 +251,8 @@ broker returned, and resumes when the authenticator finishes (the Singpass
 app-to-app model — ONE authenticator, N RPs). The contract:
 
 ```
-voidbind:login?rp=<origin>&id=<login-id>[&callback=<private-app-scheme-uri>]
-voidbind:pair?v=2&relay=&session=&salt=<hex>[&callback=<private-app-scheme-uri>]
+void-which-binds:login?rp=<origin>&id=<login-id>[&callback=<private-app-scheme-uri>]
+void-which-binds:pair?v=4&relay=&session=&salt=<hex>&usr=<ed25519:hex>[&callback=<private-app-scheme-uri>]
 ```
 
 - The tuple is **exactly** the `qr` string from `POST /login` (byte-identical to
@@ -247,7 +264,7 @@ voidbind:pair?v=2&relay=&session=&salt=<hex>[&callback=<private-app-scheme-uri>]
   RP learns the outcome **only** by polling its broker (`GET /login/{id}`) — nothing
   about the login is ever passed back through the link.
 - `callback`, if present and well-formed (a private app scheme — not `http(s)`,
-  `javascript`, `file`, `content`, `intent`, `voidbind`), is launched **bare**, only
+  `javascript`, `file`, `content`, `intent`, `void-which-binds`), is launched **bare**, only
   after a **successful** approval, so the RP can foreground itself. Treat it as a hint:
   it is dropped if malformed, never launched on deny, and ignored if no app handles it.
 
@@ -266,7 +283,7 @@ See [`docs/adr/0003-app-to-app-deeplink-handoff.md`](docs/adr/0003-app-to-app-de
 
 The **reverse** direction — Cruciform hands the invite it minted ("Add a device") to an RP
 app on the same phone — uses the RP's *own* scheme, `heyarr-mobile://pair?invite=<encoded
-voidbind:pair tuple>` / `allthing://pair?invite=…`, from a small app-side registry
+void-which-binds:pair tuple>` / `allthing://pair?invite=…`, from a small app-side registry
 (`androidApp/…/handoff/RpPairHandoff.kt`), with a Sharesheet fallback; the SAS is still
 confirmed on Cruciform. See [`docs/adr/0006-rp-pair-handoff-same-device.md`](docs/adr/0006-rp-pair-handoff-same-device.md).
 
@@ -291,7 +308,7 @@ Authorization: Device <cert>~<proof>
 
 - `<cert>` is the enrolment cert token the device persisted from pairing/enrolment.
 - `<proof>` is a **possession proof**: the device signs, with its hardware-sealed
-  key, `{"v":2,"crt":base64url(sha256(cert)),"iat":…,"exp":…}` (compact JSON, that
+  key, `{"v":2,"typ":"void-which-binds.possession","crt":base64url(sha256(cert)),"iat":…,"exp":…}` (compact JSON, that
   order; the body IS the signed message) and renders it `base64url(body).base64url(sig)`.
   A cert says a user vouches for a device key; the proof shows the caller *holds*
   that key, bound to this very cert. It is stateless and short-lived — **120 s** by

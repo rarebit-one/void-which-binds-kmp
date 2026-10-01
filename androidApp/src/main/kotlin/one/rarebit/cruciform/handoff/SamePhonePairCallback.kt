@@ -88,7 +88,7 @@ sealed interface SamePhonePairCallback {
 
         /**
          * Route an incoming intent. Null when it is not a `cruciform://pair-joined` VIEW
-         * at all (a launcher start, a `voidbind:` handoff, anything else) so the caller
+         * at all (a launcher start, a `void-which-binds:` handoff, anything else) so the caller
          * ignores it; [Malformed] when it is ours but unusable.
          */
         fun route(action: String?, dataString: String?): SamePhonePairCallback? {

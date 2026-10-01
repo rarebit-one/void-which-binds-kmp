@@ -56,7 +56,7 @@ import one.rarebit.cruciform.ui.theme.CruciformTheme
  *
  * - a **push wake** ([UnifiedPushReceiver]) with the opaque tuple in
  *   [UnifiedPushReceiver.EXTRA_LOGIN_TUPLE] — the app stays open afterwards;
- * - a **same-device deep link** (`ACTION_VIEW voidbind:login?…` / `voidbind:pair?…`)
+ * - a **same-device deep link** (`ACTION_VIEW void-which-binds:login?…` / `void-which-binds:pair?…`)
  *   from a relying-party app on this phone — the identical approval flow, and then
  *   [finishHandoff] returns to the caller (finishing this activity, and launching the
  *   RP's optional private-scheme `callback` bare after a successful approval). The
@@ -218,7 +218,7 @@ class MainActivity : FragmentActivity() {
 
     /**
      * The push extra wins if present (the receiver built it from a parsed ping); else a
-     * `voidbind:` VIEW deep link. The URI is untrusted input from another app — the
+     * `void-which-binds:` VIEW deep link. The URI is untrusted input from another app — the
      * router parses it as strictly as a scan and drops a malformed callback.
      */
     private fun routeIntent(intent: Intent?): Handoff? {

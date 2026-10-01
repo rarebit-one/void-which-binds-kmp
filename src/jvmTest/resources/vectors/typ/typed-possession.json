@@ -1,20 +1,20 @@
 {
   "name": "typed-possession",
-  "description": "a possession proof typed voidbind.possession verifies against its cert; the cert, grant and op verifiers refuse it as wrong_type",
+  "description": "a possession proof typed void-which-binds.possession verifies against its cert; the cert, grant and op verifiers refuse it as wrong_type",
   "now": 1790251200,
   "keys": {
     "device": {
-      "sign_seed": "d721c834b1d967bcf2c1635686ad8817c0577e452279f4a7f4f4743882d772eb",
-      "id": "ed25519:8256344bfdd93680c637386ad0195f01ae9bc6a7ea32bcb12c9c1b500ca7c839"
+      "sign_seed": "51d258eed93173eb8efffa1f6160fd18100e0e6ee753a53ae525d687595079da",
+      "id": "ed25519:51c028175628b13ad868ec3cfd5c4a7d3df55b27fecba832c33f1bdcc0e53602"
     },
     "user": {
-      "sign_seed": "99d56175dc3aa4346d6226043ae922888feb59e6c0bc0ef1e155356a4f103879",
-      "id": "ed25519:e17116170a4db3671d211d171021a31708a45e1a97d2f8d3ca542a75bdf77344"
+      "sign_seed": "c8aa23904f385b53e1b7d782d62610c027b1f1127a845eeb2104dec70dd881e6",
+      "id": "ed25519:cd515f0cdffd633d6f81f0ec79f99ad2609852806ee1d9789cf025369516f3b3"
     }
   },
   "tokens": {
-    "cert": "eyJ2IjoyLCJ0eXAiOiJ2b2lkYmluZC5jZXJ0IiwidXNyIjoiZWQyNTUxOTplMTcxMTYxNzBhNGRiMzY3MWQyMTFkMTcxMDIxYTMxNzA4YTQ1ZTFhOTdkMmY4ZDNjYTU0MmE3NWJkZjc3MzQ0IiwiZGV2IjoiZWQyNTUxOTo4MjU2MzQ0YmZkZDkzNjgwYzYzNzM4NmFkMDE5NWYwMWFlOWJjNmE3ZWEzMmJjYjEyYzljMWI1MDBjYTdjODM5IiwiZGVuYyI6IngyNTUxOTowNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3IiwiaWF0IjoxNzkwMjUxMjAwLCJleHAiOjE3OTAyNTQ4MDB9.vyGLb5MEOs8jKLsXFLU6Rud8HTNq09I_SfDRmB85MJEtpKlEezzPMDdGkjAX2zKECJoicwaYU9fu8kuMhimHCw",
-    "token": "eyJ2IjoyLCJ0eXAiOiJ2b2lkYmluZC5wb3NzZXNzaW9uIiwiY3J0IjoiWlpYYUdSQm5PWUxCZXRDUTA3YmdjOXFUWnI5aHF3SnFJSUNsRjhEcWp6YyIsImlhdCI6MTc5MDI1MTIwMCwiZXhwIjoxNzkwMjUxMjYwfQ.oHS_y7sq3lQk7arZTGIQ6tk1_Xp-HwZfnDh1MCLn09IqGaHWVZshJRy8rvxLw6kkfv2IHwwesMMWZlYEEX9JAA"
+    "cert": "eyJ2IjoyLCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLmNlcnQiLCJ1c3IiOiJlZDI1NTE5OmNkNTE1ZjBjZGZmZDYzM2Q2ZjgxZjBlYzc5Zjk5YWQyNjA5ODUyODA2ZWUxZDk3ODljZjAyNTM2OTUxNmYzYjMiLCJkZXYiOiJlZDI1NTE5OjUxYzAyODE3NTYyOGIxM2FkODY4ZWMzY2ZkNWM0YTdkM2RmNTViMjdmZWNiYTgzMmMzM2YxYmRjYzBlNTM2MDIiLCJkZW5jIjoieDI1NTE5OjA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDciLCJpYXQiOjE3OTAyNTEyMDAsImV4cCI6MTc5MDI1NDgwMH0.lUItXsKSRQr473MYXoiBaTrRMlx0Mi-JZ2NsytH20hBAL72ta9aplPOsL2dHCxx51salfdRNepEW5tLCQkYqAw",
+    "token": "eyJ2IjoyLCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLnBvc3Nlc3Npb24iLCJjcnQiOiJPMGRRQWZRVFVlNFh4VVVSX1RseDlKdEFiaFNJRVI1TW01ektWQzZZdmpzIiwiaWF0IjoxNzkwMjUxMjAwLCJleHAiOjE3OTAyNTEyNjB9.0lNzER6Dc8cMkLYB1C7n8z8JHt5vwthR3EnsxlPpfEfADqT_S7yhly_QDcKtDIQSSNlflfO88uMeFdI-e5-cDg"
   },
   "grant_request": {
     "principal": "device:alpha",
@@ -27,58 +27,34 @@
       "token": "token",
       "key": "device",
       "cert": "cert",
-      "expect": {
-        "accept": "ok",
-        "emit": "ok",
-        "require": "ok"
-      }
+      "expect": "ok"
     },
     {
       "verifier": "cert",
       "token": "token",
       "key": "device",
-      "expect": {
-        "accept": "wrong_type",
-        "emit": "wrong_type",
-        "require": "wrong_type"
-      }
+      "expect": "wrong_type"
     },
     {
       "verifier": "cert_user",
       "token": "token",
-      "expect": {
-        "accept": "wrong_type",
-        "emit": "wrong_type",
-        "require": "wrong_type"
-      }
+      "expect": "wrong_type"
     },
     {
       "verifier": "grant",
       "token": "token",
       "key": "device",
-      "expect": {
-        "accept": "wrong_type",
-        "emit": "wrong_type",
-        "require": "wrong_type"
-      }
+      "expect": "wrong_type"
     },
     {
       "verifier": "op",
       "token": "token",
-      "expect": {
-        "accept": "wrong_type",
-        "emit": "wrong_type",
-        "require": "wrong_type"
-      }
+      "expect": "wrong_type"
     },
     {
       "verifier": "op_user",
       "token": "token",
-      "expect": {
-        "accept": "wrong_type",
-        "emit": "wrong_type",
-        "require": "wrong_type"
-      }
+      "expect": "wrong_type"
     }
   ]
 }
