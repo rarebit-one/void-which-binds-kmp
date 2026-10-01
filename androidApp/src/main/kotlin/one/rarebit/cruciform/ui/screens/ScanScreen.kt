@@ -72,7 +72,7 @@ fun ScanScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Text(
-                        "Camera access is needed to scan Voidbind codes.",
+                        "Camera access is needed to scan Void-Which-Binds codes.",
                         style = MaterialTheme.typography.titleMedium,
                         color = VbColors.TextPrimary,
                         textAlign = TextAlign.Center,
@@ -164,7 +164,7 @@ fun ScanScreen(
                     if (forRecoverySecret) {
                         "Point your camera at the code on your recovery sheet"
                     } else {
-                        "Point your camera at a Voidbind code"
+                        "Point your camera at a Void-Which-Binds code"
                     },
                     style = MaterialTheme.typography.titleMedium,
                     color = VbColors.TextPrimary,

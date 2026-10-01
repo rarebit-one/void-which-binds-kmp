@@ -44,7 +44,7 @@ class InviteCoordinatorTest {
         var mints = 0
         var confirms = 0
         var mintResult: EngineResult<PairInviteDisplay> = EngineResult.Ready(
-            PairInviteDisplay("INV · AAAA BBBB", "voidbind:pair?v=3&session=s1", 600, session = "s1"),
+            PairInviteDisplay("INV · AAAA BBBB", "void-which-binds:pair?v=4&session=s1", 600, session = "s1"),
         )
 
         /** Completed by the test to "join" the new device (or fail the wait). */
@@ -317,7 +317,7 @@ class InviteCoordinatorTest {
         assertEquals("http://relay.test/pair", f.relayUrl)
         assertEquals(0, keep.begins) // nothing to hold: no invite was minted
         engine.mintResult =
-            EngineResult.Ready(PairInviteDisplay("INV · CCCC DDDD", "voidbind:pair?v=3&session=s2", 600))
+            EngineResult.Ready(PairInviteDisplay("INV · CCCC DDDD", "void-which-binds:pair?v=4&session=s2", 600))
         c.retry()
         advanceUntilIdle()
         assertEquals(2, engine.mints)

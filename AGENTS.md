@@ -28,10 +28,11 @@ two sides:
 > keystore alias and key dir) and refuses gen1 material: there is no dual parsing and
 > no gen1 reader. Class names (`VoidbindDeepLink`, `VoidbindQr`, `VoidbindEncryption`,
 > `VoidbindCertSealer`, `VoidbindAndroid`, `VoidbindIos`) keep their prefix, as Go
-> kept its package names. The remaining gen1 strings are the Cruciform app's
-> (`androidApp/`, `iosApp/`: `one.rarebit.voidbind.category.RP_HANDOFF`, its
-> keystore aliases, prefs, dirs, keychain service and copy), moved by the app's own
-> gen2 change.
+> kept its package names. Cruciform 1.0.0 (`androidApp/`, `iosApp/`) is the app's
+> gen2 change: the `void-which-binds:` filter alone,
+> `one.rarebit.voidwhichbinds.category.RP_HANDOFF` and `…rp.pair_scheme`, and fresh
+> `void-which-binds.*` keystore aliases, prefs, dirs, SE tags and keychain service
+> (`one.rarebit.voidwhichbinds`); nothing reads the gen1 names.
 
 **Void-Which-Binds** names the protocol / security model and everything on the wire (the
 `void-which-binds:` scheme, `one.rarebit.voidwhichbinds:void-which-binds-client`, the library package,

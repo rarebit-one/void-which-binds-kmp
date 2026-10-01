@@ -108,8 +108,8 @@ public final class VoidbindEngine {
     // MARK: - X25519 encryption keypair persistence (Keychain, this-device-only)
 
     private func loadOrCreateEncryptionKey() -> DeviceIdentity.EncryptionKey {
-        if let priv = keychainRead("voidbind.\(Self.deviceAlias).encpriv"),
-           let pub = keychainRead("voidbind.\(Self.deviceAlias).encpub") {
+        if let priv = keychainRead("void-which-binds.\(Self.deviceAlias).encpriv"),
+           let pub = keychainRead("void-which-binds.\(Self.deviceAlias).encpub") {
             return DeviceIdentity.EncryptionKey(
                 privateKey: priv.toKotlinByteArray(),
                 publicKey: pub.toKotlinByteArray()
@@ -118,15 +118,15 @@ public final class VoidbindEngine {
         let fresh = DeviceIdentity.companion.generateEncryptionKey()
         // Hardening follow-up: seal `encpriv` under the SE key via EnclaveSealer,
         // matching the Android AES-GCM wrap. Baseline here is device-only Keychain.
-        keychainWrite("voidbind.\(Self.deviceAlias).encpriv", fresh.privateKey.toData())
-        keychainWrite("voidbind.\(Self.deviceAlias).encpub", fresh.publicKey.toData())
+        keychainWrite("void-which-binds.\(Self.deviceAlias).encpriv", fresh.privateKey.toData())
+        keychainWrite("void-which-binds.\(Self.deviceAlias).encpub", fresh.publicKey.toData())
         return fresh
     }
 
     private func keychainWrite(_ account: String, _ data: Data) {
         let base: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: "one.rarebit.voidbind",
+            kSecAttrService as String: "one.rarebit.voidwhichbinds",
             kSecAttrAccount as String: account,
         ]
         SecItemDelete(base as CFDictionary)
@@ -139,7 +139,7 @@ public final class VoidbindEngine {
     private func keychainRead(_ account: String) -> Data? {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: "one.rarebit.voidbind",
+            kSecAttrService as String: "one.rarebit.voidwhichbinds",
             kSecAttrAccount as String: account,
             kSecReturnData as String: true,
         ]

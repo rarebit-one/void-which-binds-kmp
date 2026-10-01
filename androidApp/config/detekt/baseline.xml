@@ -297,8 +297,6 @@
     <ID>MaxLineLength:DeviceVoidbindEngine.kt$DeviceVoidbindEngine$"This device is no longer a member of the identity, so it can't add devices. Re-admit it from another device, or restore from the recovery secret."</ID>
     <ID>MaxLineLength:DevicesScreen.kt$"Every device here is a member of your identity. Any of them can add the next one, and any can remove another."</ID>
     <ID>MaxLineLength:DevicesScreen.kt$"No members found — this device's ops don't evaluate to a membership. Restore from the recovery secret."</ID>
-    <ID>MaxLineLength:HandoffRouterTest.kt$HandoffRouterTest$val invite = "voidbind:pair?relay=http%3A%2F%2Frelay&amp;salt=00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff&amp;session=sess1&amp;usr=ed25519%3Af947b10c8089aa8fed2d435fae069d0ca1513b33691955ae963dfe8bc5b398c4&amp;v=3"</ID>
-    <ID>MaxLineLength:HandoffRouterTest.kt$HandoffRouterTest$val uri = "voidbind:login?rp=http%3A%2F%2F192.168.16.224%3A7777&amp;id=d0865b8fd4dd6174b0c35e514a0a5e37&amp;callback=heyarr%3A%2F%2Fdone"</ID>
     <ID>MaxLineLength:InviteCoordinator.kt$InviteCoordinator$message = "The other device didn't join before the invite expired. Start again with a fresh invite."</ID>
     <ID>MaxLineLength:PairAllowScreen.kt$"Both apps are on this phone, so they checked each other's keys directly — there is no code for you to compare."</ID>
     <ID>MaxLineLength:PairAllowScreen.kt$"It becomes one of your devices: it can sign in as you and hold your data, until you remove it in Settings → Devices."</ID>

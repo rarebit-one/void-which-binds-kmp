@@ -32,21 +32,31 @@ let restored = try! UserIdentity.companion.restore(secret: id.recovery.format())
 print("ROUNDTRIP \(hex(id.userPublicKey) == hex(restored.userPublicKey) ? "OK" : "MISMATCH")")
 
 // 2. a known recovery secret derives the exact void-which-binds-go public key — proves
-//    HKDF + the pure-Kotlin Ed25519 pub-from-seed run correctly THROUGH Swift.
+//    HKDF + the pure-Kotlin Ed25519 pub-from-seed run correctly THROUGH Swift. The
+//    secret and key are the Go-pinned `vectors/recovery/counting-entropy.json`.
 let kat = try! UserIdentity.companion.restore(
-    secret: "heyarr1ph3wnlphtjp4ha9j86g0ft6ktvuu4atzyt5hnm8m8905urq5540qyxldt3")
-print("KAT \(hex(kat.userPublicKey) == "d79fad7575f432e2f4915113b7a89773f7a187305d6823d2aab21121687838f9" ? "OK" : "FAIL")")
+    secret: "void-which-binds1qqqsyqcyq5rqwzqfpg9scrgwpugpzysnzs23v9ccrydpk8qarc0stska6c")
+print("KAT \(hex(kat.userPublicKey) == "da16ead22f9bd99facafa8013a997aff28dba13887c7aa1e77b2e88214dff6a6" ? "OK" : "FAIL")")
 
 // 3. a mistyped secret THROWS (catchable), not crash — the @Throws fix, at runtime.
 do {
-    _ = try UserIdentity.companion.restore(secret: "heyarr1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq")
+    _ = try UserIdentity.companion.restore(secret: "void-which-binds1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq")
     print("THROWS FAIL(no throw)")
 } catch {
     print("THROWS OK")
 }
 
+// 3b. a valid gen1 (`heyarr1…`) secret THROWS too: gen2 has no gen1 reader (ADR-0022).
+do {
+    _ = try UserIdentity.companion.restore(
+        secret: "heyarr1qqqsyqcyq5rqwzqfpg9scrgwpugpzysnzs23v9ccrydpk8qarc0s6e0ucu")
+    print("GEN1_REFUSED FAIL(no throw)")
+} catch {
+    print("GEN1_REFUSED OK")
+}
+
 // 4. the web-login QR wire round-trips byte-identically through Swift.
 let qr = LoginQr.shared.encode(rp: "https://homelab.example:8443/app", id: "L1a2b3")
-print("QR_MATCH \(qr == "voidbind:login?id=L1a2b3&rp=https%3A%2F%2Fhomelab.example%3A8443%2Fapp" ? "OK" : "FAIL")")
+print("QR_MATCH \(qr == "void-which-binds:login?id=L1a2b3&rp=https%3A%2F%2Fhomelab.example%3A8443%2Fapp" ? "OK" : "FAIL")")
 
 print("SMOKE_DONE")

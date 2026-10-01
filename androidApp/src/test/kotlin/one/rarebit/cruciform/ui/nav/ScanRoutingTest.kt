@@ -1,5 +1,6 @@
 package one.rarebit.cruciform.ui.nav
 
+import one.rarebit.cruciform.domain.RETIRED_RECOVERY_SHEET
 import one.rarebit.cruciform.domain.ScannedCode
 import one.rarebit.cruciform.ui.flow.ScannedSecretViewModel
 import org.junit.Test
@@ -8,9 +9,12 @@ import kotlin.test.assertFalse
 import kotlin.test.assertNull
 
 class ScanRoutingTest {
-    private val login = ScannedCode.WebLogin("https://rp.example.test", "L1", "voidbind:login?…")
-    private val invite = ScannedCode.PairInvite("https://relay.example.test", "s1", "voidbind:pair?…")
-    private val secret = ScannedCode.RecoverySecret("HEYARR1QQQSYQCYQ5RQWZQFPG9SCRGWPUGPZYSNZS23V9CCRYDPK8QARC0S6E0UCU")
+    private val login = ScannedCode.WebLogin("https://rp.example.test", "L1", "void-which-binds:login?…")
+    private val invite = ScannedCode.PairInvite("https://relay.example.test", "s1", "void-which-binds:pair?…")
+    private val secret =
+        ScannedCode.RecoverySecret("VOID-WHICH-BINDS1QQQSYQCYQ5RQWZQFPG9SCRGWPUGPZYSNZS23V9CCRYDPK8QARC0STSKA6C")
+    private val gen1 =
+        ScannedCode.RetiredRecoverySecret("HEYARR1QQQSYQCYQ5RQWZQFPG9SCRGWPUGPZYSNZS23V9CCRYDPK8QARC0S6E0UCU")
     private val junk = ScannedCode.Unknown("https://example.com")
 
     @Test
@@ -18,7 +22,7 @@ class ScanRoutingTest {
         for (hasIdentity in listOf(false, true)) {
             assertEquals(ScanAction.OpenLogin(login), scanAction(login, ScanMode.ANY, hasIdentity))
             assertEquals(ScanAction.JoinPair(invite), scanAction(invite, ScanMode.ANY, hasIdentity))
-            assertEquals(ScanAction.Reject(NOT_A_VOIDBIND_CODE), scanAction(junk, ScanMode.ANY, hasIdentity))
+            assertEquals(ScanAction.Reject(NOT_A_VOID_WHICH_BINDS_CODE), scanAction(junk, ScanMode.ANY, hasIdentity))
         }
     }
 
@@ -26,6 +30,16 @@ class ScanRoutingTest {
     fun `a recovery sheet restores from onboarding and runs the drill once an identity exists`() {
         assertEquals(ScanAction.Restore(secret.raw), scanAction(secret, ScanMode.ANY, hasIdentity = false))
         assertEquals(ScanAction.Drill(secret.raw), scanAction(secret, ScanMode.ANY, hasIdentity = true))
+    }
+
+    @Test
+    fun `a gen1 recovery sheet is refused as retired by either scanner`() {
+        for (hasIdentity in listOf(false, true)) {
+            for (mode in ScanMode.entries) {
+                assertEquals(ScanAction.Reject(RETIRED_RECOVERY_SHEET), scanAction(gen1, mode, hasIdentity))
+            }
+        }
+        assertFalse(gen1.toString().contains(gen1.raw))
     }
 
     @Test

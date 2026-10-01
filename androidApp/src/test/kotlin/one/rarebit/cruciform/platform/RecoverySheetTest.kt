@@ -131,7 +131,7 @@ class RecoverySheetTest {
         val strings = texts.map { it.text }
 
         assertTrue("Recovery secret" in strings)
-        assertTrue("Voidbind identity · written 25 September 2026" in strings)
+        assertTrue("Void-Which-Binds identity · written 25 September 2026" in strings)
         assertEquals(content.groups, texts.filter { it.style == RecoverySheet.Styles.Secret }.map { it.text })
         assertTrue("Fingerprint " in strings)
         assertEquals(user.fingerprint, texts.single { it.style == RecoverySheet.Styles.Fingerprint }.text)

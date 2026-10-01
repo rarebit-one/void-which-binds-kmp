@@ -134,8 +134,8 @@ class LoginViewModelTest {
 
     @Test
     fun `an unknown code is a one-line login error`() {
-        vm.showError("Not a Voidbind code.")
-        assertEquals(LoginErrorState("Not a Voidbind code."), vm.loginError.value)
+        vm.showError("Not a Void-Which-Binds code.")
+        assertEquals(LoginErrorState("Not a Void-Which-Binds code."), vm.loginError.value)
         vm.dismissLoginError()
         assertNull(vm.loginError.value)
     }

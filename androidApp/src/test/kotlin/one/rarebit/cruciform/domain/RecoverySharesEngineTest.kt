@@ -18,7 +18,7 @@ import kotlin.test.assertFailsWith
 /**
  * [DeviceVoidbindEngine.splitRecoverySecret] (Settings → Split into shares) over the
  * same test seams as [DeviceVoidbindEngineTest]: the kept recovery secret split into
- * the voidbind SLIP-39 profile (void-which-binds-go ADR-0011, any 2 of 3), behind a strong
+ * the Void-Which-Binds SLIP-39 profile (void-which-binds-go ADR-0011, any 2 of 3), behind a strong
  * biometric, checked with the library's real combine.
  */
 class RecoverySharesEngineTest {

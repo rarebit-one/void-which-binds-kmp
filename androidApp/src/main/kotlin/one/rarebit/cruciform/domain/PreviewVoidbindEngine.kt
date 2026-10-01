@@ -63,9 +63,16 @@ class PreviewVoidbindEngine(initial: IdentityState = SampleData.activeState) : V
     }
 
     override fun parseScanned(raw: String): ScannedCode = when {
-        raw.startsWith("voidbind:login") -> ScannedCode.WebLogin("https://thesim.family", "sample-login-id", raw)
-        raw.startsWith("voidbind:pair") -> ScannedCode.PairInvite("wss://relay.thesim.family", "sample-session", raw)
-        raw.lowercase().startsWith("heyarr1") -> ScannedCode.RecoverySecret(raw)
+        raw.startsWith("void-which-binds:login") ->
+            ScannedCode.WebLogin("https://thesim.family", "sample-login-id", raw)
+
+        raw.startsWith("void-which-binds:pair") ->
+            ScannedCode.PairInvite("wss://relay.thesim.family", "sample-session", raw)
+
+        raw.lowercase().startsWith("void-which-binds1") -> ScannedCode.RecoverySecret(raw)
+
+        raw.lowercase().startsWith("heyarr1") -> ScannedCode.RetiredRecoverySecret(raw)
+
         else -> ScannedCode.Unknown(raw)
     }
 
@@ -247,8 +254,8 @@ object SampleData {
     )
 
     val recoveryBackup = RecoveryBackup(
-        groupedSecret = "heyarr1 r9k7 x4pm 2qvt 8c3n h6wy f0ad j5se u2lz",
-        rawSecret = "heyarr1r9k7x4pm2qvt8c3nh6wyf0adj5seu2lz",
+        groupedSecret = "void -whi ch-b inds 1ph3 wnlp htjp 4ha9 j86g 0ft6 ktvu u4at zyt5 hnm8 m890 5urq 5540 q40x vf4",
+        rawSecret = "void-which-binds1ph3wnlphtjp4ha9j86g0ft6ktvuu4atzyt5hnm8m8905urq5540q40xvf4",
         fingerprint = "PYJI XGNZ K7ZH XHEJ",
         userId = "ed25519:7c4a91d20e8f00000000000000000000000000000000000000000000000000ff",
     )
@@ -268,7 +275,7 @@ object SampleData {
 
     val pairInvite = PairInviteDisplay(
         inviteId = "INV · 8F2C 91A7",
-        qrPayload = "voidbind:pair?v=3&relay=wss://relay.thesim.family&session=8f2c91a7&salt=…&usr=ed25519:…",
+        qrPayload = "void-which-binds:pair?v=4&relay=wss://relay.thesim.family&session=8f2c91a7&salt=…&usr=ed25519:…",
         expiresInSeconds = 278,
     )
 

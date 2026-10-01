@@ -76,6 +76,10 @@ class OnboardingViewModelTest {
         assertEquals(OnboardingViewModel.CHALLENGE_SIZE, challenge.size)
         assertEquals(challenge.sorted(), challenge)
         assertTrue(challenge.all { it in OnboardingViewModel.FIRST_CHECKED_GROUP..groups.size })
+        // Every group before the first checked one holds part of the fixed `void-which-binds1` prefix.
+        val skipped = groups.take(OnboardingViewModel.FIRST_CHECKED_GROUP - 1).joinToString("")
+        assertEquals(6, OnboardingViewModel.FIRST_CHECKED_GROUP)
+        assertTrue(skipped.startsWith("void-which-binds1") && skipped.length - "void-which-binds1".length < 4)
     }
 
     @Test
@@ -104,7 +108,7 @@ class OnboardingViewModelTest {
 
     @Test
     fun `restore passes the typed secret straight to the engine`() = runTest {
-        assertEquals(EngineResult.Ready(Unit), vm.restore("heyarr1test"))
+        assertEquals(EngineResult.Ready(Unit), vm.restore("void-which-binds1test"))
         assertEquals(listOf("restoreIdentity"), engine.calls)
     }
 }

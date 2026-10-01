@@ -17,7 +17,7 @@ import one.rarebit.cruciform.ui.theme.VbColors
 /**
  * Renders [content] as a QR code — the invite this device shows when it is the
  * existing (initiator) side of a pairing. Encoded on a white field for reliable
- * scanning; the payload is a `voidbind:pair?…` URI produced by the library.
+ * scanning; the payload is a `void-which-binds:pair?…` URI produced by the library.
  */
 @Composable
 fun QrImage(content: String, modifier: Modifier = Modifier, sizePx: Int = 512) {

@@ -60,7 +60,7 @@ fun OnboardingScreen(
         VSpace(12)
         Text("Cruciform", style = MaterialTheme.typography.headlineMedium, color = VbColors.TextPrimary)
         VSpace(4)
-        Text("Voidbind protocol", style = MaterialTheme.typography.labelMedium, color = VbColors.TextMuted)
+        Text("Void-Which-Binds protocol", style = MaterialTheme.typography.labelMedium, color = VbColors.TextMuted)
         VSpace(28)
         Text(
             "Your identity,\nunder your control.",

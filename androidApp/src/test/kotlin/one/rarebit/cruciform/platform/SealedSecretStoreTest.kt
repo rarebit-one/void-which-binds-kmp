@@ -52,7 +52,7 @@ class SealedSecretStoreTest {
     }
 
     private val keys = SoftwareWrapKeys()
-    private val dir: File by lazy { File(tmp.root, "voidbind") }
+    private val dir: File by lazy { File(tmp.root, "void-which-binds") }
     private val store by lazy { SealedSecretStore({ dir }, keys) }
 
     private val secret = ByteArray(32) { it.toByte() }
@@ -80,7 +80,10 @@ class SealedSecretStoreTest {
         store.seal("device-enc", secret)
         store.seal("recovery", secret)
 
-        assertEquals(listOf("voidbind.secret.wrap.device-enc", "voidbind.secret.wrap.recovery"), keys.created)
+        assertEquals(
+            listOf("void-which-binds.secret.wrap.device-enc", "void-which-binds.secret.wrap.recovery"),
+            keys.created,
+        )
     }
 
     @Test
@@ -101,7 +104,7 @@ class SealedSecretStoreTest {
         store.sealStrong("recovery", secret)
 
         assertTrue(store.isStrong("recovery"))
-        assertNull(keys.load("voidbind.secret.wrap.recovery"))
+        assertNull(keys.load("void-which-binds.secret.wrap.recovery"))
         assertArrayEquals(secret, store.unseal("recovery"))
     }
 

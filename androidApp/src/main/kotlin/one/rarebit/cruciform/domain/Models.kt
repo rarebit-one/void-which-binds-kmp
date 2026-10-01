@@ -131,7 +131,7 @@ sealed interface IdentityState {
 
 /** The newly minted recovery secret shown on the backup screen (create flow). */
 data class RecoveryBackup(
-    /** The bech32m secret, e.g. `heyarr1...`, already grouped for display. */
+    /** The bech32m secret, e.g. `void-which-binds1...`, already grouped for display. */
     val groupedSecret: String,
     /** The raw single-line secret, for copy. */
     val rawSecret: String,
@@ -187,12 +187,22 @@ sealed interface ScannedCode {
     data class PairInvite(val relay: String, val session: String, val raw: String) : ScannedCode
 
     /**
-     * A recovery secret (`heyarr1…`, the sheet's QR carries it upper-case) that parsed,
+     * A recovery secret (`void-which-binds1…`, the sheet's QR carries it upper-case) that parsed,
      * checksum and all. [raw] is exactly what was scanned; it is only ever used to fill
      * the Restore or drill field, and [toString] never prints it.
      */
     data class RecoverySecret(val raw: String) : ScannedCode {
         override fun toString(): String = "RecoverySecret(<redacted>)"
+    }
+
+    /**
+     * A gen1 recovery secret (`heyarr1…`, a sheet printed before the void-which-binds
+     * cutover). The library recognises it only to refuse it
+     * ([one.rarebit.voidwhichbinds.RecoverySecret.GenerationRetiredException]); the
+     * scanner says so ([RETIRED_RECOVERY_SHEET]) instead of "not a code".
+     */
+    data class RetiredRecoverySecret(val raw: String) : ScannedCode {
+        override fun toString(): String = "RetiredRecoverySecret(<redacted>)"
     }
 
     data class Unknown(val raw: String) : ScannedCode

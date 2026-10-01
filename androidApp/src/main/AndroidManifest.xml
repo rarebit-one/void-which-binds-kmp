@@ -29,7 +29,7 @@
     <queries>
         <intent>
             <action android:name="android.intent.action.VIEW" />
-            <category android:name="one.rarebit.voidbind.category.RP_HANDOFF" />
+            <category android:name="one.rarebit.voidwhichbinds.category.RP_HANDOFF" />
         </intent>
         <!-- Package visibility (Android 11+) for discovering UnifiedPush DISTRIBUTORS
              (e.g. ntfy): UnifiedPushRegistrar queries queryBroadcastReceivers for this
@@ -66,16 +66,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <!-- Same-device app-to-app handoff: a relying-party app on THIS phone opens
-                 the authenticator with the same `voidbind:login?rp=&id=` tuple its QR
-                 would carry (optionally `&callback=<app-scheme-uri>`), or a
-                 `voidbind:pair?…` invite. The activity is singleTask so a warm app gets
-                 the link via onNewIntent and finish() returns straight to the caller.
-                 See docs/adr/0003-app-to-app-deeplink-handoff.md. -->
+                 the authenticator with the same `void-which-binds:login?rp=&id=` tuple
+                 its QR would carry (optionally `&callback=<app-scheme-uri>`), or a
+                 `void-which-binds:pair?…` invite. The activity is singleTask so a warm
+                 app gets the link via onNewIntent and finish() returns straight to the
+                 caller. See docs/adr/0003-app-to-app-deeplink-handoff.md.
+                 Gen2 registers ONE scheme filter (void-which-binds-go ADR-0022, restating
+                 ADR-0019): the gen1 `voidbind:` scheme is deliberately absent, so a gen1
+                 link never reaches this app. -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="voidbind" />
+                <data android:scheme="void-which-binds" />
             </intent-filter>
             <!-- `cruciform://pair-joined?session=&dev=&sas=` — the SAME-PHONE one-tap
                  channel (ADR-0008). A relying-party app we handed an invite to reports,
@@ -99,7 +102,7 @@
             android:exported="false"
             android:foregroundServiceType="dataSync" />
 
-        <!-- Self-hosted ntfy / UnifiedPush wake receiver — Voidbind's ONLY background
+        <!-- Self-hosted ntfy / UnifiedPush wake receiver — Cruciform's ONLY background
              push path (no FCM/Google). A UnifiedPush distributor broadcasts these
              actions; the receiver routes an OPAQUE login tuple into the app. exported
              because the distributor is a separate app. -->

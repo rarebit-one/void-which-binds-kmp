@@ -20,12 +20,12 @@ import one.rarebit.voidwhichbinds.VoidbindQr
  *
  * # The load-bearing invariant: the ping is opaque
  *
- * A delivered message body is the OPAQUE login tuple (`voidbind:login?rp=&id=`) and
+ * A delivered message body is the OPAQUE login tuple (`void-which-binds:login?rp=&id=`) and
  * nothing else — the exact same string a QR carries. This receiver does no crypto:
  * it hands the bytes to [PushPing] (which only decodes the tuple — there is no secret
  * in it to read) and, on a valid login, wakes [MainActivity] to surface the
  * number-match approval. The phone then pulls the real challenge from the RP over TLS
- * and signs it hardware-gated. A message that is not a voidbind login tuple is
+ * and signs it hardware-gated. A message that is not a void-which-binds login tuple is
  * silently dropped ([PushPing.parseOrNull]) — a stray push drives the app nowhere.
  */
 class UnifiedPushReceiver : BroadcastReceiver() {
@@ -83,6 +83,6 @@ class UnifiedPushReceiver : BroadcastReceiver() {
         private const val EXTRA_MESSAGE_STRING = "messageString"
 
         /** Intent extra carrying the opaque login tuple from a push into [MainActivity]. */
-        const val EXTRA_LOGIN_TUPLE = "one.rarebit.voidbind.LOGIN_TUPLE"
+        const val EXTRA_LOGIN_TUPLE = "one.rarebit.voidwhichbinds.LOGIN_TUPLE"
     }
 }

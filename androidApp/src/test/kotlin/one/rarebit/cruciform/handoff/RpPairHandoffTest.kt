@@ -14,9 +14,9 @@ import org.junit.Test
  */
 class RpPairHandoffTest {
 
-    private val invite = "voidbind:pair?relay=http%3A%2F%2F192.168.16.224%3A8788&salt=" +
+    private val invite = "void-which-binds:pair?relay=http%3A%2F%2F192.168.16.224%3A8788&salt=" +
         "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff&session=sess1" +
-        "&usr=ed25519%3Af947b10c8089aa8fed2d435fae069d0ca1513b33691955ae963dfe8bc5b398c4&v=3"
+        "&usr=ed25519%3Af947b10c8089aa8fed2d435fae069d0ca1513b33691955ae963dfe8bc5b398c4&v=4"
     private val heyarr = RpPairTarget(appName = "heyarr", callbackBase = "heyarr-mobile://pair")
 
     @Test
@@ -39,7 +39,7 @@ class RpPairHandoffTest {
     @Test
     fun aLoginTupleIsRefused() {
         assertThrows(IllegalArgumentException::class.java) {
-            RpPairHandoff.uriFor(heyarr, "voidbind:login?id=x&rp=http%3A%2F%2Fh")
+            RpPairHandoff.uriFor(heyarr, "void-which-binds:login?id=x&rp=http%3A%2F%2Fh")
         }
     }
 
@@ -64,10 +64,20 @@ class RpPairHandoffTest {
     }
 
     @Test
+    fun aGen1InviteIsRefused() {
+        assertThrows(IllegalArgumentException::class.java) {
+            RpPairHandoff.uriFor(heyarr, invite.replaceFirst("void-which-binds:", "voidbind:"))
+        }
+    }
+
+    @Test
     fun advertsWithoutASchemeOrWithOursAreRefused() {
         assertNull(RpPairHandoff.targetFrom(RpHandoffAdvert("p", "X", pairScheme = null)))
         assertNull(RpPairHandoff.targetFrom(RpHandoffAdvert("p", "X", pairScheme = "  ")))
-        // `voidbind` is ours — firing it would loop back into Cruciform.
+        // `void-which-binds` is ours — firing it would loop back into Cruciform.
+        assertNull(RpPairHandoff.targetFrom(RpHandoffAdvert("p", "X", pairScheme = "void-which-binds")))
+        assertNull(RpPairHandoff.targetFrom(RpHandoffAdvert("p", "X", pairScheme = "Void-Which-Binds")))
+        // The retired gen1 `voidbind` would hand a gen2 invite to a gen1 authenticator.
         assertNull(RpPairHandoff.targetFrom(RpHandoffAdvert("p", "X", pairScheme = "voidbind")))
         assertNull(RpPairHandoff.targetFrom(RpHandoffAdvert("p", "X", pairScheme = "VoidBind")))
     }

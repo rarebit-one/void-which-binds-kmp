@@ -18,9 +18,13 @@ import VoidWhichBinds
 /// Storage layout (all in the Keychain, per `alias`):
 ///  - the SE P-256 private key — a `SecKey` with `kSecAttrTokenIDSecureEnclave`,
 ///    access control `.privateKeyUsage` + `.biometryCurrentSet`, application tag
-///    `voidbind.<alias>.sekey`. Non-extractable by construction.
-///  - the sealed seed ciphertext — a generic-password item `voidbind.<alias>.sealed`.
-///  - the Ed25519 public key (RAW 32 bytes, not secret) — `voidbind.<alias>.pub`.
+///    `void-which-binds.<alias>.sekey`. Non-extractable by construction.
+///  - the sealed seed ciphertext — a generic-password item `void-which-binds.<alias>.sealed`.
+///  - the Ed25519 public key (RAW 32 bytes, not secret) — `void-which-binds.<alias>.pub`.
+///
+/// The tags and the Keychain service (`one.rarebit.voidwhichbinds`) are fresh gen2 names
+/// (void-which-binds-go ADR-0013/0022): gen2 enrols a new device key, and nothing reads
+/// the gen1 `voidbind.*` items.
 ///
 /// > Type-checked against the exported `VoidWhichBinds.xcframework` (simulator slice);
 /// > the Secure Enclave + biometric behaviour still needs a **real iPhone** (see
@@ -150,7 +154,7 @@ public final class EnclaveSealer: NSObject, SecureEnclaveSealer {
     private func persist(_ data: Data, tag: String) throws {
         let base: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: "one.rarebit.voidbind",
+            kSecAttrService as String: keychainService,
             kSecAttrAccount as String: tag,
         ]
         SecItemDelete(base as CFDictionary)
@@ -164,7 +168,7 @@ public final class EnclaveSealer: NSObject, SecureEnclaveSealer {
     private func loadPersisted(tag: String) throws -> Data {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: "one.rarebit.voidbind",
+            kSecAttrService as String: keychainService,
             kSecAttrAccount as String: tag,
             kSecReturnData as String: true,
         ]
@@ -180,9 +184,11 @@ public final class EnclaveSealer: NSObject, SecureEnclaveSealer {
 
     // MARK: - Tags
 
-    private func seKeyTag(_ alias: String) -> Data { "voidbind.\(alias).sekey".data(using: .utf8)! }
-    private func sealedTag(_ alias: String) -> String { "voidbind.\(alias).sealed" }
-    private func pubTag(_ alias: String) -> String { "voidbind.\(alias).pub" }
+    private let keychainService = "one.rarebit.voidwhichbinds"
+
+    private func seKeyTag(_ alias: String) -> Data { "void-which-binds.\(alias).sekey".data(using: .utf8)! }
+    private func sealedTag(_ alias: String) -> String { "void-which-binds.\(alias).sealed" }
+    private func pubTag(_ alias: String) -> String { "void-which-binds.\(alias).pub" }
 
     enum SealerError: Error {
         case publicKeyUnavailable, algorithmUnsupported, sealFailed, unsealFailed

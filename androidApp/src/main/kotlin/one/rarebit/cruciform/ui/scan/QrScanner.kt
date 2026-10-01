@@ -38,7 +38,7 @@ import com.google.mlkit.vision.common.InputImage
  * responsible for stopping navigation to this composable once a code is handled.
  *
  * Changing [rescanKey] re-arms it: the next code read is reported too (after the
- * caller refused the last one, e.g. "Not a Voidbind code").
+ * caller refused the last one, e.g. "Not a Void-Which-Binds code").
  */
 @Composable
 fun QrScanner(

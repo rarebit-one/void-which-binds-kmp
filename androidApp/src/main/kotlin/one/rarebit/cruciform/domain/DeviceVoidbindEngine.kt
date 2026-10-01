@@ -208,8 +208,7 @@ class DeviceVoidbindEngine(
     } catch (_: Exception) {
         // Not a login or pairing code: perhaps the recovery sheet's QR (the secret in
         // upper case; the parser folds case and ignores whitespace, checksum included).
-        val isSecret = runCatching { RecoverySecret.parse(raw) }.isSuccess
-        if (isSecret) ScannedCode.RecoverySecret(raw) else ScannedCode.Unknown(raw)
+        scannedRecoverySecret(raw)
     }
 
     // --- Web login ------------------------------------------------------------
@@ -577,6 +576,9 @@ class DeviceVoidbindEngine(
         return when {
             // The keystore wanted a fresh authentication and the human declined the prompt.
             e is AuthenticationRequiredException -> CANCELLED_FAILURE
+
+            // A gen1 sheet typed into Restore or the drill: retired, not mistyped (ADR-0022).
+            e is RecoverySecret.GenerationRetiredException -> RETIRED_RECOVERY_FAILURE
 
             // check()/error() in this engine: "no identity", "no login in progress", "This
             // device is no longer a member…" — a precondition, not a network problem.

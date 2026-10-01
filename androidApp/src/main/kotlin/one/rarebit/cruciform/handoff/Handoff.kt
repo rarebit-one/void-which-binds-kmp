@@ -4,7 +4,7 @@ import one.rarebit.voidwhichbinds.VoidbindDeepLink
 
 /**
  * A login/pairing the app was WOKEN into from outside its own UI — by a push ping
- * ([Origin.PUSH]) or by another app's `voidbind:` deep link ([Origin.DEEP_LINK], the
+ * ([Origin.PUSH]) or by another app's `void-which-binds:` deep link ([Origin.DEEP_LINK], the
  * same-device app-to-app handoff). The nav graph runs the identical approval flow a
  * scan does; the origin only decides what happens AFTER the human decides:
  *
@@ -20,7 +20,7 @@ import one.rarebit.voidwhichbinds.VoidbindDeepLink
 data class Handoff(
     val kind: Kind,
     val origin: Origin,
-    /** The bare `voidbind:` tuple (no callback) — exactly what a scan would yield. */
+    /** The bare `void-which-binds:` tuple (no callback) — exactly what a scan would yield. */
     val tuple: String,
     val callback: String?,
     val seq: Int,
@@ -37,17 +37,21 @@ data class Handoff(
  * `action` + `dataString` so it is unit-tested without an Android runtime. The URI
  * is untrusted input from another app: everything goes through
  * [VoidbindDeepLink.parse] (as strict as a scan), a bad callback is dropped there,
- * and anything that is not a `voidbind:` login/pair VIEW yields null.
+ * and anything that is not a `void-which-binds:` login/pair VIEW yields null — the
+ * retired gen1 `voidbind:` scheme included (void-which-binds-go ADR-0022: no gen1 reader).
  */
 object HandoffRouter {
 
     /** `Intent.ACTION_VIEW`, as a string so this file stays free of android.* imports. */
     const val ACTION_VIEW = "android.intent.action.VIEW"
 
+    /** The one scheme this app answers (the manifest registers it alone). */
+    private const val SCHEME_PREFIX = "void-which-binds:"
+
     fun fromDeepLink(action: String?, dataString: String?, seq: Int): Handoff? {
         if (action != ACTION_VIEW) return null
         val uri = dataString?.trim() ?: return null
-        if (!uri.startsWith("voidbind:", ignoreCase = false)) return null
+        if (!uri.startsWith(SCHEME_PREFIX, ignoreCase = false)) return null
         return when (val parsed = VoidbindDeepLink.parseOrNull(uri)) {
             is VoidbindDeepLink.Parsed.Login ->
                 Handoff(Handoff.Kind.LOGIN, Handoff.Origin.DEEP_LINK, parsed.tuple, parsed.callback, seq)

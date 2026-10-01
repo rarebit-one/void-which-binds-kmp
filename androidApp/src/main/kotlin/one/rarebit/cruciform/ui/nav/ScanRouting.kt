@@ -1,10 +1,11 @@
 package one.rarebit.cruciform.ui.nav
 
+import one.rarebit.cruciform.domain.RETIRED_RECOVERY_SHEET
 import one.rarebit.cruciform.domain.ScannedCode
 
 /** What a scanner is open for. */
 enum class ScanMode {
-    /** The bottom-bar / onboarding scanner: any Voidbind code, or a recovery sheet. */
+    /** The bottom-bar / onboarding scanner: any Void-Which-Binds code, or a recovery sheet. */
     ANY,
 
     /** Opened from the Restore or drill field: only a recovery secret, handed back to it. */
@@ -36,7 +37,7 @@ sealed interface ScanAction {
     data class Reject(val message: String) : ScanAction
 }
 
-const val NOT_A_VOIDBIND_CODE = "Not a Voidbind code"
+const val NOT_A_VOID_WHICH_BINDS_CODE = "Not a Void-Which-Binds code"
 const val NOT_A_RECOVERY_SECRET = "Not a recovery secret. Scan the QR code on your printed recovery sheet."
 
 /**
@@ -47,6 +48,7 @@ const val NOT_A_RECOVERY_SECRET = "Not a recovery secret. Scan the QR code on yo
 fun scanAction(code: ScannedCode, mode: ScanMode, hasIdentity: Boolean): ScanAction = when (mode) {
     ScanMode.RECOVERY_SECRET -> when (code) {
         is ScannedCode.RecoverySecret -> ScanAction.ReturnSecret(code.raw)
+        is ScannedCode.RetiredRecoverySecret -> ScanAction.Reject(RETIRED_RECOVERY_SHEET)
         else -> ScanAction.Reject(NOT_A_RECOVERY_SECRET)
     }
 
@@ -54,6 +56,7 @@ fun scanAction(code: ScannedCode, mode: ScanMode, hasIdentity: Boolean): ScanAct
         is ScannedCode.WebLogin -> ScanAction.OpenLogin(code)
         is ScannedCode.PairInvite -> ScanAction.JoinPair(code)
         is ScannedCode.RecoverySecret -> if (hasIdentity) ScanAction.Drill(code.raw) else ScanAction.Restore(code.raw)
-        is ScannedCode.Unknown -> ScanAction.Reject(NOT_A_VOIDBIND_CODE)
+        is ScannedCode.RetiredRecoverySecret -> ScanAction.Reject(RETIRED_RECOVERY_SHEET)
+        is ScannedCode.Unknown -> ScanAction.Reject(NOT_A_VOID_WHICH_BINDS_CODE)
     }
 }

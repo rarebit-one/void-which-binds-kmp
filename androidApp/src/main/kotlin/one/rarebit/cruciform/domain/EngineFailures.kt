@@ -1,7 +1,33 @@
 package one.rarebit.cruciform.domain
 
+import one.rarebit.voidwhichbinds.RecoverySecret
 import one.rarebit.voidwhichbinds.flow.PairingFailureKind
 import one.rarebit.voidwhichbinds.flow.PairingOutcome
+
+/**
+ * A gen1 (`heyarr1…`) recovery secret, typed or scanned. Gen2 has no gen1 reader
+ * (void-which-binds-go ADR-0022): the library throws
+ * [one.rarebit.voidwhichbinds.RecoverySecret.GenerationRetiredException] and the app
+ * says plainly why, rather than calling the old sheet a typo.
+ */
+const val RETIRED_RECOVERY_SHEET =
+    "This is an old (gen1) recovery sheet. It was retired at the Void-Which-Binds cutover " +
+        "and can't restore or check an identity. Use your new sheet: its secret starts void-which-binds1."
+
+/** [RETIRED_RECOVERY_SHEET] as a failure: a deliberate refusal, resolved by the gen2 sheet. */
+internal val RETIRED_RECOVERY_FAILURE =
+    EngineFailure(RETIRED_RECOVERY_SHEET, EngineFailure.Kind.NOT_YET, retryable = false)
+
+/**
+ * Classify a scanned string that is not a login or pairing code: a recovery sheet's
+ * secret, a gen1 (`heyarr1…`) sheet — recognised only to say it was retired — or junk.
+ */
+internal fun scannedRecoverySecret(raw: String): ScannedCode =
+    when (runCatching { RecoverySecret.parse(raw) }.exceptionOrNull()) {
+        null -> ScannedCode.RecoverySecret(raw)
+        is RecoverySecret.GenerationRetiredException -> ScannedCode.RetiredRecoverySecret(raw)
+        else -> ScannedCode.Unknown(raw)
+    }
 
 /** A declined or dismissed prompt. */
 internal val CANCELLED_FAILURE =

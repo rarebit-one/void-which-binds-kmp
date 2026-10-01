@@ -2,7 +2,7 @@ import AVFoundation
 import SwiftUI
 import VoidWhichBinds
 
-/// The QR scanner. A scanned (or pasted) `voidbind:` code is classified by the KMP
+/// The QR scanner. A scanned (or pasted) `void-which-binds:` code is classified by the KMP
 /// `VoidbindQr.parse` and dispatched: a **login** QR opens the web-login approval
 /// sheet, a **pair** invite opens the SAS-verify flow. The camera runs on device;
 /// in the Simulator (no camera) it falls back to a manual-entry field so the
@@ -65,7 +65,7 @@ struct ScanView: View {
                     .font(.system(size: 40)).foregroundStyle(VB.textFaint)
                 Text("Camera isn’t available in the Simulator")
                     .font(VB.rounded(14)).foregroundStyle(VB.textSecondary)
-                Text("Paste a voidbind: code below to test the dispatch.")
+                Text("Paste a void-which-binds: code below to test the dispatch.")
                     .font(VB.rounded(12)).foregroundStyle(VB.textFaint)
             }
             #else
@@ -91,7 +91,7 @@ struct ScanView: View {
             Text("Enter a code manually").font(VB.rounded(14, .semibold)).foregroundStyle(VB.textSecondary)
             HStack(spacing: 10) {
                 TextField("", text: $manualEntry,
-                          prompt: Text("voidbind:login?… / voidbind:pair?…").foregroundColor(VB.textFaint))
+                          prompt: Text("void-which-binds:login?… / void-which-binds:pair?…").foregroundColor(VB.textFaint))
                     .font(VB.mono(13))
                     .autocorrectionDisabled().textInputAutocapitalization(.never)
                     .padding(12)
@@ -115,10 +115,10 @@ struct ScanView: View {
             switch engine.parseScanned(trimmed) {
             case is VoidbindQr.Login: error = nil; dispatch = .login(trimmed)
             case is VoidbindQr.Pair:  error = nil; dispatch = .pair(trimmed)
-            default: error = "That isn’t a Voidbind code."
+            default: error = "That isn’t a Void-Which-Binds code."
             }
         } catch {
-            self.error = "That isn’t a Voidbind code."
+            self.error = "That isn’t a Void-Which-Binds code."
         }
     }
 }
@@ -126,7 +126,7 @@ struct ScanView: View {
 // MARK: - AVFoundation camera (device only)
 
 #if !targetEnvironment(simulator)
-/// A live camera preview that reports the first `voidbind:` QR payload it reads.
+/// A live camera preview that reports the first `void-which-binds:` QR payload it reads.
 struct QRScannerCamera: UIViewRepresentable {
     let onCode: (String) -> Void
 
@@ -166,7 +166,7 @@ struct QRScannerCamera: UIViewRepresentable {
                             from connection: AVCaptureConnection) {
             guard !delivered,
                   let obj = objects.first as? AVMetadataMachineReadableCodeObject,
-                  let value = obj.stringValue, value.hasPrefix("voidbind:") else { return }
+                  let value = obj.stringValue, value.hasPrefix("void-which-binds:") else { return }
             delivered = true
             onCode?(value)
         }

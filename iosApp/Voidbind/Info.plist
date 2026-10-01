@@ -27,7 +27,7 @@
 	<key>NSFaceIDUsageDescription</key>
 	<string>Authenticate to use your Cruciform device key</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Scan a Voidbind sign-in or pairing QR code</string>
+	<string>Scan a Void-Which-Binds sign-in or pairing QR code</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

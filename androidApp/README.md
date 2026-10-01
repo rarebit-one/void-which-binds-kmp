@@ -4,7 +4,7 @@ The first-party Android app, **Cruciform** (`one.rarebit.cruciform`; the Hyperio
 Cantos artefact that lets you come back with your identity intact — ADR-0004): a
 Jetpack Compose, Material 3, **dark-first** authenticator that drives the real
 **Void-Which-Binds** protocol flows with a hardware-backed device key. Void-Which-Binds names the
-protocol and the `voidbind:` scheme; Cruciform names this app. It is a separate Gradle application module that depends on the root KMP
+protocol and the `void-which-binds:` scheme; Cruciform names this app. It is a separate Gradle application module that depends on the root KMP
 library (`project(":")`) — the shared wire contract, the flow coordinators, and
 the hardware `DeviceKeyStore`.
 
@@ -26,7 +26,7 @@ The screens follow the product mockups one-to-one:
 Two ways the app is opened *into* a login from outside its own UI, both running the
 identical approval flow a scan does: a **push wake** (`UnifiedPushReceiver`, self-hosted
 ntfy/UnifiedPush) and a **same-device deep link** — a relying-party app on this phone
-launching `voidbind:login?rp=&id=[&callback=]` (`ACTION_VIEW`, the activity is
+launching `void-which-binds:login?rp=&id=[&callback=]` (`ACTION_VIEW`, the activity is
 `singleTask`, so a warm app gets it via `onNewIntent`). After the deep-link decision the
 activity finishes so the caller resumes; a well-formed private-scheme `callback` is
 launched bare only after a successful approval. Routing lives in `handoff/`
@@ -80,12 +80,26 @@ The engine is chosen at **build time** — no source edit:
 
 `local.properties` must point `sdk.dir` at your Android SDK (gitignored).
 
+### Gen2 (1.0.0+): a new identity, no gen1 state
+
+From 1.0.0 Cruciform is **gen2-only** (void-which-binds-go ADR-0022, library 0.11.0). It
+answers the `void-which-binds:` scheme alone (a gen1 `voidbind:` link never reaches it),
+advertises/queries `one.rarebit.voidwhichbinds.category.RP_HANDOFF` with the
+`one.rarebit.voidwhichbinds.rp.pair_scheme` meta-data, and keeps everything on the device
+under fresh names: keystore aliases `void-which-binds.secret.wrap[-strong].<n>` (and the
+library's `void-which-binds.wrap.<alias>`), `filesDir/void-which-binds/`, prefs
+`void-which-binds.{identity,policy,notify,relay,push}`. Nothing reads the gen1
+`voidbind.*` names, so installing over a gen1 build starts with no identity: reset the app
+(clear its data) and enrol fresh — the cutover's phone step (ADR-0022 C2 step 8). A gen1
+`heyarr1…` recovery sheet is refused with "This is an old (gen1) recovery sheet"; the gen2
+sheet's secret is `void-which-binds1…` (75 characters).
+
 ### Installing over the old `one.rarebit.voidbind` package
 
 Cruciform is a **different app** to Android from the pre-0.3.0 `one.rarebit.voidbind`
 build: its keystore key and identity prefs are not carried over. Install the new
 package, enrol (create / restore / pair), and only then uninstall the old one so a
-single authenticator claims the `voidbind:` scheme:
+single authenticator claims the (then) `voidbind:` scheme:
 
 ```sh
 ./gradlew -PdeviceEngine=true :androidApp:assembleDebug

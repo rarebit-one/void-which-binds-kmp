@@ -86,7 +86,7 @@ fun RestoreScreen(
                 },
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text("Recovery secret") },
-                placeholder = { Text("heyarr1…") },
+                placeholder = { Text("void-which-binds1…") },
                 isError = error != null,
                 textStyle = TextStyle(fontFamily = FontFamily.Monospace),
                 keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.None),

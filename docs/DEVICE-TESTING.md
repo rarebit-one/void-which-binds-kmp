@@ -100,8 +100,9 @@ iOS; the Android onboarding screens).
 4. **An older install migrates.** Install the previous release, create an identity,
    upgrade to this build, and open Recovery backup once (fingerprint): the copy moves
    under the strong key. The migration is only observable with `adb shell dumpsys
-   keystore` / a keystore listing: `voidbind.secret.wrap.recovery` is gone and
-   `voidbind.secret.wrap-strong.recovery` exists.
+   keystore` / a keystore listing: `void-which-binds.secret.wrap.recovery` is gone and
+   `void-which-binds.secret.wrap-strong.recovery` exists. (A gen1 0.x install does not
+   migrate into gen2 1.0.0: its `voidbind.*` names are never read; reset and enrol fresh.)
 
 ## Test 2c — prove the backup; remove the phone's copy (void-which-binds-go ADR-0010)
 
@@ -160,10 +161,11 @@ print, the paper and the camera are what this test proves.
    <fingerprint>" and the row then reads "Checked <date>". The bottom-bar scanner on
    the sheet opens the same drill, filled. Another identity's sheet is refused, naming
    both fingerprints.
-5. **Wrong codes say so.** In the bottom-bar scanner, a non-Voidbind QR (any URL) shows
-   "Not a Voidbind code" with **Scan again**, which re-arms the camera. In the Restore /
+5. **Wrong codes say so.** In the bottom-bar scanner, a non-Void-Which-Binds QR (any URL) shows
+   "Not a Void-Which-Binds code" with **Scan again**, which re-arms the camera. In the Restore /
    drill scanner, a login or pairing QR shows "Not a recovery secret…"; **Type it
-   instead** returns to the field.
+   instead** returns to the field. A gen1 `heyarr1…` sheet shows "This is an old (gen1)
+   recovery sheet…" in either scanner, and the same when typed into Restore or the drill.
 6. **Nothing lingers.** Screenshots are blocked on the scanner, as on the backup
    screen. After printing, `adb shell run-as one.rarebit.cruciform ls -R cache files`
    shows no PDF. (The print spooler holds its own copy of the job until it completes;
@@ -315,7 +317,7 @@ Simulate the RP with `adb` against a live node:
 # build + install the REAL engine (the phone must already hold an enrolled identity).
 # The app is Cruciform, package one.rarebit.cruciform (ADR-0004); if a pre-0.3.0
 # one.rarebit.voidbind install is still present, uninstall it LAST — after the new
-# app launches and is enrolled — so only one authenticator claims the voidbind: scheme.
+# app launches and is enrolled. (Gen2 1.0.0+ answers only the void-which-binds: scheme.)
 ./gradlew -PdeviceEngine=true :androidApp:assembleDebug
 adb install -r androidApp/build/outputs/apk/debug/androidApp-debug.apk
 # adb uninstall one.rarebit.voidbind   # old package, only once Cruciform is enrolled

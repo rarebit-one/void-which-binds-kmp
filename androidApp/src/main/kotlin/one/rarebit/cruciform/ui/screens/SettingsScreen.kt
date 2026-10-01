@@ -444,7 +444,7 @@ fun SettingsScreen(
                 AboutRow(
                     Icons.Rounded.Security,
                     "Security & protocol",
-                    "Voidbind protocol · hardware-bound device keys",
+                    "Void-Which-Binds protocol · hardware-bound device keys",
                     onSecurity,
                 )
                 VbHairline(Modifier.padding(horizontal = 16.dp))

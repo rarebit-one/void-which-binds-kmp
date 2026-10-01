@@ -13,7 +13,7 @@ import android.content.Context
  */
 class RelaySettings(context: Context) : EndpointSetting {
 
-    private val prefs = context.getSharedPreferences("voidbind.relay", Context.MODE_PRIVATE)
+    private val prefs = context.getSharedPreferences("void-which-binds.relay", Context.MODE_PRIVATE)
 
     /** The configured relay base, or [RelayConfig.DEFAULT_RELAY] when none is set. */
     override fun current(): String = stored() ?: RelayConfig.DEFAULT_RELAY

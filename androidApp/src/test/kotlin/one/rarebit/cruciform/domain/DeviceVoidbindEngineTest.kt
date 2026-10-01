@@ -156,7 +156,7 @@ class DeviceVoidbindEngineTest {
 
     @Test
     fun `restoreIdentity with a mistyped secret fails with the parser's reason and provisions nothing`() = runTest {
-        val f = failure(engine().restoreIdentity("heyarr1notarealsecret"))
+        val f = failure(engine().restoreIdentity("void-which-binds1notarealsecret"))
 
         assertEquals(EngineFailure.Kind.INTERNAL, f.kind)
         assertFalse(f.retryable)
@@ -391,7 +391,7 @@ class DeviceVoidbindEngineTest {
 
     @Test
     fun `parseScanned never throws on junk`() {
-        assertEquals(ScannedCode.Unknown("not a voidbind code"), engine().parseScanned("not a voidbind code"))
+        assertEquals(ScannedCode.Unknown("not a code"), engine().parseScanned("not a code"))
     }
 
     @Test

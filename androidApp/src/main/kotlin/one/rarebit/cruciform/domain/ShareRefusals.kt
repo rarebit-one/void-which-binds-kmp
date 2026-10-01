@@ -52,7 +52,7 @@ internal object ShareRefusals {
         }
     }
 
-    /** A voidbind share: one group, 32 bytes, so 33 words (void-which-binds-go ADR-0011). */
+    /** A Void-Which-Binds share: one group, 32 bytes, so 33 words (void-which-binds-go ADR-0011). */
     const val SHARE_WORDS = 33
 
     const val NOT_A_RECOVERY_SECRET =

@@ -96,7 +96,7 @@ Secure Enclave are blocking) and publishes back on the main actor.
 
 `Voidbind/PreviewHarness.swift` (**DEBUG only**, not in the shipping `RootView`
 path) renders a single screen with representative sample data, selected by the
-`VOIDBIND_PREVIEW_SCREEN` launch environment variable — so every screen can be
+`VOID_WHICH_BINDS_PREVIEW_SCREEN` launch environment variable — so every screen can be
 built + screenshotted in the Simulator with no device, camera, Secure Enclave, or
 network:
 
@@ -104,7 +104,7 @@ network:
 DEV=<booted arm64 simulator udid>
 for s in onboarding recovery home scan login pair-connect pair-verify settings; do
   xcrun simctl terminate "$DEV" one.rarebit.cruciform 2>/dev/null
-  SIMCTL_CHILD_VOIDBIND_PREVIEW_SCREEN=$s xcrun simctl launch "$DEV" one.rarebit.cruciform
+  SIMCTL_CHILD_VOID_WHICH_BINDS_PREVIEW_SCREEN=$s xcrun simctl launch "$DEV" one.rarebit.cruciform
   sleep 2; xcrun simctl io "$DEV" screenshot "$s.png"
 done
 ```
@@ -119,13 +119,15 @@ All eight verified rendering on the iOS 26.2 Simulator (Xcode 26.2).
 `@Throws` catch — not just that the Swift type-checks. It exercises only
 derivation (no Secure Enclave, no network), so it runs headless. See the header of
 that file for the exact `swiftc` + `simctl spawn` commands. Verified passing on the
-iOS 26.2 Simulator:
+iOS 26.2 Simulator before the gen2 cutover (the gen2 KAT, `GEN1_REFUSED` and the
+`void-which-binds:` QR are not yet re-run on a Mac):
 
 ```
 ROUNDTRIP OK      # create → recovery secret → restore → same identity
 KAT OK            # a known secret derives the exact void-which-binds-go public key, through Swift
 THROWS OK         # a mistyped secret is caught, not a crash (the @Throws fix)
-QR_MATCH OK       # the voidbind:login QR is byte-identical through Swift
+GEN1_REFUSED OK   # a gen1 heyarr1… secret is refused (ADR-0022: no gen1 reader)
+QR_MATCH OK       # the void-which-binds:login QR is byte-identical through Swift
 SMOKE_DONE
 ```
 
