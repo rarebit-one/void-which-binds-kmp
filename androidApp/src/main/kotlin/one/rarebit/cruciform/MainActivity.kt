@@ -65,6 +65,7 @@ import one.rarebit.cruciform.ui.theme.CruciformTheme
 class MainActivity : FragmentActivity() {
 
     private var handoff by mutableStateOf<Handoff?>(null)
+    private var offloadWake by mutableStateOf<String?>(null)
     private var handoffSeq = 0
 
     /**
@@ -82,6 +83,7 @@ class MainActivity : FragmentActivity() {
         // fresh — re-routing it re-fires the approval, which is the right thing (the
         // flow state it held was ephemeral).
         handoff = routeIntent(intent)
+        offloadWake = intent.getStringExtra(UnifiedPushReceiver.EXTRA_OFFLOAD_WAKE)
         samePhoneJoin = routeSamePhone(intent)
         setContent {
             CruciformTheme {
@@ -152,6 +154,8 @@ class MainActivity : FragmentActivity() {
                     CruciformNavHost(
                         vm,
                         handoff = handoff,
+                        offloadWake = offloadWake,
+                        onOffloadWakeHandled = { offloadWake = null },
                         onHandoffFinished = ::finishHandoff,
                         samePhoneJoin = samePhoneJoin,
                         onSamePhoneDone = ::finishSamePhone,
@@ -167,6 +171,7 @@ class MainActivity : FragmentActivity() {
         setIntent(intent)
         // A warm app woken by a fresh push or a fresh deep link: surface the new login.
         routeIntent(intent)?.let { handoff = it }
+        offloadWake = intent.getStringExtra(UnifiedPushReceiver.EXTRA_OFFLOAD_WAKE)
         routeSamePhone(intent)?.let { samePhoneJoin = it }
     }
 

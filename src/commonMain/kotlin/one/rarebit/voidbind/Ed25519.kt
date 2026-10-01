@@ -14,4 +14,9 @@ fun interface Ed25519Signer {
 fun interface Ed25519Verifier {
     /** Verify a 64-byte Ed25519 [signature] over [message] against a 32-byte [publicKey]. */
     fun verify(publicKey: ByteArray, message: ByteArray, signature: ByteArray): Boolean
+
+    companion object {
+        /** A portable software verifier for public Ed25519 signatures. */
+        fun software(): Ed25519Verifier = Ed25519Engine.verifier()
+    }
 }

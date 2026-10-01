@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import one.rarebit.voidbind.PushPing
 import one.rarebit.voidbind.VoidbindQr
+import one.rarebit.voidbind.offload.OffloadDeepLink
 
 /**
  * The Android **UnifiedPush** wake receiver — Voidbind's ONLY background push path
@@ -44,6 +45,12 @@ class UnifiedPushReceiver : BroadcastReceiver() {
 
     private fun onMessage(context: Context, body: ByteArray?) {
         val text = body?.decodeToString() ?: return
+        // Offload wakes carry only a relay/session pointer. Surface them through the
+        // same user-visible notification boundary as login approvals.
+        if (runCatching { OffloadDeepLink.parseWakePing(text) }.isSuccess) {
+            OffloadWakeNotifier.notify(context, text)
+            return
+        }
         // Opaque: only a login tuple wakes the app; anything else is dropped.
         val qr = PushPing.parseOrNull(text) as? VoidbindQr.Login ?: return
         // Surface via a full-screen-intent notification, NOT startActivity: a background
@@ -84,5 +91,6 @@ class UnifiedPushReceiver : BroadcastReceiver() {
 
         /** Intent extra carrying the opaque login tuple from a push into [MainActivity]. */
         const val EXTRA_LOGIN_TUPLE = "one.rarebit.voidbind.LOGIN_TUPLE"
+        const val EXTRA_OFFLOAD_WAKE = "one.rarebit.voidbind.OFFLOAD_WAKE"
     }
 }
