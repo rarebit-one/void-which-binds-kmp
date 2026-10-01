@@ -8,7 +8,7 @@ package one.rarebit.voidwhichbinds.crypto
  * seed behaves like Go's `ecdh.X25519().NewPrivateKey(seed)`.
  *
  * Verified against the RFC 7748 §5.2 test vector and, end-to-end, against a
- * live-voidbind-go seal KAT (a Go-sealed blob that this code must unwrap).
+ * live void-which-binds-go seal KAT (a Go-sealed blob that this code must unwrap).
  */
 internal object X25519 {
 

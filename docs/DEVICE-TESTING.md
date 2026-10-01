@@ -22,7 +22,7 @@ This is the runbook, plus the map of what still has to be built to reach the ful
 | Android app shell (Compose) | 🚧 in progress (peer session — `androidApp/`) |
 | iOS app shell (SwiftUI) | 🚧 scaffold (`iosApp/`); full screen set on-device |
 | Live web QR-login vs All Thing / heyarr | ⏳ device test (below) |
-| Same-device app-to-app deep link (`voidbind:login?…` from an RP app) | ✅ approval sheet proven on-device via `adb am start` against a live heyarr node (Test 5) |
+| Same-device app-to-app deep link (`void-which-binds:login?…` from an RP app) | ✅ approval sheet proven on-device via `adb am start` against a live heyarr node (Test 5) |
 | Reverse same-device handoff (ADR-0006): "Send to `<app>` on this phone" from the invite screen | ✅ buttons resolve per installed RP; **end-to-end (RP joins → SAS on both apps → confirm here) needs the human finger (Test 6)** |
 | Membership op-set (ADR-0005): any member adds the next; Devices list + Remove | ✅ library proven vs live void-which-binds-go (14/14 vectors, phone→phone through the Go relay, Go RP honours `ops`); **on-device: upgrade-in-place + Devices list proven; a real second-phone pair/remove needs a second phone (Test 4b)** |
 | Recovery shares (SLIP-39, void-which-binds-go ADR-0011): restore from 2-of-3 shares, typed; split on the phone | ✅ library passes Trezor's 45 vectors + combines Go-made shares (JVM); **on-device restore from Go-made shares: Test 2e; split on the phone and restore elsewhere: Test 2f** |
@@ -57,7 +57,7 @@ device-bound: the Secure Enclave / StrongBox properties and the biometric gate.
    `getSecurityLevel() == SECURITY_LEVEL_STRONGBOX` (API 31+). If the device has
    no StrongBox it falls back to TEE — note which.
 3. Prove non-extractability: there is no API that returns the AES wrapping key or
-   the plaintext seed at rest. Inspect `filesDir/voidbind/device.key` — it holds
+   the plaintext seed at rest. Inspect `filesDir/void-which-binds/device.key` — it holds
    only the **sealed** ciphertext + IV + the (public) Ed25519 key. The seed never
    appears there.
 4. Prove use is gated: lock the device, wait past the 30-second auth window, and
@@ -82,7 +82,7 @@ iOS; the Android onboarding screens).
    provisions the device key (biometric fires on first `DeviceKeyStore.getOrCreate`),
    and `Enrolment.selfEnrol`s. A second, **strong-biometric-only** prompt ("Keep a
    recovery copy on this phone") then decides whether the phone keeps a sealed copy.
-   Assert the recovery secret is shown (`heyarr1…`) with **no copy button**, and that
+   Assert the recovery secret is shown (`void-which-binds1…`) with **no copy button**, and that
    the backup screen says whether the phone kept a copy. The identity is provisioned
    before the backup screen appears (confirming the backup is Phase 1 of
    void-which-binds-go#52).
@@ -178,7 +178,7 @@ identity's own secret on a wiped phone.
 
 1. **Make the shares.** In a void-which-binds-go checkout (ADR-0011 or later), split the
    secret you will restore:
-   `echo heyarr1… | go run ./cmd/void-which-binds recovery split --secret-file -`. It prints
+   `echo void-which-binds1… | go run ./cmd/void-which-binds recovery split --secret-file -`. It prints
    the user ID, the fingerprint (`XXXX XXXX XXXX XXXX`) and three 33-word shares, any
    2 of which rebuild it. (`--sheets <dir>` also writes printable sheets.) Note the
    fingerprint.
@@ -251,7 +251,7 @@ clock forward (auto-time off) past day 60.
 
 The RP backend already exists — run `cmd/void-which-binds login-serve --pin <userId>` (or
 a deployed All Thing) and pin the identity from Test 2.
-1. The RP shows a `voidbind:login?rp=&id=` QR. The app's Scan screen calls
+1. The RP shows a `void-which-binds:login?rp=&id=` QR. The app's Scan screen calls
    `VoidbindQr.parse` → `LoginApproval.begin(qr)`; the approval sheet shows the
    audience (RP origin) + a live expiry countdown.
 2. Tap Approve → `LoginApproval.approve` calls `DeviceKeyStore.sign`, so the
@@ -262,7 +262,7 @@ a deployed All Thing) and pin the identity from Test 2.
 
 ## Test 4 — add a second device (pairing, `DeviceAuthorization` ↔ `DevicePairing`)
 
-Two devices (or one device + the `voidbind pair-*` CLI as the counterpart).
+Two devices (or one device + the `void-which-binds pair-*` CLI as the counterpart).
 1. On the **existing** device: `DeviceAuthorization.invite(relayBase)` renders the
    pairing QR. The **new** device scans it → `DevicePairing.begin(inviteQr)`; both
    screens run the handshake and show a **7-digit SAS**.
@@ -306,7 +306,7 @@ re-enrolled and nothing is lost.
 
 ## Test 5 — same-device handoff: an RP app opens the authenticator by deep link
 
-No second phone. The RP app on the SAME phone launches `voidbind:login?rp=&id=` (the
+No second phone. The RP app on the SAME phone launches `void-which-binds:login?rp=&id=` (the
 `qr` string its broker returned, optionally `&callback=<app-scheme-uri>`); the
 authenticator shows the normal approval sheet and finishes back to the caller (ADR-0003).
 Simulate the RP with `adb` against a live node:
@@ -323,7 +323,7 @@ adb install -r androidApp/build/outputs/apk/debug/androidApp-debug.apk
 # mint a login on the RP (a heyarr dev node on the LAN), then hand it to the authenticator
 ID=$(curl -s -X POST http://192.168.16.224:7777/login | sed -E 's/.*"id":"([^"]+)".*/\1/')
 adb shell am start -a android.intent.action.VIEW \
-  -d "voidbind:login?rp=http%3A%2F%2F192.168.16.224%3A7777&id=$ID&callback=heyarr%3A%2F%2Flogin%2Fdone"
+  -d "void-which-binds:login?rp=http%3A%2F%2F192.168.16.224%3A7777&id=$ID&callback=heyarr%3A%2F%2Flogin%2Fdone"
 ```
 
 1. The approval sheet opens (cold start AND with the app already open — `singleTask`
@@ -333,7 +333,7 @@ adb shell am start -a android.intent.action.VIEW \
    is launched; `GET /login/$ID` never reports approved.
 3. Repeat with a fresh id and tap **Approve** → biometric → the RP's broker poll reports
    approved and (only now) the `callback` is launched bare, if an app handles it.
-4. A malformed link (`voidbind:login?rp=x`, a `callback=https://…`) opens nothing /
+4. A malformed link (`void-which-binds:login?rp=x`, a `callback=https://…`) opens nothing /
    drops the callback — the URI is untrusted input. Debug builds allow cleartext HTTP so
    the plain-http LAN node works; release builds do not.
 
@@ -362,6 +362,6 @@ adb install -r androidApp/build/outputs/apk/debug/androidApp-debug.apk     # nev
    heyarr's device key and delivered; heyarr's screen moves to *Enrolled* and registers
    at the node (`POST /enrol` with `ops`). Settings → Devices on Cruciform now lists the
    phone twice: this device, and "heyarr-mobile on <model>" admitted by this device.
-5. Negative: **Share invite…** to any text target shows the raw `voidbind:pair?…` tuple
+5. Negative: **Share invite…** to any text target shows the raw `void-which-binds:pair?…` tuple
    and nothing else; a login tuple can never be sent through this door (`uriFor`
    refuses it); cancelling on VERIFY leaves heyarr's join to time out with no admission.

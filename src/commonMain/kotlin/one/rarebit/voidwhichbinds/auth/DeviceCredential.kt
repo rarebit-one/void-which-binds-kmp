@@ -98,7 +98,7 @@ class DeviceCredential(
          * them with its own log before evaluating, so a device admitted by a phone
          * this RP has never met still authenticates on first contact.
          */
-        const val MEMBERSHIP_HEADER = "Voidbind-Membership"
+        const val MEMBERSHIP_HEADER = "Void-Which-Binds-Membership"
 
         /** The most ops [MEMBERSHIP_HEADER] may carry (void-which-binds-go `rp.MaxPresentedOps`). */
         const val MAX_PRESENTED_OPS = 64

@@ -39,7 +39,7 @@ class GoInteropTest {
             delete()
             deleteOnExit()
         }
-        val p = ProcessBuilder("go", "build", "-o", out.absolutePath, GoCheckout.cliPackage)
+        val p = ProcessBuilder("go", "build", "-o", out.absolutePath, GoCheckout.CLI_PACKAGE)
             .directory(goDir).redirectErrorStream(true).start()
         val log = p.inputStream.readBytes().decodeToString()
         assertEquals(0, p.waitFor(), "go build failed: $log")
@@ -60,7 +60,7 @@ class GoInteropTest {
 
     @Test
     fun pairflowPairsThroughLiveGoRelay() {
-        assumeTrue(goAvailable(), "voidbind-go / go not available — skipping cross-language test")
+        assumeTrue(goAvailable(), "void-which-binds-go / go not available — skipping cross-language test")
         val cli = buildCli()
         val port = freePort()
         val base = "http://127.0.0.1:$port"
@@ -108,7 +108,7 @@ class GoInteropTest {
 
     @Test
     fun deviceApprovesLoginOnLiveGoRp() {
-        assumeTrue(goAvailable(), "voidbind-go / go not available — skipping cross-language test")
+        assumeTrue(goAvailable(), "void-which-binds-go / go not available — skipping cross-language test")
         val cli = buildCli()
         val port = freePort()
         val base = "http://127.0.0.1:$port"
@@ -153,7 +153,7 @@ class GoInteropTest {
 
     @Test
     fun deviceApprovesNumberMatchLoginOnLiveGoRp() {
-        assumeTrue(goAvailable(), "voidbind-go / go not available — skipping cross-language test")
+        assumeTrue(goAvailable(), "void-which-binds-go / go not available — skipping cross-language test")
         val cli = buildCli()
         val port = freePort()
         val base = "http://127.0.0.1:$port"

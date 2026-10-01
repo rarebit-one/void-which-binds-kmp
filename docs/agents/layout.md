@@ -7,8 +7,8 @@ src/
   commonMain/kotlin/one/rarebit/voidwhichbinds/
     Labels.kt          identity-defining constants (DO NOT rename)
     KeyRef.kt          ed25519:/x25519: hex rendering + parse
-    RecoverySecret.kt  256-bit bech32m secret (HRP heyarr)
-    RecoveryShares.kt  the voidbind SLIP-39 profile: split/combine a RecoverySecret as
+    RecoverySecret.kt  256-bit bech32m secret (HRP void-which-binds; gen1 heyarr1… refused)
+    RecoveryShares.kt  the Void-Which-Binds SLIP-39 profile: split/combine a RecoverySecret as
                        2-of-3 shares (void-which-binds-go ADR-0011, recovery.SplitShares/CombineShares)
     slip39/            SLIP-39 port of void-which-binds-go recovery/slip39: wordlist (SHA-256 pinned),
                        RS1024, GF(256) Shamir, PBKDF2 Feistel, typed Slip39Exception;
@@ -32,7 +32,7 @@ src/
   jvmMain/…            DeviceKeyStore actual (software), JdkHttpTransport, AEAD actual
   jvmTest/…            JvmEd25519 (JDK provider, test-only) + keystore test; golden-vector
                        parity (resources/vectors/ = void-which-binds-go testdata, verbatim);
-                       live-voidbind-go interop
+                       live void-which-binds-go interop
   androidMain/…        DeviceKeyStore actual (StrongBox/TEE AES-GCM seal), VoidbindAndroid
   iosMain/…            DeviceKeyStore actual (Secure-Enclave seal via SecureEnclaveSealer), VoidbindIos
 androidApp/            Cruciform Android app (Compose), depends on project(":")

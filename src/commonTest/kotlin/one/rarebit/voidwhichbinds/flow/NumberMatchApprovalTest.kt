@@ -150,6 +150,6 @@ class NumberMatchApprovalTest {
     }
 
     private companion object {
-        val PushLoginQr = LoginQr.decode("voidbind:login?id=L9&rp=http%3A%2F%2Frp")
+        val PushLoginQr = LoginQr.decode("void-which-binds:login?id=L9&rp=http%3A%2F%2Frp")
     }
 }

@@ -2,9 +2,14 @@
 
 These are cross-implementation vectors for the `typ` claim that
 [ADR-0009](../../../docs/adr/0009-token-type-claim.md) adds to every signed
-token. voidbind-go generates them with `go test ./testvectors -run TestTypVectors
--update` and replays them through the real verifiers. Other implementations copy
-the files verbatim and replay them too.
+token. void-which-binds-go generates them with `go test ./testvectors -run
+TestTypVectors -update` and replays them through the real verifiers. Other
+implementations copy the files verbatim and replay them too.
+
+Gen2 is **typed-only** ([ADR-0022](../../../docs/adr/0022-gen2-hard-cutover.md)):
+every minter emits `typ`, and every verifier refuses a token without one, or
+with a gen1 `voidbind.*` value, as `wrong_type`. There are no ADR-0009 phases
+left, so each check has one expected verdict.
 
 ## Layout
 
@@ -20,8 +25,7 @@ with a deterministic seed:
   "tokens": { "token": "<b64url>.<b64url>", … },
   "grant_request": { "principal": "device:alpha", "resource": "space:one", "capability": "read" },
   "checks": [
-    { "verifier": "possession", "token": "token", "key": "device", "cert": "cert",
-      "expect": { "accept": "ok", "emit": "ok", "require": "ok" } }
+    { "verifier": "possession", "token": "token", "key": "device", "cert": "cert", "expect": "ok" }
   ]
 }
 ```
@@ -33,35 +37,35 @@ with a deterministic seed:
   - `possession`: `VerifyPossession` with device `key` and the cert token labelled `cert`.
   - `op`: `VerifyOp`.
   - `op_user`: the `OpUser` hint.
-- **`expect`** gives the verdict for each ADR-0009 phase. A port asserts the
-  column for the phase it implements.
-  - `accept` is phase 1: verify `typ` when it is present.
-  - `emit` is phase 2: the same verdicts, because only minting changes.
-  - `require` is phase 3: an untyped token is refused as `untyped`, except at
-    `op`/`op_user`, which accept untyped v1–v3 history forever.
-- **Verdicts** are `ok`, `wrong_type`, `malformed`, `untyped`, `bad_signature`,
-  `expired`, `not_yet_valid` and `cert_mismatch`. Grant and cert verdicts use
-  their packages' reason enums.
+  - `cosig`: `VerifyCosig` of the co-signature by `key` carried in the op
+    token: an Ed25519 signature over `void-which-binds-cosig-v1` ‖ `0x00` ‖
+    the op's core (its signed body with `cosig` omitted and `typ` kept).
+- **`expect`** is the verdict the verifier must reach: `ok`, `wrong_type`,
+  `malformed`, `bad_signature`, `expired`, `not_yet_valid` or `cert_mismatch`.
+  Grant and cert verdicts use their packages' reason enums.
 - **Check order.** The `typ` check runs right after the token envelope splits,
-  before the signature and before any other field. A mistyped token is
-  therefore `wrong_type` whatever key it is checked under. A `typ` that is not
-  a JSON string (`null` included), or a case-variant key such as `"Typ"`, is
-  `malformed`. A body that is not a JSON object at all is not a type question.
-  It goes through the verifier's usual checks in their usual order, so a body
-  corrupted in flight still fails the signature check.
+  before the signature and before any other field. A mistyped or untyped token
+  is therefore `wrong_type` whatever key it is checked under. A `typ` that is
+  not a JSON string (`null` included), or a case-variant key such as `"Typ"`,
+  is `malformed`. A body that is not a JSON object at all is not a type
+  question. It goes through the verifier's usual checks in their usual order,
+  so a body corrupted in flight still fails the signature check.
 - **Byte layout.** In every typed body, `typ` is the **second** member,
-  immediately after `v`. Values are dotted, such as `voidbind.cert`, so no
-  encoder ever escapes them.
+  immediately after `v`. Values are dotted, such as `void-which-binds.cert`,
+  so no encoder ever escapes them. `void-which-binds.roster` and
+  `void-which-binds.delegation` are reserved.
 
 ## Cases
 
 | case | what it pins |
 |------|--------------|
 | `typed-grant`, `typed-cert`, `typed-possession`, `typed-op` | each kind, typed, verifies under its own verifier, and every other verifier returns `wrong_type`. A typed cert also verifies at `op` as a genesis add |
-| `overlap-grant-v1-cert-v1` | grant v1 and cert v1 share `v:1`. An untyped body with both shapes' fields is accepted by **both** verifiers today. Typed, it is accepted only as the kind its `typ` names |
+| `overlap-grant-v1-cert-v1` | grant v1 and cert v1 share `v:1`. An untyped body with both shapes' fields was accepted by **both** verifiers before gen2; it is now `wrong_type` at both. Typed, it is accepted only as the kind its `typ` names |
 | `overlap-cert-v2-possession-v2` | cert v2 and possession share `v:2`. The same attack, with one key acting as both user and device |
 | `typ-malformed` | wrong case or unknown value gives `wrong_type`. Non-string or `null`, a case-variant key, or a kind at a version it lacks gives `malformed` |
-| `legacy-untyped` | today's untyped tokens with their verdicts in each phase, including an untyped possession proof that the cert verifier refuses only for lacking `usr`/`dev` |
+| `legacy-untyped` | the untyped tokens gen1 minted before ADR-0009 phase 2: every verifier, `op`/`op_user` included, refuses them as `wrong_type` |
+| `gen1-typ` | well-formed, validly signed tokens typed with the gen1 values (`voidbind.grant`, `voidbind.cert`, `voidbind.possession`, `voidbind.op`): `wrong_type` everywhere. There is no `wrong_generation` verdict; a gen1 `typ` is simply foreign |
+| `gen1-domain` | a v3 remove carrying a device cosig: under the gen2 cosig domain the cosig is `ok`; under the gen1 domain `voidbind-cosig-v1` it is `bad_signature` (the op itself verifies either way) |
 
-The typed membership ops, including a typed **cosigned** remove whose cosig
-covers the typed core, are in `../membership/` (`typed-*`).
+The typed membership ops, including a cosigned remove whose cosig covers the
+typed core and a cosig made under the gen1 domain, are in `../membership/`.

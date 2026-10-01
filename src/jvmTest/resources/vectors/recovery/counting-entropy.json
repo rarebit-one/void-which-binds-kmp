@@ -2,9 +2,9 @@
   "name": "counting-entropy",
   "description": "bytes 0x00..0x1f: distinct values in every position",
   "entropy": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
-  "secret": "heyarr1qqqsyqcyq5rqwzqfpg9scrgwpugpzysnzs23v9ccrydpk8qarc0s6e0ucu",
-  "secret_upper": "HEYARR1QQQSYQCYQ5RQWZQFPG9SCRGWPUGPZYSNZS23V9CCRYDPK8QARC0S6E0UCU",
-  "user_id": "ed25519:40521a413f04f5e76d309dc8aebd8980d877291e62fedbf573ed3b45f7aa54a0",
-  "encryption_recipient": "x25519:9b7171447f7b68861a57f7db1d34f2de4c5330e71bc94b876be574c997397c74",
-  "fingerprint": "PYJI XGNZ K7ZH XHEJ"
+  "secret": "void-which-binds1qqqsyqcyq5rqwzqfpg9scrgwpugpzysnzs23v9ccrydpk8qarc0stska6c",
+  "secret_upper": "VOID-WHICH-BINDS1QQQSYQCYQ5RQWZQFPG9SCRGWPUGPZYSNZS23V9CCRYDPK8QARC0STSKA6C",
+  "user_id": "ed25519:da16ead22f9bd99facafa8013a997aff28dba13887c7aa1e77b2e88214dff6a6",
+  "encryption_recipient": "x25519:c9cd1a42b715f39287106cf622e9938c3b5acbc8f4d3d0b8d64b0bce783c0730",
+  "fingerprint": "PK6L RYVL LB44 OEQM"
 }

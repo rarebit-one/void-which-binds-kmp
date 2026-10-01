@@ -2,9 +2,9 @@
   "name": "zero-entropy",
   "description": "32 zero bytes: the degenerate edge a port's codec must still round-trip",
   "entropy": "0000000000000000000000000000000000000000000000000000000000000000",
-  "secret": "heyarr1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqndy7c9",
-  "secret_upper": "HEYARR1QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQNDY7C9",
-  "user_id": "ed25519:d62ff7a23f345c2d6cd59edd26b36e8fa70b9a643aeb2b9c66cd416d17a36c68",
-  "encryption_recipient": "x25519:8ad8026df10dfc4580046865e4b865f110f651166f921426669460d9ca84066a",
-  "fingerprint": "37RB YUHK W3VP PFEF"
+  "secret": "void-which-binds1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzyal6p",
+  "secret_upper": "VOID-WHICH-BINDS1QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQZYAL6P",
+  "user_id": "ed25519:885e914916e3ba2d31fe096a8bc5801ac233f35a645fb9f3cfe6859d28fe919a",
+  "encryption_recipient": "x25519:4d904ae011a63d67ac0b35e86d9caade8de367312499d01ddb7944f1d8620273",
+  "fingerprint": "44AW JX2B VVXA IIFR"
 }

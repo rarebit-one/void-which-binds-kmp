@@ -9,7 +9,7 @@ import dev.whyoleg.cryptography.algorithms.SHA256
  * `pairing/commitment.go`, ADR-0022/0038/0049 §41). This must interoperate with a
  * live backend, so every hashed byte matches the Go side exactly:
  *
- * - domains `heyarr/pairing/commit/v2` and `heyarr/pairing/sas/v2`;
+ * - domains `void-which-binds/pairing/commit/v2` and `void-which-binds/pairing/sas/v2`;
  * - the commitment binds a device's **both** keys — Ed25519 signing + X25519
  *   encryption (v2's whole point: a relay that swapped only the encryption key is
  *   caught too);
@@ -27,8 +27,8 @@ object Pairing {
     /** Folded into the domain labels; a bump reshapes every string. */
     const val VERSION = 2
 
-    const val COMMIT_DOMAIN = "heyarr/pairing/commit/v2"
-    const val SAS_DOMAIN = "heyarr/pairing/sas/v2"
+    const val COMMIT_DOMAIN = "void-which-binds/pairing/commit/v2"
+    const val SAS_DOMAIN = "void-which-binds/pairing/sas/v2"
 
     /** Decimal length of the SAS (a security parameter — ~23 bits). */
     const val DIGITS = 7

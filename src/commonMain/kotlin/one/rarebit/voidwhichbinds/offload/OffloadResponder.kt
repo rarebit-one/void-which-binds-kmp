@@ -8,7 +8,7 @@ import one.rarebit.voidwhichbinds.crypto.VoidbindEncryption
 /**
  * The phone's RESPONDER logic for the cruciform-offload exchanges (ADR-0098),
  * sequencing the [OffloadProtocol] wire over a relay. It is pure Kotlin: the relay
- * is an [OffloadTransport] seam (voidbind's `net.RelayClient` for role `responder`
+ * is an [OffloadTransport] seam (Void-Which-Binds's `net.RelayClient` for role `responder`
  * satisfies it in the app; a fake drives it in tests), the device keys are the
  * [Ed25519Signer]/[Ed25519Verifier] seams, and the encryption key is passed as a
  * seed the caller unlocks behind the biometric gate. What is NOT here — the QR

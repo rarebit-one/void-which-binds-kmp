@@ -97,7 +97,23 @@ group = "one.rarebit.voidwhichbinds"
 // RP_HANDOFF category and every keystore alias, pref and dir keep their gen1
 // spelling until gen2 (0.11.0, void-which-binds-go ADR-0022).
 // k0:keep-end
-version = "0.10.0"
+// 0.11.0 is gen2-only (void-which-binds-go ADR-0022, the hard cutover; matches
+// void-which-binds-go v0.19.0). BREAKING on the wire: every gen1 string takes its
+// ADR-0013 gen2 spelling and gen1 material is refused, never dual-parsed. `typ` is
+// `void-which-binds.{cert,possession,op,grant,pair-refusal}` and verifiers refuse an
+// untyped token (`TokenType.check` throws WRONG_TYPE; the untyped mint paths and
+// `Cert(typ = …)` are gone); the cosig, weblogin, pairing and pair-refusal domains,
+// the recovery HKDF label, the space-key-wrap label and the user-fingerprint label
+// move to `void-which-binds/…`, so the same recovery secret derives a different
+// identity; the recovery HRP is `void-which-binds` (75 chars) and a `heyarr1…`
+// secret throws `RecoverySecret.GenerationRetiredException`; the URI scheme is
+// `void-which-binds:` (login, pair, offload-pair, unwrap) with invite v4;
+// `DeviceCredential.MEMBERSHIP_HEADER` is `Void-Which-Binds-Membership`. Android's
+// keystore alias `void-which-binds.wrap.<alias>` and `filesDir/void-which-binds/` are
+// fresh names (gen2 enrols fresh devices; nothing reads the gen1 ones). Adds
+// `MembershipOp.verifyCosig` (Go `VerifyCosig`), and ADR-0018's high-water rule: only
+// Ed25519 members count toward N, so a `webauthn:` passkey never raises k.
+version = "0.11.0"
 
 repositories {
     mavenCentral()

@@ -1,6 +1,6 @@
 {
-  "name": "cosig-nonmember-ignored",
-  "description": "a cosig by a key that is not a member of the remove's closure verifies but is not counted: with a fleet high-water of 3 (k=2) the remove has one effective signature and is under_threshold",
+  "name": "gen1-cosig-domain-ignored",
+  "description": "ADR-0022: cosig-threshold-met, except B co-signs under the gen1 domain (voidbind-cosig-v1). The cosig does not verify under void-which-binds-cosig-v1, so it does not count: the remove of C is under_threshold and C stays",
   "usr": "ed25519:5c167ac159feac80a76906ae94f7afe328e1aea2752cddee0c641661ec99535d",
   "now": 1788267600,
   "keys": {
@@ -19,11 +19,6 @@
       "enc_seed": "d540819f79b034d7b570d922f6b632d799184c08ced3e9b6d171906376395409",
       "id": "ed25519:6b32c359ce7dc8b67a78daca1ccde0fdf9b8ddc5441e569bd3882ff75fd1add8"
     },
-    "X": {
-      "sign_seed": "b1e8bebc2594448ebce4106f280b1b3561212ba4b898d73d29cc5347630b09b5",
-      "enc_seed": "14095c689fccebb502e15dc0a47124aae63c00a936d92e972d250a2e694e0602",
-      "id": "ed25519:e37e252b661f482a598e28da086f94c8a9c87d886fbe6f7143e01bc802e8671a"
-    },
     "genesis": {
       "sign_seed": "b683c7c89a94432a50b03b212fc8a8512f56b7e9e3c90a1661276e6ef672eb15",
       "id": "ed25519:5c167ac159feac80a76906ae94f7afe328e1aea2752cddee0c641661ec99535d"
@@ -31,9 +26,9 @@
   },
   "ops": [
     {
-      "label": "rm-C",
-      "token": "eyJ2IjozLCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLm9wIiwidXNyIjoiZWQyNTUxOTo1YzE2N2FjMTU5ZmVhYzgwYTc2OTA2YWU5NGY3YWZlMzI4ZTFhZWEyNzUyY2RkZWUwYzY0MTY2MWVjOTk1MzVkIiwib3AiOiJyZW1vdmUiLCJkZXYiOiJlZDI1NTE5OjZiMzJjMzU5Y2U3ZGM4YjY3YTc4ZGFjYTFjY2RlMGZkZjliOGRkYzU0NDFlNTY5YmQzODgyZmY3NWZkMWFkZDgiLCJieSI6ImVkMjU1MTk6ZTU5MmEwN2Q3ZjQ3ODAxMzAzOGU0NzFlZjJjOTYwZjJiYTQxNjNmZGI5OTNlYjkxN2M0NjEyMGQxZGY2Yjk0NSIsInByZXYiOlsic2hhMjU2OjkyYWRlMjg1ZjYxMDBiMTdhZWI4MTBlYTY1MDExNTc2M2JiNTQ4ZDdkZDNkNjEyMDNiYmE4MTE0NTdkOWYxMzMiXSwiY29zaWciOlt7ImJ5IjoiZWQyNTUxOTplMzdlMjUyYjY2MWY0ODJhNTk4ZTI4ZGEwODZmOTRjOGE5Yzg3ZDg4NmZiZTZmNzE0M2UwMWJjODAyZTg2NzFhIiwic2lnIjoiMHFYUHoxZ0pjZ3l5cE5QRnU1Q3pnb2tLdlkxXzhFaUp1dmpkd1UyNWF2WlB1R3JtcWE5YUVDd1lTSmtpNHdrdnIwcHRWMHFMRUpCakEyeWV5UkdFQVEifV0sImlhdCI6MTc4ODI2NDYwMH0.dX8yaSk6ygvDOmeeSWpyqud-s14XE9igECiIRxPpDOwfnoyDz9gmPeN6Xzw0QwRwZLttJ8z4WJQICiluKxWKDQ",
-      "hash": "sha256:f5699f38ac881acefa8da76cbae1c665be85dbc4f957f83d1ece39af1794313b"
+      "label": "rm-C-gen1-cosig",
+      "token": "eyJ2IjozLCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLm9wIiwidXNyIjoiZWQyNTUxOTo1YzE2N2FjMTU5ZmVhYzgwYTc2OTA2YWU5NGY3YWZlMzI4ZTFhZWEyNzUyY2RkZWUwYzY0MTY2MWVjOTk1MzVkIiwib3AiOiJyZW1vdmUiLCJkZXYiOiJlZDI1NTE5OjZiMzJjMzU5Y2U3ZGM4YjY3YTc4ZGFjYTFjY2RlMGZkZjliOGRkYzU0NDFlNTY5YmQzODgyZmY3NWZkMWFkZDgiLCJieSI6ImVkMjU1MTk6ZTU5MmEwN2Q3ZjQ3ODAxMzAzOGU0NzFlZjJjOTYwZjJiYTQxNjNmZGI5OTNlYjkxN2M0NjEyMGQxZGY2Yjk0NSIsInByZXYiOlsic2hhMjU2OjkyYWRlMjg1ZjYxMDBiMTdhZWI4MTBlYTY1MDExNTc2M2JiNTQ4ZDdkZDNkNjEyMDNiYmE4MTE0NTdkOWYxMzMiXSwiY29zaWciOlt7ImJ5IjoiZWQyNTUxOTo5OWM2ODZjYjFiZGUxY2U2OTRjMDNkNTA3ZGUyNTkwMWU3MGNiYTRlMDIwNGViMWNkNzUzOWY1YmJiY2QyN2Y0Iiwic2lnIjoic0RRSThKUlpZNEl4VzB3aXVuUUh1bkkxN240Smk4bzFYcXdETjJMUXNNZUx1UVp4M052a01wOWJUUTI5bThPOWZRd0loNTZFcXhrZ1lidnFfXzUxQ3cifV0sImlhdCI6MTc4ODI2NDYwMH0.r65nnoIh8hmJZ4ML3SGQMboQ2DOkAdV2trr1E84-Ae9poLeuUoECgI3M8oV0o7BHXTVo-LCHKM1xHHi8I0iIAw",
+      "hash": "sha256:70cd5f121f4dabf276c318975770acb0a74f1e4c5f9e08ebc45f0ac2106e26dd"
     },
     {
       "label": "add-C",
@@ -74,11 +69,11 @@
     },
     "removed": [],
     "heads": [
-      "sha256:f5699f38ac881acefa8da76cbae1c665be85dbc4f957f83d1ece39af1794313b"
+      "sha256:70cd5f121f4dabf276c318975770acb0a74f1e4c5f9e08ebc45f0ac2106e26dd"
     ],
     "rejected": {},
     "ineffective": {
-      "sha256:f5699f38ac881acefa8da76cbae1c665be85dbc4f957f83d1ece39af1794313b": "under_threshold"
+      "sha256:70cd5f121f4dabf276c318975770acb0a74f1e4c5f9e08ebc45f0ac2106e26dd": "under_threshold"
     }
   }
 }

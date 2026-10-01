@@ -39,7 +39,7 @@ class PushPingTest {
         // A ping that (impossibly) tried to smuggle a nonce/cert/match number as extra
         // query params is still parsed as ONLY rp+id — the parser reads nothing else,
         // so no secret channel exists even if a sender tried to open one.
-        val sneaky = "voidbind:login?rp=https%3A%2F%2Frp&id=L1&nonce=deadbeef&cert=forged&match_number=42"
+        val sneaky = "void-which-binds:login?rp=https%3A%2F%2Frp&id=L1&nonce=deadbeef&cert=forged&match_number=42"
         val login = (PushPing.parse(sneaky) as VoidbindQr.Login).request
         assertEquals("L1", login.id)
         assertEquals("https://rp", login.rp)

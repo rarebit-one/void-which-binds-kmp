@@ -9,7 +9,8 @@ import kotlin.test.assertTrue
 
 /**
  * Golden vectors CAPTURED FROM void-which-binds-go's v2 pairing (`pairing.Commit` /
- * `pairing.Derive`) with fixed inputs — signing = 0x11×32, enc = 0x12×32 for the
+ * `pairing.Derive`, gen2 domains `void-which-binds/pairing/{commit,sas}/v2`, captured at
+ * void-which-binds-go v0.19.0) with fixed inputs — signing = 0x11×32, enc = 0x12×32 for the
  * initiator; signing = 0x21×32, enc = 0x22×32 for the responder; salt = 0x33×32.
  * These prove the Kotlin port is byte-identical to the Go side, which is the
  * whole point: a SAS or commitment that differs by one byte does not interoperate.
@@ -24,11 +25,11 @@ class PairingTest {
     private val rEnc = rep(0x22)
     private val salt = rep(0x33)
 
-    private val goldenInitCommit = "6df14752bdcc1e58d6a5eae2e7741c93b8729838cf94167b4095d881753ccf91"
-    private val goldenRespCommit = "585754a70d9cf615c61fe4de37523f939749d39ce0f7d4b11baf777dc1cf7dcf"
-    private val goldenSas = "8591300"
-    private val goldenInitCommitEmptyEnc = "7bacd4d00d224212ae5094ae0f9fbcd10790dae5ed26295996b6a3830772545c"
-    private val goldenSasEmptyEnc = "2393931"
+    private val goldenInitCommit = "2f75bdc1df5639f99d6cac11af85e7c96eb417b88f46924e28bdb9759a24c762"
+    private val goldenRespCommit = "7b3afbcc34f9c52b95ab07ac7e03a83333bc75871164965ff0d0bcbf5cb9332d"
+    private val goldenSas = "2085887"
+    private val goldenInitCommitEmptyEnc = "57d9c5b59d97fda48180513c8472f6dc3b1a149e298e21942ce86581b20cb6e7"
+    private val goldenSasEmptyEnc = "5470846"
 
     @Test
     fun commitMatchesVoidbindGo() {

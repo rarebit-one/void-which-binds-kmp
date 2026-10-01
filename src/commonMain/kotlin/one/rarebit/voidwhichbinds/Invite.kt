@@ -7,12 +7,14 @@ import one.rarebit.voidwhichbinds.crypto.Hex
  * device) renders for the responder (the new device) to scan. It carries the
  * out-of-band session bootstrap over the VISUAL channel:
  *
- *     voidbind:pair?v=3&relay=<origin>&session=<id>&salt=<hex>&usr=<ed25519:hex>
+ *     void-which-binds:pair?v=4&relay=<origin>&session=<id>&salt=<hex>&usr=<ed25519:hex>
  *
  * The salt is hex so it survives a QR/text round-trip unchanged. v3 (ADR-0005 /
  * void-which-binds-go ADR-0007) adds `usr`: the identity (genesis key) the new device is
  * being enrolled into, so the responder can evaluate the initiator's membership
- * BEFORE deriving the SAS. Scanning the invite off the real initiator's screen is
+ * BEFORE deriving the SAS. v4 (void-which-binds-go ADR-0013/ADR-0022) is v3's fields
+ * under the gen2 `void-which-binds:` scheme; a gen1 invite (`voidbind:`, `v=3`) is
+ * refused, not dual-parsed. Scanning the invite off the real initiator's screen is
  * what authenticates these values — a network attacker cannot substitute them
  * without also defeating the SAS ([Pairing]).
  *
@@ -24,10 +26,10 @@ import one.rarebit.voidwhichbinds.crypto.Hex
  */
 object Invite {
 
-    const val SCHEME = "voidbind"
+    const val SCHEME = "void-which-binds"
 
     /** The invite payload version; a future field change becomes a parse failure. */
-    const val VERSION = "3"
+    const val VERSION = "4"
 
     private const val PREFIX = "$SCHEME:pair?"
 

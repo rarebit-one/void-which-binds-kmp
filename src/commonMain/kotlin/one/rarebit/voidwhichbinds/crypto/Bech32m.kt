@@ -4,7 +4,7 @@ package one.rarebit.voidwhichbinds.crypto
  * Bech32m codec (BIP-350). Pure Kotlin, no platform APIs.
  *
  * Void-Which-Binds uses bech32m — **not** bech32 — for the human-facing recovery secret
- * (see [one.rarebit.voidwhichbinds.RecoverySecret], HRP `heyarr`). The two differ only
+ * (see [one.rarebit.voidwhichbinds.RecoverySecret], HRP `void-which-binds`). The two differ only
  * in the checksum constant; using the wrong one silently produces strings that
  * a correct decoder rejects, so this is a wire-contract detail, not a cosmetic one.
  */
@@ -13,6 +13,9 @@ object Bech32m {
     private const val CONST = 0x2bc830a3
 
     private const val CHARSET = "qpzry9x8gf2tvdw0s3jn54khce6mua7l"
+
+    /** bech32m's fixed six-symbol checksum. */
+    private const val CHECKSUM_SYMBOLS = 6
     private val REVERSE = IntArray(128) { -1 }.also { rev ->
         for (i in CHARSET.indices) rev[CHARSET[i].code] = i
     }
@@ -36,6 +39,22 @@ object Bech32m {
             other is Decoded && hrp == other.hrp && data.contentEquals(other.data)
 
         override fun hashCode(): Int = 31 * hrp.hashCode() + data.contentHashCode()
+    }
+
+    /**
+     * The HRP of [s] if it is structurally a bech32m string — one case, a separator
+     * with a non-empty prefix and room for the checksum after it, every data character
+     * in the alphabet — WITHOUT consulting the checksum; else null. Mirrors the
+     * structure check of void-which-binds-go `recovery.bech32mSplit`.
+     */
+    fun hrpOf(s: String): String? {
+        val norm = s.lowercase()
+        val sep = norm.lastIndexOf('1')
+        val wellFormed = (s == norm || s == s.uppercase()) &&
+            sep >= 1 &&
+            sep + 1 + CHECKSUM_SYMBOLS <= norm.length &&
+            norm.substring(sep + 1).all { it.code < REVERSE.size && REVERSE[it.code] >= 0 }
+        return if (wellFormed) norm.substring(0, sep) else null
     }
 
     /** Decode and verify a bech32m string. Throws on any structural or checksum error. */

@@ -15,9 +15,9 @@ import kotlin.test.assertTrue
  * `enrolment.AttachCosigs`. Two halves:
  *
  *  - **Byte parity** with void-which-binds-go's `TestSignGolden` (`enrolment/golden_test.go`,
- *    void-which-binds-go `7177c94`): from the same fixed keys (`goldenKey(base)` — seed byte i
+ *    void-which-binds-go v0.19.0): from the same fixed keys (`goldenKey(base)` — seed byte i
  *    is `base + i`) the uncosigned remove, its cosig and the re-minted cosigned token
- *    must equal Go's, typed (ADR-0009 phase 2) and legacy-untyped alike. On a
+ *    must equal Go's (gen2: typed-only, ADR-0022; the gen1 goldens are refused). On a
  *    randomized-Ed25519 target (iOS) the signatures are checked by verification and
  *    the payloads byte-for-byte (see [assertMatchesGoToken]).
  *  - **Round trip** through [Membership.evaluate]: at fleet high-water 3 (k = 2) a
@@ -36,24 +36,25 @@ class MembershipCosignTest {
     private val userSeed = goldenSeed(0x10)
     private val cosignerSeed = goldenSeed(0x70)
 
-    // void-which-binds-go enrolment/golden_test.go TestSignGolden: {"op"|"cosig"|"cosigned op", want, legacy}.
+    // void-which-binds-go enrolment/golden_test.go TestSignGolden (gen2, ADR-0022): {"op"|"cosig"|"cosigned op", want}.
     @Suppress("MaxLineLength")
-    private val goOpTyped =
-        "eyJ2IjozLCJ0eXAiOiJ2b2lkYmluZC5vcCIsInVzciI6ImVkMjU1MTk6Nzc3NmU4NzBiOTMzNTRmMmEwYjI0YzIzZjJhMzZjYzRlODBlMjIzMjE4YzFiOTc5MjZmZGQwMTgzOTZhMmI5YiIsIm9wIjoicmVtb3ZlIiwiZGV2IjoiZWQyNTUxOToyNTQzYjkyZmYxMDk1NTExNDc2YWRjODM2OWRiNmRkYzkzMzY2NWExMTk3OGRkYTE0MDRlZTEwNjZjYTk1NTlkIiwiYnkiOiJlZDI1NTE5Ojc3NzZlODcwYjkzMzU0ZjJhMGIyNGMyM2YyYTM2Y2M0ZTgwZTIyMzIxOGMxYjk3OTI2ZmRkMDE4Mzk2YTJiOWIiLCJwcmV2IjpbXSwiaWF0IjoxNzg3NzQ1NjAwfQ._O8n_H1derB9rfHskQdYaD7bc2DOAxk40gCzdq7VFhC8nllY4cFO_V2p-lOaeIsXf63RE2NMQvhPJY85t8bSAw"
-    private val goCosigTyped = "AQWh1dBZFnI0Bf0KU2canRaeVHq7H7zE0iYVN36Xq9aq_rwuMJ98w2W9cjo_xmIHuuUs5Pg1vifVsP3Sr0hDCw"
+    private val goOp =
+        "eyJ2IjozLCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLm9wIiwidXNyIjoiZWQyNTUxOTo3Nzc2ZTg3MGI5MzM1NGYyYTBiMjRjMjNmMmEzNmNjNGU4MGUyMjMyMThjMWI5NzkyNmZkZDAxODM5NmEyYjliIiwib3AiOiJyZW1vdmUiLCJkZXYiOiJlZDI1NTE5OjI1NDNiOTJmZjEwOTU1MTE0NzZhZGM4MzY5ZGI2ZGRjOTMzNjY1YTExOTc4ZGRhMTQwNGVlMTA2NmNhOTU1OWQiLCJieSI6ImVkMjU1MTk6Nzc3NmU4NzBiOTMzNTRmMmEwYjI0YzIzZjJhMzZjYzRlODBlMjIzMjE4YzFiOTc5MjZmZGQwMTgzOTZhMmI5YiIsInByZXYiOltdLCJpYXQiOjE3ODc3NDU2MDB9.h4XmD0wUfC7hrRAXqvhGNWKX99dhXeRYzJ-OD2BwFaEbWmjOIR7bTOTujr2BldTrwQZDA-N0HTEqjZHJPAWiAg"
+    private val goCosig = "tPysFgSzfIc0DmGwVnBrIs7see9-soOOLwwtEjfJOLvzkdQAY5hZMt1a-risceIWPftcx5B1srs8E_gU78t-Bw"
 
     @Suppress("MaxLineLength")
-    private val goCosignedTyped =
-        "eyJ2IjozLCJ0eXAiOiJ2b2lkYmluZC5vcCIsInVzciI6ImVkMjU1MTk6Nzc3NmU4NzBiOTMzNTRmMmEwYjI0YzIzZjJhMzZjYzRlODBlMjIzMjE4YzFiOTc5MjZmZGQwMTgzOTZhMmI5YiIsIm9wIjoicmVtb3ZlIiwiZGV2IjoiZWQyNTUxOToyNTQzYjkyZmYxMDk1NTExNDc2YWRjODM2OWRiNmRkYzkzMzY2NWExMTk3OGRkYTE0MDRlZTEwNjZjYTk1NTlkIiwiYnkiOiJlZDI1NTE5Ojc3NzZlODcwYjkzMzU0ZjJhMGIyNGMyM2YyYTM2Y2M0ZTgwZTIyMzIxOGMxYjk3OTI2ZmRkMDE4Mzk2YTJiOWIiLCJwcmV2IjpbXSwiY29zaWciOlt7ImJ5IjoiZWQyNTUxOToxY2U1NmE0OGM4MmZmOTkxNjJhMTRiYzU0NDYxMjY3NGU1ZDYxZmI5MzE3ZTY1ZDQwNTU3ODBmZGJjYjRkYzM1Iiwic2lnIjoiQVFXaDFkQlpGbkkwQmYwS1UyY2FuUmFlVkhxN0g3ekUwaVlWTjM2WHE5YXFfcnd1TUo5OHcyVzljam9feG1JSHV1VXM1UGcxdmlmVnNQM1NyMGhEQ3cifV0sImlhdCI6MTc4Nzc0NTYwMH0.rdIpiJYPLymLSxtEYKIHklYRKsVnuQBDLy60mfk8nV49LgtL66sDUDrQe78xMZN6EK-ikkhHdVTaKkplpilWDw"
+    private val goCosigned =
+        "eyJ2IjozLCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLm9wIiwidXNyIjoiZWQyNTUxOTo3Nzc2ZTg3MGI5MzM1NGYyYTBiMjRjMjNmMmEzNmNjNGU4MGUyMjMyMThjMWI5NzkyNmZkZDAxODM5NmEyYjliIiwib3AiOiJyZW1vdmUiLCJkZXYiOiJlZDI1NTE5OjI1NDNiOTJmZjEwOTU1MTE0NzZhZGM4MzY5ZGI2ZGRjOTMzNjY1YTExOTc4ZGRhMTQwNGVlMTA2NmNhOTU1OWQiLCJieSI6ImVkMjU1MTk6Nzc3NmU4NzBiOTMzNTRmMmEwYjI0YzIzZjJhMzZjYzRlODBlMjIzMjE4YzFiOTc5MjZmZGQwMTgzOTZhMmI5YiIsInByZXYiOltdLCJjb3NpZyI6W3siYnkiOiJlZDI1NTE5OjFjZTU2YTQ4YzgyZmY5OTE2MmExNGJjNTQ0NjEyNjc0ZTVkNjFmYjkzMTdlNjVkNDA1NTc4MGZkYmNiNGRjMzUiLCJzaWciOiJ0UHlzRmdTemZJYzBEbUd3Vm5CcklzN3NlZTktc29PT0x3d3RFamZKT0x2emtkUUFZNWhaTXQxYS1yaXNjZUlXUGZ0Y3g1QjFzcnM4RV9nVTc4dC1CdyJ9XSwiaWF0IjoxNzg3NzQ1NjAwfQ.8bIfoPVaIFnRBWhiguNI-wB0a7HNiu4dWBmvPcr_u0MEZUiJGLAeA5Vmm__FtZuo20zop6whO-O1LbFr1CSEDw"
 
+    // The gen1 goldens of the same inputs (TestSignGolden's legacyGoldenOp and
+    // gen1TypedGoldenOp), kept only as refusal inputs: gen2 is typed-only.
     @Suppress("MaxLineLength")
-    private val goOpLegacy =
+    private val gen1UntypedOp =
         "eyJ2IjozLCJ1c3IiOiJlZDI1NTE5Ojc3NzZlODcwYjkzMzU0ZjJhMGIyNGMyM2YyYTM2Y2M0ZTgwZTIyMzIxOGMxYjk3OTI2ZmRkMDE4Mzk2YTJiOWIiLCJvcCI6InJlbW92ZSIsImRldiI6ImVkMjU1MTk6MjU0M2I5MmZmMTA5NTUxMTQ3NmFkYzgzNjlkYjZkZGM5MzM2NjVhMTE5NzhkZGExNDA0ZWUxMDY2Y2E5NTU5ZCIsImJ5IjoiZWQyNTUxOTo3Nzc2ZTg3MGI5MzM1NGYyYTBiMjRjMjNmMmEzNmNjNGU4MGUyMjMyMThjMWI5NzkyNmZkZDAxODM5NmEyYjliIiwicHJldiI6W10sImlhdCI6MTc4Nzc0NTYwMH0.JJDohlpMnU5yd1Stg5ghuXr5aJfprr9gugHFnRyqbe0lFb8baOvN7B0y0-5a5SXmVB0vW0iieVsE7_SQo1nJAg"
-    private val goCosigLegacy = "MeXaoHUo-gf2G4c7IgLsLyiZRU4xKbhJUa2MQSY1pjGxg7Z56ZW4YhLREdrZkDTSmfHNjvaF57MKsGQNZaCcAg"
 
     @Suppress("MaxLineLength")
-    private val goCosignedLegacy =
-        "eyJ2IjozLCJ1c3IiOiJlZDI1NTE5Ojc3NzZlODcwYjkzMzU0ZjJhMGIyNGMyM2YyYTM2Y2M0ZTgwZTIyMzIxOGMxYjk3OTI2ZmRkMDE4Mzk2YTJiOWIiLCJvcCI6InJlbW92ZSIsImRldiI6ImVkMjU1MTk6MjU0M2I5MmZmMTA5NTUxMTQ3NmFkYzgzNjlkYjZkZGM5MzM2NjVhMTE5NzhkZGExNDA0ZWUxMDY2Y2E5NTU5ZCIsImJ5IjoiZWQyNTUxOTo3Nzc2ZTg3MGI5MzM1NGYyYTBiMjRjMjNmMmEzNmNjNGU4MGUyMjMyMThjMWI5NzkyNmZkZDAxODM5NmEyYjliIiwicHJldiI6W10sImNvc2lnIjpbeyJieSI6ImVkMjU1MTk6MWNlNTZhNDhjODJmZjk5MTYyYTE0YmM1NDQ2MTI2NzRlNWQ2MWZiOTMxN2U2NWQ0MDU1NzgwZmRiY2I0ZGMzNSIsInNpZyI6Ik1lWGFvSFVvLWdmMkc0YzdJZ0xzTHlpWlJVNHhLYmhKVWEyTVFTWTFwakd4ZzdaNTZaVzRZaExSRWRyWmtEVFNtZkhOanZhRjU3TUtzR1FOWmFDY0FnIn1dLCJpYXQiOjE3ODc3NDU2MDB9.4Ukjz1rFvVCo59El2vlBXV9NKQVTvqDOoshbXQydShvk-MNJIcP0HIbrW4blS2ZSwI7T328Bs9S0quKkoZfHCQ"
+    private val gen1TypedOp =
+        "eyJ2IjozLCJ0eXAiOiJ2b2lkYmluZC5vcCIsInVzciI6ImVkMjU1MTk6Nzc3NmU4NzBiOTMzNTRmMmEwYjI0YzIzZjJhMzZjYzRlODBlMjIzMjE4YzFiOTc5MjZmZGQwMTgzOTZhMmI5YiIsIm9wIjoicmVtb3ZlIiwiZGV2IjoiZWQyNTUxOToyNTQzYjkyZmYxMDk1NTExNDc2YWRjODM2OWRiNmRkYzkzMzY2NWExMTk3OGRkYTE0MDRlZTEwNjZjYTk1NTlkIiwiYnkiOiJlZDI1NTE5Ojc3NzZlODcwYjkzMzU0ZjJhMGIyNGMyM2YyYTM2Y2M0ZTgwZTIyMzIxOGMxYjk3OTI2ZmRkMDE4Mzk2YTJiOWIiLCJwcmV2IjpbXSwiaWF0IjoxNzg3NzQ1NjAwfQ._O8n_H1derB9rfHskQdYaD7bc2DOAxk40gCzdq7VFhC8nllY4cFO_V2p-lOaeIsXf63RE2NMQvhPJY85t8bSAw"
 
     private fun assertGoldenCosignFlow(opToken: String, wantSig: String, wantCosigned: String, label: String) {
         val op = MembershipOp.verify(opToken)
@@ -64,7 +65,7 @@ class MembershipCosignTest {
             cs.sig,
             pub(cosignerSeed),
             MembershipOp.cosigMessage(MembershipOp.coreBytes(op)),
-            "$label: cosig must equal voidbind-go CosignOp",
+            "$label: cosig must equal void-which-binds-go CosignOp",
         )
         // Attach Go's own cosig so the payload is deterministic on every target; the
         // re-minted token must then be Go's AttachCosigs output.
@@ -74,7 +75,7 @@ class MembershipCosignTest {
             wantCosigned,
             cosigned,
             pub(userSeed),
-            "$label: cosigned op must equal voidbind-go AttachCosigs",
+            "$label: cosigned op must equal void-which-binds-go AttachCosigs",
         )
         val back = MembershipOp.verify(cosigned)
         assertEquals(op.typ, back.typ, "$label: attachCosigs keeps the op's typ")
@@ -86,16 +87,20 @@ class MembershipCosignTest {
     }
 
     @Test
-    fun typedCosignFlowReproducesGoGoldenByteForByte() =
-        assertGoldenCosignFlow(goOpTyped, goCosigTyped, goCosignedTyped, "typed")
+    fun cosignFlowReproducesGoGoldenByteForByte() = assertGoldenCosignFlow(goOp, goCosig, goCosigned, "gen2")
 
     @Test
-    fun legacyUntypedCosignFlowReproducesGoGoldenByteForByte() =
-        assertGoldenCosignFlow(goOpLegacy, goCosigLegacy, goCosignedLegacy, "legacy")
+    fun gen1GoldensAreRefusedAsWrongType() {
+        // Mirrors void-which-binds-go TestGen1GoldensAreRefused (ADR-0022).
+        for (tok in listOf(gen1UntypedOp, gen1TypedOp)) {
+            val e = assertFailsWith<MembershipOp.OpException> { MembershipOp.verify(tok) }
+            assertEquals(MembershipOp.Failure.WRONG_TYPE, e.failure)
+        }
+    }
 
     @Test
     fun attachCosigsRefusesAPrimaryThatIsNotBy() {
-        val op = MembershipOp.verify(goOpTyped)
+        val op = MembershipOp.verify(goOp)
         val cs = MembershipOp.cosign(signer(cosignerSeed), pub(cosignerSeed), op)
         val e = assertFailsWith<MembershipOp.OpException> {
             MembershipOp.attachCosigs(signer(cosignerSeed), pub(cosignerSeed), op, listOf(cs))
@@ -105,15 +110,15 @@ class MembershipCosignTest {
 
     @Test
     fun attachingNoCosigsReproducesTheBarePayload() {
-        val op = MembershipOp.verify(goOpTyped)
+        val op = MembershipOp.verify(goOp)
         val bare = MembershipOp.attachCosigs(signer(userSeed), pub(userSeed), op, emptyList())
-        assertEquals(goOpTyped.substringBefore('.'), bare.substringBefore('.'), "empty cosigs are omitted (omitempty)")
+        assertEquals(goOp.substringBefore('.'), bare.substringBefore('.'), "empty cosigs are omitted (omitempty)")
         assertEquals(Base64Url.encode(MembershipOp.coreBytes(op)), bare.substringBefore('.'))
     }
 
     // --- round trip through Membership.evaluate (ADR-0008 rule 5) -------------------
 
-    // Test-only keys from testvectors/vectors/membership/cosig-threshold-met.json.
+    // Fixed test-only keys (the pre-gen2 cosig-threshold-met vector's; any keys do).
     private val genesisSeed = Hex.decode("c24bb87672097fd3292251030126197ba061ffb69b9b67b0786318f627fb132c")
     private val aSeed = Hex.decode("5a855e9adc99a1ed10fbe04f44132d9d04885edf1a92e2e16828f825ea167d06")
     private val bSeed = Hex.decode("9493d01d80c72ec0770529a5125cd60fd4bfc19b75662b2ca9ff45a417b344f2")

@@ -1,0 +1,67 @@
+{
+  "name": "gen1-typ",
+  "description": "tokens typed with the gen1 values (voidbind.grant, voidbind.cert, voidbind.possession, voidbind.op), otherwise well-formed and validly signed. A gen1 typ is simply foreign to a gen2 verifier: wrong_type everywhere, with no generation to dispatch on (ADR-0022)",
+  "now": 1790251200,
+  "keys": {
+    "device": {
+      "sign_seed": "51d258eed93173eb8efffa1f6160fd18100e0e6ee753a53ae525d687595079da",
+      "id": "ed25519:51c028175628b13ad868ec3cfd5c4a7d3df55b27fecba832c33f1bdcc0e53602"
+    },
+    "user": {
+      "sign_seed": "c8aa23904f385b53e1b7d782d62610c027b1f1127a845eeb2104dec70dd881e6",
+      "id": "ed25519:cd515f0cdffd633d6f81f0ec79f99ad2609852806ee1d9789cf025369516f3b3"
+    }
+  },
+  "tokens": {
+    "cert": "eyJ2IjoyLCJ0eXAiOiJ2b2lkYmluZC5jZXJ0IiwidXNyIjoiZWQyNTUxOTpjZDUxNWYwY2RmZmQ2MzNkNmY4MWYwZWM3OWY5OWFkMjYwOTg1MjgwNmVlMWQ5Nzg5Y2YwMjUzNjk1MTZmM2IzIiwiZGV2IjoiZWQyNTUxOTo1MWMwMjgxNzU2MjhiMTNhZDg2OGVjM2NmZDVjNGE3ZDNkZjU1YjI3ZmVjYmE4MzJjMzNmMWJkY2MwZTUzNjAyIiwiZGVuYyI6IngyNTUxOTowNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3IiwiaWF0IjoxNzkwMjUxMjAwLCJleHAiOjE3OTAyNTQ4MDB9.ZI2-iPxwo0tAt9N0Bw9WgY4Nk-Pi9d4-f03Dimv-gSXHh8su6jQIgb8inu1zBZ4Jz3DkHF1xlEDCmWsco0XwAw",
+    "grant": "eyJ2IjoxLCJ0eXAiOiJ2b2lkYmluZC5ncmFudCIsImlzcyI6ImVkMjU1MTk6Y2Q1MTVmMGNkZmZkNjMzZDZmODFmMGVjNzlmOTlhZDI2MDk4NTI4MDZlZTFkOTc4OWNmMDI1MzY5NTE2ZjNiMyIsInBybiI6ImRldmljZTphbHBoYSIsInJlcyI6InNwYWNlOm9uZSIsImNhcCI6WyJyZWFkIl0sImlhdCI6MTc5MDI1MTIwMCwiZXhwIjoxNzkwMjU0ODAwfQ.ACtbn4PtQX3ZUFW5elUR975R_whcD_xKlGh95c9m0xHqqliriHb5KTGhG0TsdlPkz3TDe5Rd3Q7gJ-IxT4vhAg",
+    "op": "eyJ2IjozLCJ0eXAiOiJ2b2lkYmluZC5vcCIsInVzciI6ImVkMjU1MTk6Y2Q1MTVmMGNkZmZkNjMzZDZmODFmMGVjNzlmOTlhZDI2MDk4NTI4MDZlZTFkOTc4OWNmMDI1MzY5NTE2ZjNiMyIsIm9wIjoiYWRkIiwiZGV2IjoiZWQyNTUxOTo1MWMwMjgxNzU2MjhiMTNhZDg2OGVjM2NmZDVjNGE3ZDNkZjU1YjI3ZmVjYmE4MzJjMzNmMWJkY2MwZTUzNjAyIiwiZGVuYyI6IngyNTUxOTowNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3IiwiYnkiOiJlZDI1NTE5OmNkNTE1ZjBjZGZmZDYzM2Q2ZjgxZjBlYzc5Zjk5YWQyNjA5ODUyODA2ZWUxZDk3ODljZjAyNTM2OTUxNmYzYjMiLCJwcmV2IjpbXSwiaWF0IjoxNzkwMjUxMjAwLCJleHAiOjE3OTAyNTQ4MDB9.GF_jFSM23cF-hnuS8tjDwecV7YlyiAjlQmduJGrbShc38o5VyQYG1wHPN8DcI0Q1AMQTpwFlPKQyYMuuRwTXDQ",
+    "possession": "eyJ2IjoyLCJ0eXAiOiJ2b2lkYmluZC5wb3NzZXNzaW9uIiwiY3J0IjoiUzRheU5MQWNtRkpuMFFvZkZDOEROa19QWnB4NVg3ZDZVSm5TWEsyZHFDSSIsImlhdCI6MTc5MDI1MTIwMCwiZXhwIjoxNzkwMjUxMjYwfQ.V0J9PLZmfxAkaHYvLCc1KhyKdFyndiQ_-65jtC8hoL65rzJ1w5QxlJC-KXIMaasDIK8dXT2S3fKluXOvT1Y5Bw"
+  },
+  "grant_request": {
+    "principal": "device:alpha",
+    "resource": "space:one",
+    "capability": "read"
+  },
+  "checks": [
+    {
+      "verifier": "grant",
+      "token": "grant",
+      "key": "user",
+      "expect": "wrong_type"
+    },
+    {
+      "verifier": "cert",
+      "token": "cert",
+      "key": "user",
+      "expect": "wrong_type"
+    },
+    {
+      "verifier": "cert_user",
+      "token": "cert",
+      "expect": "wrong_type"
+    },
+    {
+      "verifier": "op",
+      "token": "cert",
+      "expect": "wrong_type"
+    },
+    {
+      "verifier": "possession",
+      "token": "possession",
+      "key": "device",
+      "cert": "cert",
+      "expect": "wrong_type"
+    },
+    {
+      "verifier": "op",
+      "token": "op",
+      "expect": "wrong_type"
+    },
+    {
+      "verifier": "op_user",
+      "token": "op",
+      "expect": "wrong_type"
+    }
+  ]
+}

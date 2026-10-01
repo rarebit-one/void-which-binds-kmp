@@ -13,12 +13,12 @@ import one.rarebit.voidwhichbinds.crypto.MiniJson
  * It is a compact signed token (`base64url(body).base64url(sig)`), typed from its
  * first version (ADR-0009), posted to the initiator's [SLOT] relay slot:
  *
- *     {"v":1,"typ":"voidbind.pair-refusal","by":"ed25519:<hex>","ses":"<b64url>"}
+ *     {"v":1,"typ":"void-which-binds.pair-refusal","by":"ed25519:<hex>","ses":"<b64url>"}
  *
  * `by` is the initiator's signing key (the key the responder bound into the SAS) and
  * the token is signed by it, so nobody else on the relay can make a joiner give up.
  * `ses` binds it to one pairing:
- * `base64url(SHA-256("voidbind/pairflow/refusal/session/v1" ‖ 0x00 ‖ salt))`.
+ * `base64url(SHA-256("void-which-binds/pairflow/refusal/session/v1" ‖ 0x00 ‖ salt))`.
  *
  * Pinned by void-which-binds-go's `testvectors/vectors/pair-refusal-vector.json`
  * (`PairRefusalVectorTest`).
@@ -28,13 +28,13 @@ object PairRefusal {
     const val SLOT = "refuse"
 
     /** The ADR-0009 `typ` claim (void-which-binds-go `pairflow.RefusalTyp`). */
-    const val TYP = "voidbind.pair-refusal"
+    const val TYP = "void-which-binds.pair-refusal"
 
     /** `v` within [TYP]. */
     const val VERSION = 1
 
     /** Domain-separates the session binding. Part of the wire; never rename. */
-    const val SESSION_LABEL = "voidbind/pairflow/refusal/session/v1"
+    const val SESSION_LABEL = "void-which-binds/pairflow/refusal/session/v1"
 
     private const val KEY_LEN = 32
     private const val SIG_LEN = 64

@@ -28,7 +28,7 @@ data class Slip39Scheme(
  * (`vectors/slip39/vectors.json`, replayed by `Slip39VectorTest`).
  *
  * The package is generic: it splits and combines any master secret the spec allows.
- * The voidbind profile, which fixes the parameters for a recovery secret, is
+ * The Void-Which-Binds profile, which fixes the parameters for a recovery secret, is
  * [one.rarebit.voidwhichbinds.RecoveryShares].
  *
  * Unlike plain Shamir, a bad share is refused rather than silently rebuilding a
@@ -146,7 +146,7 @@ object Slip39 {
      *
      * A wrong passphrase is NOT detected: by the spec's design it decrypts to a
      * different, valid-looking secret. Check the result against something known, as
-     * voidbind does against the pinned identity.
+     * Void-Which-Binds does against the pinned identity.
      */
     @Throws(Slip39Exception::class)
     fun combine(mnemonics: List<String>, passphrase: String = ""): ByteArray {

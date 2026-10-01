@@ -9,7 +9,7 @@ import one.rarebit.voidwhichbinds.net.RelayClient
 
 /**
  * The **new device** joining an existing account, as one app flow: the user scans
- * the `voidbind:pair?…` invite QR (v3 — it names the identity) off the existing
+ * the `void-which-binds:pair?…` invite QR (v4 — it names the identity) off the existing
  * device's screen, both sides run the commit-before-reveal handshake over the
  * relay, this side EVALUATES the initiator's membership ops and refuses a
  * non-member before any SAS exists, the two screens show a 7-digit SAS, and — only

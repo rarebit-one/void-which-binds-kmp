@@ -18,14 +18,14 @@ import one.rarebit.voidwhichbinds.crypto.Ed25519Group
  * The derivation is byte-identical to void-which-binds-go's `recovery.DeriveUserSeed`:
  *
  *     userSeed = HKDF-SHA256(ikm = recovery-secret, salt = ∅,
- *                            info = "heyarr/recovery/v1/user-identity-ed25519-seed",
+ *                            info = "void-which-binds/recovery/v1/user-identity-ed25519-seed",
  *                            len = 32)
  *     userPub  = Ed25519 public key of userSeed        (see [Ed25519Group])
  *
  * The public half is computed with the pure-Kotlin [Ed25519Group] BECAUSE the JDK
  * (and Apple) providers refuse to derive an Ed25519 public key from a raw seed;
  * signing itself uses the vetted provider ([Ed25519Engine]). Proven against a
- * live-voidbind-go KAT (secret → seed → public key).
+ * live void-which-binds-go KAT (secret → seed → public key).
  *
  * The raw signing seed never leaves this object except through [signer]/[sign].
  */

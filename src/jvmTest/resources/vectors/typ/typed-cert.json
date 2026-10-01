@@ -1,19 +1,19 @@
 {
   "name": "typed-cert",
-  "description": "a v2 cert typed voidbind.cert verifies as a cert and, as a genesis add, at the op verifiers; the grant and possession verifiers refuse it as wrong_type",
+  "description": "a v2 cert typed void-which-binds.cert verifies as a cert and, as a genesis add, at the op verifiers; the grant and possession verifiers refuse it as wrong_type",
   "now": 1790251200,
   "keys": {
     "device": {
-      "sign_seed": "d721c834b1d967bcf2c1635686ad8817c0577e452279f4a7f4f4743882d772eb",
-      "id": "ed25519:8256344bfdd93680c637386ad0195f01ae9bc6a7ea32bcb12c9c1b500ca7c839"
+      "sign_seed": "51d258eed93173eb8efffa1f6160fd18100e0e6ee753a53ae525d687595079da",
+      "id": "ed25519:51c028175628b13ad868ec3cfd5c4a7d3df55b27fecba832c33f1bdcc0e53602"
     },
     "user": {
-      "sign_seed": "99d56175dc3aa4346d6226043ae922888feb59e6c0bc0ef1e155356a4f103879",
-      "id": "ed25519:e17116170a4db3671d211d171021a31708a45e1a97d2f8d3ca542a75bdf77344"
+      "sign_seed": "c8aa23904f385b53e1b7d782d62610c027b1f1127a845eeb2104dec70dd881e6",
+      "id": "ed25519:cd515f0cdffd633d6f81f0ec79f99ad2609852806ee1d9789cf025369516f3b3"
     }
   },
   "tokens": {
-    "token": "eyJ2IjoyLCJ0eXAiOiJ2b2lkYmluZC5jZXJ0IiwidXNyIjoiZWQyNTUxOTplMTcxMTYxNzBhNGRiMzY3MWQyMTFkMTcxMDIxYTMxNzA4YTQ1ZTFhOTdkMmY4ZDNjYTU0MmE3NWJkZjc3MzQ0IiwiZGV2IjoiZWQyNTUxOTo4MjU2MzQ0YmZkZDkzNjgwYzYzNzM4NmFkMDE5NWYwMWFlOWJjNmE3ZWEzMmJjYjEyYzljMWI1MDBjYTdjODM5IiwiZGVuYyI6IngyNTUxOTowNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3IiwiaWF0IjoxNzkwMjUxMjAwLCJleHAiOjE3OTAyNTQ4MDB9.vyGLb5MEOs8jKLsXFLU6Rud8HTNq09I_SfDRmB85MJEtpKlEezzPMDdGkjAX2zKECJoicwaYU9fu8kuMhimHCw"
+    "token": "eyJ2IjoyLCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLmNlcnQiLCJ1c3IiOiJlZDI1NTE5OmNkNTE1ZjBjZGZmZDYzM2Q2ZjgxZjBlYzc5Zjk5YWQyNjA5ODUyODA2ZWUxZDk3ODljZjAyNTM2OTUxNmYzYjMiLCJkZXYiOiJlZDI1NTE5OjUxYzAyODE3NTYyOGIxM2FkODY4ZWMzY2ZkNWM0YTdkM2RmNTViMjdmZWNiYTgzMmMzM2YxYmRjYzBlNTM2MDIiLCJkZW5jIjoieDI1NTE5OjA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDcwNzA3MDciLCJpYXQiOjE3OTAyNTEyMDAsImV4cCI6MTc5MDI1NDgwMH0.lUItXsKSRQr473MYXoiBaTrRMlx0Mi-JZ2NsytH20hBAL72ta9aplPOsL2dHCxx51salfdRNepEW5tLCQkYqAw"
   },
   "grant_request": {
     "principal": "device:alpha",
@@ -25,59 +25,35 @@
       "verifier": "cert",
       "token": "token",
       "key": "user",
-      "expect": {
-        "accept": "ok",
-        "emit": "ok",
-        "require": "ok"
-      }
+      "expect": "ok"
     },
     {
       "verifier": "cert_user",
       "token": "token",
-      "expect": {
-        "accept": "ok",
-        "emit": "ok",
-        "require": "ok"
-      }
+      "expect": "ok"
     },
     {
       "verifier": "op",
       "token": "token",
-      "expect": {
-        "accept": "ok",
-        "emit": "ok",
-        "require": "ok"
-      }
+      "expect": "ok"
     },
     {
       "verifier": "op_user",
       "token": "token",
-      "expect": {
-        "accept": "ok",
-        "emit": "ok",
-        "require": "ok"
-      }
+      "expect": "ok"
     },
     {
       "verifier": "grant",
       "token": "token",
       "key": "user",
-      "expect": {
-        "accept": "wrong_type",
-        "emit": "wrong_type",
-        "require": "wrong_type"
-      }
+      "expect": "wrong_type"
     },
     {
       "verifier": "possession",
       "token": "token",
       "key": "user",
       "cert": "token",
-      "expect": {
-        "accept": "wrong_type",
-        "emit": "wrong_type",
-        "require": "wrong_type"
-      }
+      "expect": "wrong_type"
     }
   ]
 }

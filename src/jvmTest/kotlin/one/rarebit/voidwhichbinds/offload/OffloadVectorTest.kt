@@ -47,6 +47,20 @@ class OffloadVectorTest {
     }
 
     @Test
+    fun gen1OffloadLinksAreRefused() {
+        // ADR-0022: `offload-pair` and `unwrap` moved to the `void-which-binds:` scheme with
+        // the rest of the URI surface; a `voidbind:` link is refused, not dual-parsed.
+        val gen1Invite = section("invite").str("uri").replaceFirst("void-which-binds:", "voidbind:")
+        assertFailsWith<IllegalArgumentException> { OffloadDeepLink.parsePairInvite(gen1Invite) }
+        val ping = OffloadDeepLink.encodeWakePing("https://relay.example/pair", "s1")
+        assertTrue(ping.startsWith("void-which-binds:unwrap?"), ping)
+        assertEquals("s1", OffloadDeepLink.parseWakePing(ping).session)
+        assertFailsWith<IllegalArgumentException> {
+            OffloadDeepLink.parseWakePing(ping.replaceFirst("void-which-binds:", "voidbind:"))
+        }
+    }
+
+    @Test
     fun pairingConfirmTranscriptAndSignaturesAndSas() {
         val v = section("pairing_confirm")
         val salt = v.bytes("salt_hex")

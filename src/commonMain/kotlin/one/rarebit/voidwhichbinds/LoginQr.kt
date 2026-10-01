@@ -6,7 +6,7 @@ import one.rarebit.voidwhichbinds.crypto.UrlQuery
  * The web-login QR — the code a relying party (All Thing, a homelab web app)
  * renders in a browser for the device to scan (WhatsApp-Web pattern):
  *
- *     voidbind:login?rp=<origin>&id=<login-id>
+ *     void-which-binds:login?rp=<origin>&id=<login-id>
  *
  * It carries ONLY the RP origin and the login id; the device fetches the full,
  * signed challenge from the RP by id ([net.WebLoginClient.fetchChallenge]), so the
@@ -19,7 +19,7 @@ import one.rarebit.voidwhichbinds.crypto.UrlQuery
  */
 object LoginQr {
 
-    const val SCHEME = "voidbind"
+    const val SCHEME = "void-which-binds"
     private const val PREFIX = "$SCHEME:login?"
 
     /** The parsed parts of a login QR. */
@@ -43,7 +43,7 @@ object LoginQr {
 }
 
 /**
- * The single dispatch point for the app's QR scanner: a scanned `voidbind:` code
+ * The single dispatch point for the app's QR scanner: a scanned `void-which-binds:` code
  * is either a **web-login** ([Login]) or a **pairing invite** ([Pair]). The Scan
  * screen calls [parse] and branches on the type — login opens the approval sheet,
  * pair opens the SAS-compare flow.
@@ -59,11 +59,11 @@ sealed class VoidbindQr {
         private const val LOGIN_PREFIX = "${LoginQr.SCHEME}:login?"
         private const val PAIR_PREFIX = "${Invite.SCHEME}:pair?"
 
-        /** Classify and parse a scanned QR. Throws on anything that is not a voidbind QR. */
+        /** Classify and parse a scanned QR. Throws on anything that is not a void-which-binds QR. */
         fun parse(uri: String): VoidbindQr = when {
             uri.startsWith(LOGIN_PREFIX) -> Login(LoginQr.decode(uri))
             uri.startsWith(PAIR_PREFIX) -> Pair(Invite.decode(uri))
-            else -> throw IllegalArgumentException("not a voidbind QR: '${uri.take(32)}…'")
+            else -> throw IllegalArgumentException("not a void-which-binds QR: '${uri.take(32)}…'")
         }
     }
 }

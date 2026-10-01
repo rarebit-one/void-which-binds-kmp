@@ -16,7 +16,7 @@ import dev.whyoleg.cryptography.random.CryptographyRandom
  * Construction (void-which-binds-go ADR-0049, `wrap.go`/`content.go`):
  *  - shared  = X25519(ephemeralPriv, recipientPub)
  *  - wrapKey = HKDF-SHA256(ikm=shared, salt=ephPub‖recipientPub,
- *              info="heyarr/space-key-wrap/v1", len=32)
+ *              info="void-which-binds/space-key-wrap/v1", len=32)
  *  - wrapped = ephPub(32) ‖ nonce(24) ‖ XChaCha20Poly1305.seal(wrapKey, nonce,
  *              aad=ephPub‖recipientPub, plaintext=spaceKey)   → 104 bytes
  *  - content = nonce(24) ‖ XChaCha20Poly1305.seal(spaceKey, nonce, aad=∅, plaintext)
@@ -24,7 +24,7 @@ import dev.whyoleg.cryptography.random.CryptographyRandom
  * X25519 is pure Kotlin ([X25519]) so `unwrap` can derive the recipient's public
  * key from its private seed (which the JDK X25519 provider will not do); HKDF and
  * the AEAD are the vetted cryptography-kotlin primitives. Verified against a
- * live-voidbind-go KAT.
+ * live void-which-binds-go KAT.
  *
  * This object is PUBLIC because a relying-party app that holds device-side
  * encrypted personal state (heyarr-mobile, ADR-0049) needs these same four
@@ -36,7 +36,7 @@ import dev.whyoleg.cryptography.random.CryptographyRandom
  * ([X25519], [XChaCha20Poly1305]) stay internal.
  */
 public object VoidbindEncryption {
-    private const val WRAP_INFO = "heyarr/space-key-wrap/v1"
+    private const val WRAP_INFO = "void-which-binds/space-key-wrap/v1"
     const val SPACE_KEY_SIZE = 32
     private const val EPH_PUB_LEN = 32
     private const val WRAP_NONCE_LEN = 24

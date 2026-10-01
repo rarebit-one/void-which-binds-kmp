@@ -8,8 +8,8 @@ import one.rarebit.voidwhichbinds.crypto.UrlQuery
  * second phone to scan a QR. The Singpass app-to-app model: ONE authenticator, N
  * RPs, the RP opens the authenticator by deep link and resumes when it finishes.
  *
- *     voidbind:login?rp=<origin>&id=<login-id>[&callback=<app-scheme-uri>]
- *     voidbind:pair?v=3&relay=&session=&salt=<hex>&usr=<ed25519:hex>[&callback=<app-scheme-uri>]
+ *     void-which-binds:login?rp=<origin>&id=<login-id>[&callback=<app-scheme-uri>]
+ *     void-which-binds:pair?v=4&relay=&session=&salt=<hex>&usr=<ed25519:hex>[&callback=<app-scheme-uri>]
  *
  * This is the EXACT QR tuple ([LoginQr] / [Invite] — the void-which-binds-go wire, which
  * stays byte-identical) plus one optional, authenticator-local `callback` key. The
@@ -26,7 +26,7 @@ import one.rarebit.voidwhichbinds.crypto.UrlQuery
  *   (`GET /login/{id}`) — the callback is launched bare, with nothing appended.
  * - The URI is untrusted input from another app. `rp`/`id` are validated by the QR
  *   parsers; `callback` is accepted only when [isWellFormedCallback] — a private
- *   app scheme, not `http(s)`/`javascript`/`file`/`content`/`intent`/`voidbind`,
+ *   app scheme, not `http(s)`/`javascript`/`file`/`content`/`intent`/`void-which-binds`,
  *   no whitespace or control characters — and is otherwise silently dropped (the
  *   approval still proceeds; the RP simply is not foregrounded).
  */
@@ -89,7 +89,7 @@ object VoidbindDeepLink {
      * Parse an incoming handoff URI. Classification and the rp/id (or invite) fields
      * go through the QR parsers, so a deep link is exactly as strict as a scan; the
      * `callback` is read separately and kept only if [isWellFormedCallback]. Throws
-     * (like [VoidbindQr.parse]) on anything that is not a voidbind login/pair URI.
+     * (like [VoidbindQr.parse]) on anything that is not a void-which-binds login/pair URI.
      */
     fun parse(uri: String): Parsed {
         val trimmed = uri.trim()
@@ -100,7 +100,7 @@ object VoidbindDeepLink {
         }
     }
 
-    /** Non-throwing [parse]: null for anything that is not a voidbind handoff. */
+    /** Non-throwing [parse]: null for anything that is not a void-which-binds handoff. */
     fun parseOrNull(uri: String): Parsed? = try {
         parse(uri)
     } catch (_: Throwable) {
@@ -111,7 +111,7 @@ object VoidbindDeepLink {
      * Whether [callback] is a URI the authenticator will launch after approval: a
      * private app scheme (`scheme:` per RFC 3986 — a letter, then letters/digits/`+.-`),
      * NOT a web/system scheme that could open a browser, a file, a content provider
-     * or an arbitrary `intent:`, not `voidbind:` (no re-entry loops), no whitespace or
+     * or an arbitrary `intent:`, not `void-which-binds:` (no re-entry loops), no whitespace or
      * control characters, and at most [MAX_CALLBACK_LENGTH] characters.
      */
     fun isWellFormedCallback(callback: String): Boolean {
@@ -138,7 +138,7 @@ object VoidbindDeepLink {
         return "$tuple&$CALLBACK=${UrlQuery.escape(callback)}"
     }
 
-    /** The validated `callback` of a `voidbind:<kind>?<query>` URI, or null. */
+    /** The validated `callback` of a `void-which-binds:<kind>?<query>` URI, or null. */
     private fun callbackOf(uri: String): String? {
         val q = uri.indexOf('?')
         if (q < 0) return null

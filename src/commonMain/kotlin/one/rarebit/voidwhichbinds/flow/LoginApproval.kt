@@ -9,7 +9,7 @@ import one.rarebit.voidwhichbinds.net.WebLoginHttpException
 
 /**
  * The device side of **web QR-login** as one app flow: the user scans a
- * `voidbind:login?rp=&id=` QR on a browser, the app shows WHAT they are signing
+ * `void-which-binds:login?rp=&id=` QR on a browser, the app shows WHAT they are signing
  * into, and — only after the human taps Approve — the device signs the RP's
  * challenge with its hardware key and submits the assertion. The RP then verifies
  * it offline against the pinned user key and mints a short-lived session token.

@@ -116,6 +116,6 @@ class LoginApprovalTest {
     private companion object {
         // The scanned QR points the coordinator at the fake RP (base is ignored by
         // the fake transport, which routes on path) with login id "L42".
-        val LoginQrRp = one.rarebit.voidwhichbinds.LoginQr.decode("voidbind:login?id=L42&rp=http%3A%2F%2Frp")
+        val LoginQrRp = one.rarebit.voidwhichbinds.LoginQr.decode("void-which-binds:login?id=L42&rp=http%3A%2F%2Frp")
     }
 }

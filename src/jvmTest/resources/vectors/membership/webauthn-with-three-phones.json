@@ -1,6 +1,6 @@
 {
-  "name": "cosig-nonmember-ignored",
-  "description": "a cosig by a key that is not a member of the remove's closure verifies but is not counted: with a fleet high-water of 3 (k=2) the remove has one effective signature and is under_threshold",
+  "name": "webauthn-with-three-phones",
+  "description": "ADR-0018: three Ed25519 phones A, B, C plus one webauthn: passkey P. N is 3 and k is 2, unchanged by the passkey: A's single-signature remove of C is under_threshold",
   "usr": "ed25519:5c167ac159feac80a76906ae94f7afe328e1aea2752cddee0c641661ec99535d",
   "now": 1788267600,
   "keys": {
@@ -19,10 +19,9 @@
       "enc_seed": "d540819f79b034d7b570d922f6b632d799184c08ced3e9b6d171906376395409",
       "id": "ed25519:6b32c359ce7dc8b67a78daca1ccde0fdf9b8ddc5441e569bd3882ff75fd1add8"
     },
-    "X": {
-      "sign_seed": "b1e8bebc2594448ebce4106f280b1b3561212ba4b898d73d29cc5347630b09b5",
-      "enc_seed": "14095c689fccebb502e15dc0a47124aae63c00a936d92e972d250a2e694e0602",
-      "id": "ed25519:e37e252b661f482a598e28da086f94c8a9c87d886fbe6f7143e01bc802e8671a"
+    "P": {
+      "sign_seed": "",
+      "id": "webauthn:es256:04290e906f7f3f24f2ab1f83a171cf2375e4ba3499593eb4f0f80795e500426b5216ead68b9481be4c90db569b6dbaddd3937e9f3b32eaea0d247fdc94ee3f8269"
     },
     "genesis": {
       "sign_seed": "b683c7c89a94432a50b03b212fc8a8512f56b7e9e3c90a1661276e6ef672eb15",
@@ -32,8 +31,13 @@
   "ops": [
     {
       "label": "rm-C",
-      "token": "eyJ2IjozLCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLm9wIiwidXNyIjoiZWQyNTUxOTo1YzE2N2FjMTU5ZmVhYzgwYTc2OTA2YWU5NGY3YWZlMzI4ZTFhZWEyNzUyY2RkZWUwYzY0MTY2MWVjOTk1MzVkIiwib3AiOiJyZW1vdmUiLCJkZXYiOiJlZDI1NTE5OjZiMzJjMzU5Y2U3ZGM4YjY3YTc4ZGFjYTFjY2RlMGZkZjliOGRkYzU0NDFlNTY5YmQzODgyZmY3NWZkMWFkZDgiLCJieSI6ImVkMjU1MTk6ZTU5MmEwN2Q3ZjQ3ODAxMzAzOGU0NzFlZjJjOTYwZjJiYTQxNjNmZGI5OTNlYjkxN2M0NjEyMGQxZGY2Yjk0NSIsInByZXYiOlsic2hhMjU2OjkyYWRlMjg1ZjYxMDBiMTdhZWI4MTBlYTY1MDExNTc2M2JiNTQ4ZDdkZDNkNjEyMDNiYmE4MTE0NTdkOWYxMzMiXSwiY29zaWciOlt7ImJ5IjoiZWQyNTUxOTplMzdlMjUyYjY2MWY0ODJhNTk4ZTI4ZGEwODZmOTRjOGE5Yzg3ZDg4NmZiZTZmNzE0M2UwMWJjODAyZTg2NzFhIiwic2lnIjoiMHFYUHoxZ0pjZ3l5cE5QRnU1Q3pnb2tLdlkxXzhFaUp1dmpkd1UyNWF2WlB1R3JtcWE5YUVDd1lTSmtpNHdrdnIwcHRWMHFMRUpCakEyeWV5UkdFQVEifV0sImlhdCI6MTc4ODI2NDYwMH0.dX8yaSk6ygvDOmeeSWpyqud-s14XE9igECiIRxPpDOwfnoyDz9gmPeN6Xzw0QwRwZLttJ8z4WJQICiluKxWKDQ",
-      "hash": "sha256:f5699f38ac881acefa8da76cbae1c665be85dbc4f957f83d1ece39af1794313b"
+      "token": "eyJ2IjozLCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLm9wIiwidXNyIjoiZWQyNTUxOTo1YzE2N2FjMTU5ZmVhYzgwYTc2OTA2YWU5NGY3YWZlMzI4ZTFhZWEyNzUyY2RkZWUwYzY0MTY2MWVjOTk1MzVkIiwib3AiOiJyZW1vdmUiLCJkZXYiOiJlZDI1NTE5OjZiMzJjMzU5Y2U3ZGM4YjY3YTc4ZGFjYTFjY2RlMGZkZjliOGRkYzU0NDFlNTY5YmQzODgyZmY3NWZkMWFkZDgiLCJieSI6ImVkMjU1MTk6ZTU5MmEwN2Q3ZjQ3ODAxMzAzOGU0NzFlZjJjOTYwZjJiYTQxNjNmZGI5OTNlYjkxN2M0NjEyMGQxZGY2Yjk0NSIsInByZXYiOlsic2hhMjU2OmNiYWFiN2VhZTNkMmU5N2MyZTc2YmI4MDM2MDg4ZjhiODhkN2FkZmI2ZDY4NGY1ODVkZWI2MzQzNDdhYTUyMDEiXSwiaWF0IjoxNzg4MjY0NjAwfQ.LFDWC1jxptwSWtR2d_8694EoDeySbnAr9c6ny4mGTbinClMDcme5mMSj0rX8KJk0sFBDD8EmX4Lqi6deM0cwAg",
+      "hash": "sha256:3bcab6b4a1002e2ef164ea6c4939d8867d8d84c0f25545ba0ba5c95050024b6e"
+    },
+    {
+      "label": "add-P",
+      "token": "eyJ2IjozLCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLm9wIiwidXNyIjoiZWQyNTUxOTo1YzE2N2FjMTU5ZmVhYzgwYTc2OTA2YWU5NGY3YWZlMzI4ZTFhZWEyNzUyY2RkZWUwYzY0MTY2MWVjOTk1MzVkIiwib3AiOiJhZGQiLCJkZXYiOiJ3ZWJhdXRobjplczI1NjowNDI5MGU5MDZmN2YzZjI0ZjJhYjFmODNhMTcxY2YyMzc1ZTRiYTM0OTk1OTNlYjRmMGY4MDc5NWU1MDA0MjZiNTIxNmVhZDY4Yjk0ODFiZTRjOTBkYjU2OWI2ZGJhZGRkMzkzN2U5ZjNiMzJlYWVhMGQyNDdmZGM5NGVlM2Y4MjY5IiwiYnkiOiJlZDI1NTE5OjVjMTY3YWMxNTlmZWFjODBhNzY5MDZhZTk0ZjdhZmUzMjhlMWFlYTI3NTJjZGRlZTBjNjQxNjYxZWM5OTUzNWQiLCJwcmV2IjpbInNoYTI1Njo5MmFkZTI4NWY2MTAwYjE3YWViODEwZWE2NTAxMTU3NjNiYjU0OGQ3ZGQzZDYxMjAzYmJhODExNDU3ZDlmMTMzIl0sImlhdCI6MTc4ODI2NDE4MCwiZXhwIjoxNzk2MDQwMTgwfQ.e-XvKJNgL4jDOV2udsJk5EfXXWaVPxJoAhJGMI9MyF8lIVZbx-dWa-LiTfmelav1OV_bX4W76-VIwKDojJKvAQ",
+      "hash": "sha256:cbaab7eae3d2e97c2e76bb8036088f8b88d7adfb6d684f585deb634347aa5201"
     },
     {
       "label": "add-C",
@@ -70,15 +74,20 @@
         "denc": "x25519:3e99c2f9a2a927bba84c62c19fb01c6e4c778b9b79450eac781a360f57b783ec",
         "admitted_at": 1788264000,
         "expires": 1796040000
+      },
+      "webauthn:es256:04290e906f7f3f24f2ab1f83a171cf2375e4ba3499593eb4f0f80795e500426b5216ead68b9481be4c90db569b6dbaddd3937e9f3b32eaea0d247fdc94ee3f8269": {
+        "admitted_by": "sha256:cbaab7eae3d2e97c2e76bb8036088f8b88d7adfb6d684f585deb634347aa5201",
+        "admitted_at": 1788264180,
+        "expires": 1796040180
       }
     },
     "removed": [],
     "heads": [
-      "sha256:f5699f38ac881acefa8da76cbae1c665be85dbc4f957f83d1ece39af1794313b"
+      "sha256:3bcab6b4a1002e2ef164ea6c4939d8867d8d84c0f25545ba0ba5c95050024b6e"
     ],
     "rejected": {},
     "ineffective": {
-      "sha256:f5699f38ac881acefa8da76cbae1c665be85dbc4f957f83d1ece39af1794313b": "under_threshold"
+      "sha256:3bcab6b4a1002e2ef164ea6c4939d8867d8d84c0f25545ba0ba5c95050024b6e": "under_threshold"
     }
   }
 }

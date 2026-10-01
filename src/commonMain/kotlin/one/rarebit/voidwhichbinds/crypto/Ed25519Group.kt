@@ -22,7 +22,7 @@ import dev.whyoleg.cryptography.algorithms.SHA512
  *
  * The scalar clamp and the point encoding are RFC 8032 §5.1.5 verbatim, and the
  * field arithmetic mirrors [X25519]'s TweetNaCl port. Proven against a
- * live-voidbind-go KAT: recovery secret → HKDF seed → this public key.
+ * live void-which-binds-go KAT: recovery secret → HKDF seed → this public key.
  */
 internal object Ed25519Group {
 

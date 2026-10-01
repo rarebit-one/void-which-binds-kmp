@@ -40,8 +40,9 @@ import one.rarebit.voidwhichbinds.MembershipOp.Kind
  *     member co-signature ([MembershipOp.Cosig]) over the op's core under the cosig
  *     domain. WHO may count is judged against the remove's OWN prev closure
  *     ([membersInClosure]); HOW MANY are needed, k(N), is driven by the fleet
- *     HIGH-WATER ([fleetHighWater] — distinct non-genesis devices that ever held an
- *     authorised add), not the closure size, so neither a minimal prev nor a
+ *     HIGH-WATER ([fleetHighWater] — distinct non-genesis Ed25519 devices that ever
+ *     held an authorised add; a `webauthn:` passkey member cannot cosign, so it never
+ *     counts, ADR-0018), not the closure size, so neither a minimal prev nor a
  *     backdated iat can shrink the quorum (the downgrade fix). k(N) is 2 for N ≥ 3,
  *     else 1. Checked BEFORE seniority; genesis removes bypass it. A remove short of
  *     quorum is INEFFECTIVE (`under_threshold`).
@@ -300,8 +301,9 @@ object Membership {
         fun opKey(o: MembershipOp): Seniority = Seniority(depth.getValue(o.hash), o.issuedAt, o.hash)
 
         /**
-         * Rule 5's N (ADR-0008): the number of DISTINCT non-genesis devices that have
-         * EVER held an authorised add anywhere in the op set. It counts ADDS ONLY —
+         * Rule 5's N (ADR-0008): the number of DISTINCT non-genesis devices that can
+         * cosign ([canCosign]: Ed25519 keys only, ADR-0018) and that have EVER held an
+         * authorised add anywhere in the op set. It counts ADDS ONLY —
          * removes, supersession, expiry and every op's issued-at are ignored — so it is
          * a pure, monotone, order-independent function of the whole set, deliberately
          * STICKY: once it reaches 3, k(N)=2 for every non-genesis remove thereafter,
@@ -331,6 +333,8 @@ object Membership {
                 val devs = HashSet<String>()
                 for ((h, op) in ops) {
                     if (op.kind != Kind.ADD || op.device == usr) continue // genesis is never a fleet device
+                    // ADR-0018: a passkey (webauthn:) member cannot cosign, so it never raises N.
+                    if (!canCosign(op.device)) continue
                     if (authorised(h)) devs.add(op.device)
                 }
                 if (devs.size == hw) break
@@ -373,24 +377,10 @@ object Membership {
             val signed = HashSet<String>()
             if (op.by in members) signed.add(op.by)
             if (op.cosig.isEmpty()) return signed.size
-            val core = MembershipOp.coreBytes(op)
-            val msg = MembershipOp.cosigMessage(core)
             for (cs in op.cosig) {
                 if (cs.by !in members) continue // not a member of the op's closure
                 if (cs.by in signed) continue // op.by re-signing, or a duplicate cosig
-                val pub = try {
-                    KeyRef.parse(cs.by)
-                } catch (_: IllegalArgumentException) {
-                    null
-                }
-                if (pub == null || pub.alg != Labels.ALG_ED25519 || pub.bytes.size != 32) continue
-                val sig = MembershipOp.decodeSigOrNull(cs.sig) ?: continue
-                val ok = try {
-                    verifier.verify(pub.bytes, msg, sig)
-                } catch (_: Throwable) {
-                    false
-                }
-                if (!ok) continue
+                if (!MembershipOp.verifyCosig(op, cs, verifier)) continue
                 signed.add(cs.by)
             }
             return signed.size
@@ -587,3 +577,23 @@ object Membership {
         }
     }
 }
+
+/**
+ * Whether a member key can make a cosig: only an Ed25519 key can (void-which-binds-go
+ * ADR-0018, `canCosign`). Any other key kind, such as a `webauthn:` passkey, is still
+ * a member, but it does not count toward the high-water N. Mirrors
+ * `identity.ParsePublicKey` succeeding: an `ed25519:` prefix and 32 bytes of
+ * lowercase hex.
+ */
+internal fun canCosign(dev: String): Boolean {
+    val text = dev.trim()
+    val ref = try {
+        KeyRef.parse(text)
+    } catch (_: IllegalArgumentException) {
+        null
+    }
+    return ref != null && ref.alg == Labels.ALG_ED25519 && ref.bytes.size == ED25519_KEY_LEN && ref.render() == text
+}
+
+/** An Ed25519 public key's length in bytes. */
+private const val ED25519_KEY_LEN = 32

@@ -9,7 +9,7 @@ package one.rarebit.voidwhichbinds
  *
  * # The load-bearing invariant: the ping is a wake signal, not a crypto path
  *
- * The ping carries ONLY the public login tuple — `voidbind:login?rp=<>&id=<>` — the
+ * The ping carries ONLY the public login tuple — `void-which-binds:login?rp=<>&id=<>` — the
  * exact same string a QR encodes (void-which-binds-go builds both with the same encoder).
  * It holds no challenge, no nonce, no cert, no key material, and — for a
  * number-matching login — **no match number**. So this parser deliberately does no
@@ -18,7 +18,7 @@ package one.rarebit.voidwhichbinds
  * over TLS and signs it hardware-gated. A parser that expected a secret in the ping
  * would be a design error — there is none to expect, and [parse] never reads one.
  *
- * A malformed or non-voidbind body is rejected (thrown), so a stray push cannot
+ * A malformed or non-void-which-binds body is rejected (thrown), so a stray push cannot
  * drive the app anywhere; the receiver simply ignores what does not parse.
  */
 object PushPing {
@@ -28,7 +28,7 @@ object PushPing {
      * body IS the opaque tuple (void-which-binds-go publishes `ping.Tuple` as the raw ntfy
      * message body), so this trims surrounding whitespace and defers entirely to
      * [VoidbindQr.parse]. It reads nothing but the tuple — there is no secret in the
-     * ping to read. Throws on anything that is not a voidbind tuple.
+     * ping to read. Throws on anything that is not a void-which-binds tuple.
      */
     @Throws(Exception::class)
     fun parse(rawBody: String): VoidbindQr = VoidbindQr.parse(rawBody.trim())

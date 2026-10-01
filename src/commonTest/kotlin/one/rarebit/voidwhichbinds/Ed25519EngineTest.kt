@@ -34,7 +34,7 @@ class Ed25519EngineTest {
     @Test
     fun signsAndVerifies() {
         val g = Ed25519Engine.generate()
-        val msg = "voidbind device signing".encodeToByteArray()
+        val msg = "void-which-binds device signing".encodeToByteArray()
         val sig = Ed25519Engine.sign(g.privateSeed, msg)
         assertEquals(64, sig.size, "Ed25519 signature is 64 bytes")
         assertTrue(Ed25519Engine.verify(g.publicKey, msg, sig), "valid signature verifies")

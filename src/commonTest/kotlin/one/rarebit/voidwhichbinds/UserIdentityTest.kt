@@ -20,14 +20,14 @@ class UserIdentityTest {
 
     // (recovery secret) -> (user identity public key), captured from void-which-binds-go.
     private val vectors = listOf(
-        "heyarr1ph3wnlphtjp4ha9j86g0ft6ktvuu4atzyt5hnm8m8905urq5540qyxldt3" to
-            "d79fad7575f432e2f4915113b7a89773f7a187305d6823d2aab21121687838f9",
-        "heyarr1qypsvd2nvrvvqktgqjyf5xfmw59sdxzlyynel29q4swlrtpzfdasudpq07" to
-            "847bd05c7d4cb14796b6de05285ca7694ac9be8195b18c284ab767da0c1ad794",
-        "heyarr1uetzn4ufrur8f7gdqu5enktfsx3n6wnwueh68vx7vj0psdnzf44sp2krz8" to
-            "d679c23b962fa8747020404d8dce9ec84709e21fed0f7583b5ee797dd7d06578",
-        "heyarr1pvgy0ccsg3y0z2vsxzzrazpy79h6r50jvcejvscqqar488cspxnsc23kcf" to
-            "22204e5416ff89181f8f0c3d5441439ab794371f7af94e8f90408a0640d99885",
+        "void-which-binds1ph3wnlphtjp4ha9j86g0ft6ktvuu4atzyt5hnm8m8905urq5540q40xvf4" to
+            "f25f439635e13a556fe6428e26e0b66a0410a8eb1ee11d0af209d5214ac22b15",
+        "void-which-binds1qypsvd2nvrvvqktgqjyf5xfmw59sdxzlyynel29q4swlrtpzfdasdycpd6" to
+            "6ead54cd58540a1ec9cb7d72d4261bf9adb1247b4573c2ddab07e6a8721d408e",
+        "void-which-binds1uetzn4ufrur8f7gdqu5enktfsx3n6wnwueh68vx7vj0psdnzf44ssr0zqr" to
+            "88e2cf606c18c3616db99135edf02017fb167d8e3fce4430bcc1cf53aa65051e",
+        "void-which-binds1pvgy0ccsg3y0z2vsxzzrazpy79h6r50jvcejvscqqar488cspxnsfrgh6d" to
+            "9f87047108839b077f155f4c8d58f26a2e3d2be2bf34bddade2f16d241ccce3e",
     )
 
     @Test
@@ -85,7 +85,7 @@ class UserIdentityTest {
     @Test
     fun theUserKeySignsAndVerifiesAgainstItsDerivedPublicKey() {
         val id = UserIdentity.restore(vectors[0].first)
-        val msg = "voidbind identity self-test".encodeToByteArray()
+        val msg = "void-which-binds identity self-test".encodeToByteArray()
         val sig = id.sign(msg)
         assertTrue(
             Ed25519Engine.verifier().verify(id.userPublicKey, msg, sig),

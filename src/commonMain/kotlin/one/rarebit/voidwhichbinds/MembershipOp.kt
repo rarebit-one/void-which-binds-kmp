@@ -20,13 +20,14 @@ import one.rarebit.voidwhichbinds.crypto.MiniJson
  * `Device <op>~<proof>` credential and the possession proof's `sha256(token)`
  * binding survive unchanged:
  * ```
- * payload  {v:3, typ?, usr, op:"add"|"remove", dev, denc?, by, prev:[opHash…], cosig?:[{by,sig}…], iat, exp?}
+ * payload  {v:3, typ, usr, op:"add"|"remove", dev, denc?, by, prev:[opHash…], cosig?:[{by,sig}…], iat, exp?}
  * token    b64url(payload) "." b64url(ed25519.Sign(by, payload))
  * hash     "sha256:" hex(sha256(token))
  * ```
  * The payload is compact JSON with the fields in exactly that order (they are
- * signed as-is). `typ` (ADR-0009: `voidbind.op`, second after `v`), `denc`, `cosig`
- * and `exp` are omitted when empty/zero, matching
+ * signed as-is). `typ` (ADR-0009: `void-which-binds.op`, always second after `v`;
+ * gen2 is typed-only, ADR-0022). `denc`, `cosig` and `exp` are omitted when
+ * empty/zero, matching
  * Go's `omitempty`; `prev` is always present (`[]` when empty), sorted and
  * de-duplicated so equal head sets sign to equal bytes.
  *
@@ -63,11 +64,11 @@ data class MembershipOp(
     /** Expiry (unix seconds) for an add; 0 for a remove, which never expires. */
     val expiresAt: Long,
     /**
-     * The body's ADR-0009 `typ` claim as signed: [TokenType.OP], [TokenType.CERT] (a
-     * cert read as a genesis add), or `""` for an untyped legacy token. It is carried
-     * so that [coreBytes] reproduces the exact signed payload.
+     * The body's ADR-0009 `typ` claim as signed: [TokenType.OP], or [TokenType.CERT] (a
+     * cert read as a genesis add). It is carried so that [coreBytes] reproduces the
+     * exact signed payload.
      */
-    val typ: String = "",
+    val typ: String = TokenType.OP,
 ) {
     /** What an op does to the membership set. */
     enum class Kind(val wire: String) {
@@ -131,36 +132,8 @@ data class MembershipOp(
          *
          * Mirrors void-which-binds-go `enrolment.SignOp` byte-for-byte.
          */
+        @Suppress("ThrowsCount") // one refusal per Go guard, in Go's order
         fun sign(
-            signer: Ed25519Signer,
-            byPublicKey: ByteArray,
-            usr: String,
-            kind: Kind,
-            dev: String,
-            deviceEnc: String,
-            prev: List<String>,
-            issuedAt: Long,
-            lifetimeSeconds: Long = DEFAULT_LIFETIME_SECONDS,
-        ): String = signTyped(
-            TokenType.OP,
-            signer,
-            byPublicKey,
-            usr,
-            kind,
-            dev,
-            deviceEnc,
-            prev,
-            issuedAt,
-            lifetimeSeconds,
-        )
-
-        /**
-         * [sign] with an explicit ADR-0009 `typ`. Since phase 2 [sign] passes
-         * [TokenType.OP]; `""` mints the untyped legacy body, which only the legacy
-         * fixtures still use.
-         */
-        internal fun signTyped(
-            typ: String,
             signer: Ed25519Signer,
             byPublicKey: ByteArray,
             usr: String,
@@ -191,7 +164,7 @@ data class MembershipOp(
 
             val fields = ArrayList<Pair<String, Any>>()
             fields += "v" to VERSION
-            fields += typFields(typ)
+            fields += "typ" to TokenType.OP
             fields += "usr" to usr
             fields += "op" to kind.wire
             fields += "dev" to dev
@@ -239,7 +212,8 @@ data class MembershipOp(
                 throw OpException(Failure.MALFORMED, "payload is not JSON")
             }
             // ADR-0009: an op verifier accepts an op or a cert (a genesis add). Any
-            // other `typ` is refused before the body is read as either.
+            // other `typ`, or none (gen2 is typed-only, ADR-0022), is refused before
+            // the body is read as either.
             val typ = checkOpTyp(obj)
             val v = (obj["v"] as? Long)?.toInt() ?: throw OpException(Failure.MALFORMED, "no version")
             if (!TokenType.versionOk(typ, v)) throw OpException(Failure.MALFORMED, "$typ at v$v")
@@ -359,7 +333,7 @@ data class MembershipOp(
          * load-bearing and byte-for-byte with void-which-binds-go's `cosigDomain`.
          */
         @Suppress("ktlint:standard:property-naming") // named after Go's cosigDomain; public API
-        const val cosigDomain = "voidbind-cosig-v1\u0000"
+        const val cosigDomain = "void-which-binds-cosig-v1\u0000"
 
         /**
          * The bytes a co-signature covers: the op's signed payload with the `cosig`
@@ -368,7 +342,7 @@ data class MembershipOp(
          * core whether it co-signs alone or beside others, and [Membership.evaluate]
          * can reconstruct the exact preimage from a parsed op. Mirrors void-which-binds-go
          * `enrolment.coreBytes` byte-for-byte (same field order and omitempty rules as
-         * [sign]: `typ` second when present (ADR-0009), `denc`/`exp` omitted when
+         * [sign]: `typ` always second (ADR-0009), `denc`/`exp` omitted when
          * empty/zero, `prev` always present). Leaving `typ` out here would make every
          * typed cosigned remove under-threshold, and this replica would then diverge.
          */
@@ -376,6 +350,33 @@ data class MembershipOp(
 
         /** The preimage a cosigner signs: [cosigDomain] followed by the op's [core] bytes. */
         fun cosigMessage(core: ByteArray): ByteArray = cosigDomain.encodeToByteArray() + core
+
+        /**
+         * Whether [cosig] verifies over [op]'s core (ADR-0008): that `cosig.by` signed
+         * [cosigMessage] of [coreBytes]. False for an unreadable `by` or `sig`, a forged
+         * or foreign signature, or one made under another domain (the retired gen1
+         * `voidbind-cosig-v1`, ADR-0022). It says nothing about whether `cosig.by`
+         * COUNTS — only a member of the op's closure does, which is
+         * [Membership.evaluate]'s question. Mirrors void-which-binds-go
+         * `enrolment.VerifyCosig` (false where Go returns `ErrCosigSignature`).
+         */
+        fun verifyCosig(
+            op: MembershipOp,
+            cosig: Cosig,
+            verifier: Ed25519Verifier = Ed25519Engine.verifier(),
+        ): Boolean {
+            val pub = try {
+                KeyRef.parse(cosig.by).takeIf { it.alg == Labels.ALG_ED25519 && it.bytes.size == 32 }
+            } catch (_: IllegalArgumentException) {
+                null
+            }
+            val sig = decodeOrNull(cosig.sig)
+            return pub != null && sig != null && try {
+                verifier.verify(pub.bytes, cosigMessage(coreBytes(op)), sig)
+            } catch (_: Throwable) {
+                false
+            }
+        }
 
         /**
          * [cosigner]'s co-signature over [op]'s core (ADR-0008): the second device's
@@ -409,8 +410,7 @@ data class MembershipOp(
          * preserved but ignored by [Membership.evaluate], never fatal.
          *
          * Mirrors void-which-binds-go `enrolment.AttachCosigs` byte-for-byte: the payload keeps
-         * [op]'s `typ` (so a typed op stays typed and an untyped one untyped), with
-         * `cosig` placed between `prev` and `iat`.
+         * [op]'s `typ`, with `cosig` placed between `prev` and `iat`.
          */
         fun attachCosigs(
             primary: Ed25519Signer,
@@ -434,7 +434,7 @@ data class MembershipOp(
         private fun payloadBytes(op: MembershipOp, cosigs: List<Cosig>): ByteArray {
             val fields = ArrayList<Pair<String, Any>>()
             fields += "v" to op.version
-            fields += typFields(op.typ)
+            fields += "typ" to op.typ
             fields += "usr" to op.user
             fields += "op" to op.kind.wire
             fields += "dev" to op.device
@@ -510,6 +510,3 @@ private fun checkOpTyp(obj: Map<String, Any>): String = try {
     }
     throw MembershipOp.OpException(f, e.message ?: "bad typ", e)
 }
-
-/** The ADR-0009 `typ` member (second, after `v`), or nothing for an untyped body. */
-private fun typFields(typ: String): List<Pair<String, Any>> = if (typ.isEmpty()) emptyList() else listOf("typ" to typ)
