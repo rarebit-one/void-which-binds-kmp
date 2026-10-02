@@ -91,6 +91,20 @@ the counting seed `00..1f`, and the token every Go custody signer must mint for 
 `base64url(body) "." base64url(signature)` token byte for byte with this library's
 software Ed25519.
 
+## `webauthn/`
+
+void-which-binds-go ADR-0018's WebAuthn member-key vectors (41 verify-only cases, Go
+`main` at `VOID_WHICH_BINDS_GO_REF`; see `webauthn/README.md`, Go's schema note copied
+verbatim). `WebAuthnVectorTest` enumerates the directory and, for each case, parses
+the key with `MemberKey.parse`, checks the `WebAuthn.challenge` known answer,
+verifies the segment and compares ADR-0018's refusal word; `signature_valid` is
+re-checked with the provider's ES256 on its own.
+
+## `roster/` and `scope/`
+
+Copied for completeness (the ADR-0014 roster and ADR-0017/0019 scope vectors), so the whole
+directory matches void-which-binds-go. Nothing here replays them yet.
+
 ## `custody-sealedfile/`
 
 Copied for completeness (v0.19.1), so the whole directory matches void-which-binds-go.

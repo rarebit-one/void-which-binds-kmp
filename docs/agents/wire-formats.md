@@ -35,6 +35,14 @@ Moved verbatim from the old `CLAUDE.md` ("Wire formats"). The rule that governs 
 - **High-water N (ADR-0008, ADR-0018).** Rule 5's N counts only members that can
   cosign: Ed25519 keys (`canCosign`). A `webauthn:` passkey member is still a member
   but never raises N.
+- **Member keys (ADR-0018).** `MemberKey.parse` accepts `ed25519:<64 lowercase hex>`
+  and `webauthn:es256:<130 lowercase hex>` (an on-curve SEC1 uncompressed P-256
+  point) and nothing else. `MemberKey.verifyBody(D, B, sig, policy)` picks the scheme
+  from the key kind: a raw Ed25519 signature, or the WebAuthn envelope
+  `{"ad","cd","sig"}` asserting over `WebAuthn.challenge(D, B)` =
+  SHA-256(`void-which-binds/webauthn/challenge/v1` ‖ 0x00 ‖ D ‖ 0x00 ‖ B). Refusal words
+  (`MemberKeyFailure.word`) match Go's `MemberKeyReason`; `vectors/webauthn/` (41
+  verify-only cases) is replayed by `WebAuthnVectorTest`.
 - **Recovery secret** = 256-bit, **bech32m** (BIP-350, *not* bech32) with HRP
   `void-which-binds` (75 characters). A gen1 `heyarr1…` secret is refused with
   `RecoverySecret.GenerationRetiredException` before its checksum is read.
