@@ -1,9 +1,10 @@
 # Org roster golden vectors
 
 Cross-implementation vectors for the Void-Which-Binds **org roster** (ADR-0014,
-amended #80, #99, #106 and the Phase 3 G0 errata): the `void-which-binds.roster`
-op and the deterministic `roster.Evaluate` over a set of roster ops plus the
-person-op logs their signers need. void-which-binds-go generates them
+amended #80, #99, #106 and the Phase 3 G0 errata) and its **re-root chain**
+(ADR-0015, amended #80, #99, #106 and G3): the `void-which-binds.roster` op and
+the deterministic `roster.Evaluate` over a set of roster ops plus the person-op
+logs their signers need. void-which-binds-go generates them
 (`go test ./roster -run TestVectors -update`), and void-which-binds-kmp replays
 them verbatim.
 
@@ -41,9 +42,10 @@ seed, listed so a consumer can re-sign and reproduce every `hash`.
     },
     "removed":          [ "ed25519:<hex>" ],  // sorted
     "heads":            [ "sha256:<hex>" ],   // sorted
-    "authority":        "ed25519:<org>",
+    "authority":        "ed25519:<org>",    // the current authority key (the org id, or a successor)
     "admin_high_water": 1,
     "frozen":           false,
+    "conflict":         [ "sha256:<hex>" ],  // only while frozen: the conflicting re-roots, sorted
     "rejected":         { "sha256:<hex>": "missing_person_context" },
     "ineffective":      { "sha256:<hex>": "under_threshold" }
   },
@@ -65,10 +67,20 @@ seed, listed so a consumer can re-sign and reproduce every `hash`.
   earliest `exp` among them.
 - `rejected` reasons: `malformed`, `bad_signature`, `wrong_type`,
   `foreign_usr` (an `org` naming another org), `bad_prev`,
-  `missing_person_context`.
+  `missing_person_context`. A re-root whose `succ` is the org id, its own
+  `by`, the `by` or `succ` of an authority-shape re-root in its closure, or a
+  `mem` in its closure, and an op whose `mem` is the `succ` of an
+  authority-shape re-root in its closure, are `malformed`.
 - `ineffective` reasons: `unauthorised`, `under_threshold`, `outranked`,
-  `owner_required`, `last_owner`, and, until Phase 3 G3, `reroot_unsupported`
-  (no file here uses it: re-root vectors arrive with G3).
+  `owner_required`, `last_owner`, and ADR-0015's `retired_authority` (an op of
+  a retired authority key outside the retiring re-root's closure) and
+  `reroot_conflict` (an eligible re-root that lost to a conflict, frozen or
+  resolved, and any resolve by the authority key that settles nothing).
+- An ineligible re-root signed by an authority key is `unauthorised` when its
+  `by` is not the authority key in its closure, `under_threshold` when its
+  admin signers independent of `by` miss rule 3 against `H(R)`, and
+  `outranked` when they miss it once currency removes signers.
+- A re-root's `succsig` signs `"void-which-binds-roster-reroot-v1\0" ‖ core`.
 - A roster cosig signs `"void-which-binds-roster-cosig-v1\0" ‖ core ‖ "\0" ‖ usr
   ‖ "\0" ‖ join(bprev, ",")`, where the core is the op's payload with `cosig`
   and `succsig` omitted.
@@ -79,10 +91,12 @@ seed, listed so a consumer can re-sign and reproduce every `hash`.
 ## Cases
 
 The case names are ADR-0014's "Golden vectors" list, one file each, plus
-`unauthorised-reroot-cannot-raise-high-water` from its high-water section.
-ADR-0015's re-root cases, including `retired-authority-grant-not-in-high-water`,
-`retired-authority-reroot-creates-no-successor` and
-`retired-key-cannot-veto-its-own-reroot`, which ADR-0014 cites, are Phase 3 G3.
+`unauthorised-reroot-cannot-raise-high-water` from its high-water section, and
+ADR-0015's "Golden vectors" list (28 files, G3), plus four G3 cases that pin its
+amended readings: `reroot-key-reuse-malformed`,
+`retired-key-reset-changes-nothing`,
+`authority-removal-in-closure-restores-currency` and
+`reroot-citing-conflict-supersedes`.
 
 Each case's `description` says what it pins; `roster/cases_test.go` holds the
 hand-written expectations checked before a file is written.

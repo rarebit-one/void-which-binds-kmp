@@ -17,7 +17,13 @@ src/
                        Trezor's 45 vectors in jvmTest resources vectors/slip39/
     Cert.kt            enrolment cert model + token encode/parse/verify
     MembershipOp.kt    v3 membership op (add/remove) sign/verify/hash; v1/v2 certs read as genesis adds
-    Membership.kt      the CRDT evaluator (void-which-binds-go enrolment.Evaluate, ADR-0007) + merge
+    Membership.kt      the CRDT evaluator (void-which-binds-go enrolment.Evaluate, ADR-0007) + merge,
+                       memberAt (enrolment.MemberAt, the roster's person-signature check)
+    OpDag.kt           content-addressed op DAG (void-which-binds-go internal/opdag), iterative walks;
+                       shared by Membership and the roster
+    roster/            org roster (void-which-binds-go roster, ADR-0014/0015): op wire (Roster,
+                       RosterDraft/RosterOp), the evaluator (RosterEvaluator, RosterView);
+                       vectors/roster/ replayed by RosterVectorTest
     Ed25519.kt         signer/verifier seams; Ed25519Engine.kt = software Ed25519 (cryptography-kotlin)
     Pairing.kt         commit-before-reveal SAS derivation
     UserIdentity.kt / DeviceIdentity.kt / Enrolment.kt   identity + self-enrolment

@@ -164,6 +164,83 @@ object Membership {
         return e.view(now)
     }
 
+    /**
+     * [memberAt] given a head that is not a structurally valid op of the set, or one
+     * issued after the instant asked about: membership cannot be judged against a past
+     * the evaluator has not seen (rule 1, carried across logs as the org roster's
+     * `missing_person_context`). Mirrors void-which-binds-go `enrolment.ErrMissingContext`.
+     */
+    class MissingContextException :
+        IllegalArgumentException(
+            "a head is not a valid op of the set issued no later than the instant asked about",
+        )
+
+    /**
+     * Whether [dev] is a member of [usr]'s fleet in the view of [heads], at the instant
+     * [at] (unix seconds): would an op signed by dev, citing heads as its prev and issued
+     * at `at`, be authorised? The org roster (ADR-0014) asks it of a person's log for
+     * every roster signature (by ∈ membership as of bprev, at X.iat).
+     *
+     * Over the op set [ops] (judged by [evaluate]'s rules, including the fleet
+     * high-water of rule 5 over the WHOLE set), the frame is closure(heads): the heads
+     * plus every op they cite, transitively — ops outside it play no part, so a later
+     * remove does not reach back. Rules 2–5 are replayed over that frame with each add's
+     * window judged STRICTLY at `at` (no skew), and dev is a member iff it is in that
+     * frame's member set. The identity key itself is never a fleet member; no heads is
+     * the empty frame, in which nobody is a member.
+     *
+     * Throws [IllegalArgumentException] for an unusable [usr] or a zero [at], and
+     * [MissingContextException] if any head is not a structurally valid op in [ops] or
+     * is issued after `at`. Like [evaluate] it is a pure function of the set of ops.
+     * Mirrors void-which-binds-go `enrolment.MemberAt` (Phase 3 G1).
+     */
+    @Suppress("LongParameterList") // Go's MemberAt(usr, dev, ops, heads, at) plus the verifier seam
+    fun memberAt(
+        usr: String,
+        dev: String,
+        ops: List<String>,
+        heads: List<String>,
+        at: Long,
+        verifier: Ed25519Verifier = Ed25519Engine.verifier(),
+    ): Boolean {
+        try {
+            KeyRef.parseCanonicalEd25519(usr)
+        } catch (e: IllegalArgumentException) {
+            throw IllegalArgumentException("an identity (genesis key) is required: ${e.message}")
+        }
+        require(at != 0L) { "a clock is required" }
+        return PersonLog(usr, ops, verifier).memberAt(dev, heads, at)
+    }
+
+    /**
+     * One person's op set, ingested and resolved once, answering [memberAt] for any
+     * (dev, heads, at). Every answer is what a fresh [Membership.memberAt] over the same
+     * set would give: the set's structure and its fleet high-water do not depend on the
+     * question, and each question builds its own frame. The org roster evaluator keeps
+     * one per person so a roster with many signatures does not re-verify the log each time.
+     */
+    internal class PersonLog(usr: String, ops: List<String>, verifier: Ed25519Verifier) {
+        private val e = Evaluator(usr, verifier).also {
+            it.ingest(ops)
+            it.resolveAll()
+        }
+
+        /** [Membership.memberAt] for this set; [usr] must already be canonical. */
+        fun memberAt(dev: String, heads: List<String>, at: Long): Boolean {
+            val closure = HashSet<String>()
+            for (h in heads) {
+                if (!e.ops.containsKey(h)) throw MissingContextException()
+                closure.add(h)
+                closure.addAll(e.ancestors(h))
+            }
+            for (h in heads) {
+                if (e.ops.getValue(h).issuedAt > at) throw MissingContextException()
+            }
+            e.fleetHighWater()
+            return e.membersAt(closure, at).contains(dev)
+        }
+    }
+
     // --- the evaluator ------------------------------------------------------------
 
     /** The total order of rule 4: lower is senior. */
@@ -193,12 +270,17 @@ object Membership {
     )
 
     private class Evaluator(val usr: String, val verifier: Ed25519Verifier) {
-        val ops = HashMap<String, MembershipOp>() // structurally valid
+        val ops = HashMap<String, MembershipOp>() // structurally valid (the dag's valid set, after resolveAll)
         val rejected = LinkedHashMap<String, String>()
-        val parsed = HashMap<String, MembershipOp>() // parsed, pending structural resolution
-        val status = HashMap<String, Int>() // 0 unknown, 1 ok, 2 rejected, 3 in progress
-        val depth = HashMap<String, Int>()
-        val anc = HashMap<String, Set<String>>()
+
+        // Rule 1's second half: every prev must be structurally valid and issued no later
+        // than the op citing it. A missing prev, an invalid prev, a cycle or a
+        // later-issued prev all reject the op as bad_prev. (void-which-binds-go G1 lifted
+        // this into internal/opdag; OpDag walks it iteratively.)
+        val dag = OpDag<MembershipOp>({ it.prev }, { child, parent -> parent.issuedAt <= child.issuedAt })
+
+        /** The valid ops oldest first (causal depth, then hash): the order memos are settled in. */
+        var causalOrder: List<String> = emptyList()
         var auth = HashMap<String, Boolean>()
         var authSeen = HashMap<String, Boolean>()
         var closureMem = HashMap<String, Set<String>>() // rule 5: closure device-members by op hash
@@ -211,7 +293,7 @@ object Membership {
             for (tok in tokens) {
                 if (tok.isEmpty()) continue
                 val h = MembershipOp.hash(tok)
-                if (parsed.containsKey(h) || rejected.containsKey(h)) continue
+                if (dag.has(h) || rejected.containsKey(h)) continue
                 val op = try {
                     MembershipOp.verify(tok, verifier)
                 } catch (ex: MembershipOp.OpException) {
@@ -226,56 +308,19 @@ object Membership {
                     rejected[h] = Reason.FOREIGN_USER
                     continue
                 }
-                parsed[h] = op
+                dag.add(h, op)
             }
         }
 
         /** Settle rule 1's second half (prev integrity) for every parsed op. */
         fun resolveAll() {
-            for (h in parsed.keys.toList()) resolve(h)
-        }
-
-        /** Whether op [h] is structurally valid, settling its prevs first. */
-        fun resolve(h: String): Boolean {
-            when (status[h] ?: 0) {
-                1 -> return true
-                2 -> return false
-                3 -> return false // a cycle is impossible for honest content hashes; treat one as bad prev
-            }
-            val op = parsed[h] ?: return false
-            status[h] = 3
-            var d = 0
-            for (p in op.prev) {
-                if (!resolve(p)) {
-                    status[h] = 2
-                    rejected[h] = Reason.BAD_PREV
-                    return false
-                }
-                if (ops.getValue(p).issuedAt > op.issuedAt) {
-                    status[h] = 2
-                    rejected[h] = Reason.BAD_PREV
-                    return false
-                }
-                val dd = depth.getValue(p) + 1
-                if (dd > d) d = dd
-            }
-            status[h] = 1
-            ops[h] = op
-            depth[h] = d
-            return true
+            for (h in dag.resolveAll()) rejected[h] = Reason.BAD_PREV
+            ops.putAll(dag.valid())
+            causalOrder = ops.keys.sortedWith(compareBy<String> { dag.depth(it) }.thenBy { it })
         }
 
         /** The transitive prev closure of [h] (excluding h), memoised. */
-        fun ancestors(h: String): Set<String> {
-            anc[h]?.let { return it }
-            val a = HashSet<String>()
-            for (p in ops.getValue(h).prev) {
-                a.add(p)
-                a.addAll(ancestors(p))
-            }
-            anc[h] = a
-            return a
-        }
+        fun ancestors(h: String): Set<String> = dag.ancestors(h)
 
         /** Rule 2 for op [h] from h's own closure, memoised. */
         fun authorised(h: String): Boolean {
@@ -301,7 +346,7 @@ object Membership {
             return member
         }
 
-        fun opKey(o: MembershipOp): Seniority = Seniority(depth.getValue(o.hash), o.issuedAt, o.hash)
+        fun opKey(o: MembershipOp): Seniority = Seniority(dag.depth(o.hash), o.issuedAt, o.hash)
 
         /**
          * Rule 5's N (ADR-0008): the number of DISTINCT non-genesis devices that can
@@ -333,6 +378,7 @@ object Membership {
                 auth = HashMap()
                 authSeen = HashMap()
                 closureMem = HashMap()
+                settleInCausalOrder()
                 val devs = HashSet<String>()
                 for ((h, op) in ops) {
                     if (op.kind != Kind.ADD || op.device == usr) continue // genesis is never a fleet device
@@ -347,6 +393,35 @@ object Membership {
             hwReady = true
             return hw
         }
+
+        /**
+         * Settle rule 2 and every remove's closure members oldest first, so each frame
+         * reads only memos already filled: authority and rule 5 recurse through closures,
+         * and in causal order that recursion never goes deeper than one frame (a long
+         * chain cannot overflow the stack). Each memo is a function of its op's closure
+         * and this pass's N, so the order changes nothing else.
+         */
+        private fun settleInCausalOrder() {
+            for (h in causalOrder) {
+                authorised(h)
+                val op = ops.getValue(h)
+                if (op.kind == Kind.REMOVE && !op.genesis) membersInClosure(op)
+            }
+        }
+
+        /**
+         * The authority frame over [set] with every add's window judged strictly at [at]
+         * (no skew; both instants are signer clocks), as the member devices. It is what
+         * rule 2 evaluates for an op issued at `at` whose closure is set. Mirrors
+         * void-which-binds-go `evaluator.membersAt`.
+         */
+        fun membersAt(set: Set<String>, at: Long): Set<String> = frame(set) { a ->
+            when {
+                a.issuedAt > at -> Reason.NOT_YET_VALID
+                at >= a.expiresAt -> Reason.EXPIRED
+                else -> Reason.OK
+            }
+        }.members.keys
 
         /**
          * The device-member set of [op]'s own prev closure evaluated strictly at op's
