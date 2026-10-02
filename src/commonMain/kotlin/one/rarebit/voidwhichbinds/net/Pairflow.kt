@@ -2,7 +2,6 @@ package one.rarebit.voidwhichbinds.net
 
 import one.rarebit.voidwhichbinds.Ed25519Signer
 import one.rarebit.voidwhichbinds.KeyRef
-import one.rarebit.voidwhichbinds.Labels
 import one.rarebit.voidwhichbinds.Membership
 import one.rarebit.voidwhichbinds.MembershipOp
 import one.rarebit.voidwhichbinds.PairRefusal
@@ -295,8 +294,12 @@ class PairflowResponder(
     private var handshook = false
 
     init {
-        val ref = KeyRef.parse(userId)
-        require(ref.alg == Labels.ALG_ED25519 && ref.bytes.size == 32) { "pairflow: invite user is not an ed25519 key" }
+        // #116: the invite user in its one canonical spelling (void-which-binds-go checkInvite).
+        try {
+            KeyRef.parseCanonicalEd25519(userId)
+        } catch (e: IllegalArgumentException) {
+            throw IllegalArgumentException("pairflow: invite user: ${e.message}", e)
+        }
         require(salt.size >= Pairing.MIN_SALT_LEN) { "pairflow: salt is too short" }
     }
 

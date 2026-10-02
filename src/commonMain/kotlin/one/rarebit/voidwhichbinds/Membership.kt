@@ -20,7 +20,9 @@ import one.rarebit.voidwhichbinds.MembershipOp.Kind
  * The rules (each a function of the set):
  *
  *  1. **Structure.** An op must parse, its signature must verify under its `by`
- *     ([MembershipOp.verify]), it must name this `usr`, and every prev it cites must
+ *     ([MembershipOp.verify]), every key in it (`usr`, `by`, `dev`, each cosig `by`)
+ *     must be that key's one canonical spelling (#116: a padded or re-cased rendering
+ *     would otherwise be a second member for one key), it must name this `usr`, and every prev it cites must
  *     be a structurally valid op in the set issued no later than it. Anything else is
  *     REJECTED and uncitable ([View.rejected]).
  *  2. **Authority.** Genesis (`by == usr`) is always authorised. Any other op X is
@@ -134,7 +136,9 @@ object Membership {
 
     /**
      * Compute the [View] of identity [usr] over [tokens] at [now] (unix seconds).
-     * Throws only for an unusable [usr] or clock; every problem with an individual
+     * Throws only for an unusable [usr] or clock — [usr] must be the identity's one
+     * canonical spelling, the same one every op's `usr` carries (#116; void-which-binds-go
+     * `ErrNoUser`) — and every problem with an individual
      * op is reported in the view, never fatal, so one junk token can never take an
      * identity's devices offline.
      */
@@ -144,12 +148,11 @@ object Membership {
         now: Long,
         verifier: Ed25519Verifier = Ed25519Engine.verifier(),
     ): View {
-        val ref = try {
-            KeyRef.parse(usr)
+        try {
+            KeyRef.parseCanonicalEd25519(usr)
         } catch (e: IllegalArgumentException) {
             throw IllegalArgumentException("an identity (genesis key) is required: ${e.message}")
         }
-        require(ref.alg == Labels.ALG_ED25519 && ref.bytes.size == 32) { "an identity (genesis key) is required" }
         require(now > 0) { "a clock is required" }
         val e = Evaluator(usr, verifier)
         e.ingest(tokens)
@@ -582,18 +585,12 @@ object Membership {
  * Whether a member key can make a cosig: only an Ed25519 key can (void-which-binds-go
  * ADR-0018, `canCosign`). Any other key kind, such as a `webauthn:` passkey, is still
  * a member, but it does not count toward the high-water N. Mirrors
- * `identity.ParsePublicKey` succeeding: an `ed25519:` prefix and 32 bytes of
- * lowercase hex.
+ * `identity.ParseCanonicalPublicKey` succeeding (#116): exactly `ed25519:` and 64
+ * lowercase hex, with no surrounding whitespace.
  */
-internal fun canCosign(dev: String): Boolean {
-    val text = dev.trim()
-    val ref = try {
-        KeyRef.parse(text)
-    } catch (_: IllegalArgumentException) {
-        null
-    }
-    return ref != null && ref.alg == Labels.ALG_ED25519 && ref.bytes.size == ED25519_KEY_LEN && ref.render() == text
+internal fun canCosign(dev: String): Boolean = try {
+    KeyRef.parseCanonicalEd25519(dev)
+    true
+} catch (_: IllegalArgumentException) {
+    false
 }
-
-/** An Ed25519 public key's length in bytes. */
-private const val ED25519_KEY_LEN = 32
