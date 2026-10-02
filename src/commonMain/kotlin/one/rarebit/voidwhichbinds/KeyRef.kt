@@ -33,5 +33,27 @@ data class KeyRef(val alg: String, val bytes: ByteArray) {
             }
             return KeyRef(alg, Hex.decode(s.substring(idx + 1)))
         }
+
+        /**
+         * The raw 32-byte Ed25519 key of a key string that NAMES an identity — a field
+         * of a signed body (an op's `usr`, `by` or `dev`, a cosig's `by`, a cert's
+         * `dev`, an invite's `usr`). It accepts exactly one spelling per key, [render]'s:
+         * `ed25519:<64 lowercase hex>` with no surrounding whitespace. Throws
+         * [IllegalArgumentException] for anything else, an uppercase-hex or padded
+         * rendering of a valid key included: wherever a key string is a map key or a
+         * set member, a second spelling is one key counted as two identities.
+         * Mirrors void-which-binds-go `identity.ParseCanonicalPublicKey` (#116).
+         */
+        fun parseCanonicalEd25519(s: String): ByteArray {
+            val ref = parse(s)
+            require(ref.alg == Labels.ALG_ED25519 && ref.bytes.size == ED25519_KEY_LEN) {
+                "'$s' is not a 32-byte ed25519 key"
+            }
+            val canonical = ref.render()
+            require(canonical == s) { "'$s' is not the canonical rendering '$canonical'" }
+            return ref.bytes
+        }
+
+        private const val ED25519_KEY_LEN = 32
     }
 }

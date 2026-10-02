@@ -99,10 +99,19 @@ data class Cert(
             fun num(k: String): Long =
                 (obj[k] as? Long) ?: throw IllegalArgumentException("cert payload missing int '$k'")
 
+            // #116: a cert's device is an Ed25519 key in its one canonical spelling; a
+            // padded or re-cased rendering would name the same key as a different
+            // device (void-which-binds-go enrolment.VerifyCert).
+            val dev = str("dev")
+            try {
+                KeyRef.parseCanonicalEd25519(dev)
+            } catch (e: IllegalArgumentException) {
+                throw IllegalArgumentException("cert device: ${e.message}", e)
+            }
             val cert = Cert(
                 version = num("v").toInt(),
                 user = KeyRef.parse(str("usr")),
-                device = KeyRef.parse(str("dev")),
+                device = KeyRef.parse(dev),
                 deviceEnc = KeyRef.parse(str("denc")),
                 issuedAt = num("iat"),
                 expiresAt = num("exp"),

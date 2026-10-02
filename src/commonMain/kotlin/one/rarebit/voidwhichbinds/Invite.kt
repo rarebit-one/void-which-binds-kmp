@@ -98,13 +98,13 @@ object Invite {
         return Parsed(relay, session, salt, usr)
     }
 
+    /** #116: the invite names the identity by its one canonical spelling. */
     private fun requireUser(usr: String) {
-        val ref = try {
-            KeyRef.parse(usr)
+        try {
+            KeyRef.parseCanonicalEd25519(usr)
         } catch (e: IllegalArgumentException) {
             throw IllegalArgumentException("invite user: ${e.message}")
         }
-        require(ref.alg == Labels.ALG_ED25519 && ref.bytes.size == 32) { "invite user: not an ed25519 key" }
     }
 
     /**

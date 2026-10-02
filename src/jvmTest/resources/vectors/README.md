@@ -52,8 +52,12 @@ every token Go's cert verifier calls `wrong_type` or `malformed` and accepts eve
 ## `membership/`
 
 `MembershipVectorTest` replays every case (it enumerates the directory), including
-`gen1-tokens-rejected`, `gen1-cosig-domain-ignored` and the ADR-0018 `webauthn-*`
-high-water cases; `CosignVectorTest` re-mints every cosigned remove.
+`gen1-tokens-rejected`, `gen1-cosig-domain-ignored`, the ADR-0018 `webauthn-*`
+high-water cases and the #116 canonical-key cases added in v0.19.2
+(`noncanonical-key-rendering-malformed`, `cosig-two-renderings-refused`);
+`CosignVectorTest` re-mints every cosigned remove (the #116 forged-spelling removes
+are malformed, so it skips them). `membership/README.md` is Go's schema note, copied
+verbatim.
 
 ## `slip39/vectors.json`
 

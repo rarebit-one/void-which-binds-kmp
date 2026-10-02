@@ -5,6 +5,7 @@ import dev.whyoleg.cryptography.algorithms.SHA256
 import one.rarebit.voidwhichbinds.crypto.Base64Url
 import one.rarebit.voidwhichbinds.crypto.Hex
 import one.rarebit.voidwhichbinds.crypto.MiniJson
+import one.rarebit.voidwhichbinds.crypto.P256
 
 /**
  * A **membership op** — the v3 successor of the enrolment [Cert] (void-which-binds-go
@@ -42,7 +43,10 @@ data class MembershipOp(
     /** The identity (genesis key) this op belongs to, rendered `ed25519:<hex>`. */
     val user: String,
     val kind: Kind,
-    /** The device the op adds or removes, rendered `ed25519:<hex>`. */
+    /**
+     * The device the op adds or removes: a member key in its one canonical spelling
+     * (#116) — `ed25519:<hex>`, or a `webauthn:es256:<hex>` passkey (ADR-0018).
+     */
     val device: String,
     /** The device's X25519 encryption key (`x25519:<hex>`) for an add; empty for a remove or a v1 add. */
     val deviceEnc: String,
@@ -144,14 +148,11 @@ data class MembershipOp(
             issuedAt: Long,
             lifetimeSeconds: Long = DEFAULT_LIFETIME_SECONDS,
         ): String {
-            val usrRef = try {
-                KeyRef.parse(usr)
-            } catch (e: IllegalArgumentException) {
-                throw OpException(Failure.MALFORMED, "usr: ${e.message}")
-            }
-            require(usrRef.alg == Labels.ALG_ED25519 && usrRef.bytes.size == 32) { "usr must be a 32-byte ed25519 key" }
+            // #116: usr and dev must be canonical; `by` is rendered from the key, so is.
+            canonicalEd25519(usr, "usr")
             if (dev.isEmpty()) throw OpException(Failure.MALFORMED, "a device is required")
             if (dev == usr) throw OpException(Failure.GENESIS, "genesis cannot be added or removed")
+            checkMemberKey(dev)
             if (issuedAt <= 0) throw OpException(Failure.MALFORMED, "an issued-at is required")
             val by = KeyRef.ed25519(byPublicKey).render()
             val heads = normalisePrev(prev)
@@ -280,15 +281,12 @@ data class MembershipOp(
             // member (or genesis) is Evaluate's job; here we only establish that the
             // holder of `by` signed these bytes.
             val byPub = try {
-                KeyRef.parse(op.by)
+                KeyRef.parseCanonicalEd25519(op.by)
             } catch (_: IllegalArgumentException) {
-                null
-            }
-            if (byPub == null || byPub.alg != Labels.ALG_ED25519 || byPub.bytes.size != 32) {
                 throw OpException(Failure.MALFORMED, "by: unreadable key")
             }
             val ok = try {
-                verifier.verify(byPub.bytes, body, sig)
+                verifier.verify(byPub, body, sig)
             } catch (_: Throwable) {
                 false
             }
@@ -355,7 +353,9 @@ data class MembershipOp(
          * Whether [cosig] verifies over [op]'s core (ADR-0008): that `cosig.by` signed
          * [cosigMessage] of [coreBytes]. False for an unreadable `by` or `sig`, a forged
          * or foreign signature, or one made under another domain (the retired gen1
-         * `voidbind-cosig-v1`, ADR-0022). It says nothing about whether `cosig.by`
+         * `voidbind-cosig-v1`, ADR-0022), and false for a `by` that is not its key's
+         * canonical rendering (#116: a padded or re-cased `by` would verify under the
+         * same key while counting as a distinct signer). It says nothing about whether `cosig.by`
          * COUNTS — only a member of the op's closure does, which is
          * [Membership.evaluate]'s question. Mirrors void-which-binds-go
          * `enrolment.VerifyCosig` (false where Go returns `ErrCosigSignature`).
@@ -366,13 +366,13 @@ data class MembershipOp(
             verifier: Ed25519Verifier = Ed25519Engine.verifier(),
         ): Boolean {
             val pub = try {
-                KeyRef.parse(cosig.by).takeIf { it.alg == Labels.ALG_ED25519 && it.bytes.size == 32 }
+                KeyRef.parseCanonicalEd25519(cosig.by)
             } catch (_: IllegalArgumentException) {
                 null
             }
             val sig = decodeOrNull(cosig.sig)
             return pub != null && sig != null && try {
-                verifier.verify(pub.bytes, cosigMessage(coreBytes(op)), sig)
+                verifier.verify(pub, cosigMessage(coreBytes(op)), sig)
             } catch (_: Throwable) {
                 false
             }
@@ -389,11 +389,14 @@ data class MembershipOp(
          * The core omits `cosig`, so co-signing an op that already carries cosigs signs
          * the same bytes as co-signing its bare form. Whether the cosig COUNTS is
          * [Membership.evaluate]'s business (rule 5: only members of the op's closure).
+         * An op whose keys are not canonical (#116) is refused with [Failure.MALFORMED]:
+         * [Membership.evaluate] would reject it anyway.
          *
          * Mirrors void-which-binds-go `enrolment.CosignOp` byte-for-byte.
          */
         fun cosign(cosigner: Ed25519Signer, cosignerPublicKey: ByteArray, op: MembershipOp): Cosig {
             require(cosignerPublicKey.size == 32) { "a co-signing key is required" }
+            op.checkKeys()
             val by = KeyRef.ed25519(cosignerPublicKey).render()
             val sig = cosigner.sign(cosigMessage(coreBytes(op)))
             return Cosig(by = by, sig = Base64Url.encode(sig))
@@ -407,7 +410,9 @@ data class MembershipOp(
          * returned token has a NEW hash, so it — not the uncosigned proposal — is what the
          * primary publishes. Any cosigs already on [op] are replaced by [cosigs], and an
          * empty [cosigs] omits the field (Go's `omitempty`). A bad or foreign cosig is
-         * preserved but ignored by [Membership.evaluate], never fatal.
+         * preserved but ignored by [Membership.evaluate], never fatal — but every key in
+         * the re-minted body, each cosig's `by` included, must be canonical (#116), else
+         * [Failure.MALFORMED].
          *
          * Mirrors void-which-binds-go `enrolment.AttachCosigs` byte-for-byte: the payload keeps
          * [op]'s `typ`, with `cosig` placed between `prev` and `iat`.
@@ -422,6 +427,7 @@ data class MembershipOp(
             if (KeyRef.ed25519(primaryPublicKey).render() != op.by) {
                 throw OpException(Failure.MALFORMED, "primary key is not op.by")
             }
+            op.copy(cosig = cosigs).checkKeys()
             val body = payloadBytes(op, cosigs)
             return Base64Url.encode(body) + "." + Base64Url.encode(primary.sign(body))
         }
@@ -447,6 +453,54 @@ data class MembershipOp(
             return MiniJson.encodeObject(fields).encodeToByteArray()
         }
 
+        /** [KeyRef.parseCanonicalEd25519], as an [OpException] naming [field]. */
+        private fun canonicalEd25519(key: String, field: String): ByteArray = try {
+            KeyRef.parseCanonicalEd25519(key)
+        } catch (e: IllegalArgumentException) {
+            throw OpException(Failure.MALFORMED, "$field: ${e.message}")
+        }
+
+        /** The `webauthn:` member-key kind (ADR-0018): `webauthn:es256:<130 lowercase hex>`. */
+        private const val WEBAUTHN_ES256_PREFIX = "webauthn:es256:"
+
+        /** Hex length of a 65-byte SEC1 uncompressed P-256 point. */
+        private const val WEBAUTHN_POINT_HEX = P256.UNCOMPRESSED_LEN * 2
+
+        /**
+         * Refuses [dev] unless it is a member key in its one canonical spelling (#116):
+         * an Ed25519 key exactly as [KeyRef.render] renders it, or a `webauthn:es256:`
+         * passkey whose 130 hex characters are lowercase and decode to a valid P-256
+         * point (on the curve, not the identity — ADR-0018). No surrounding whitespace,
+         * no upper case, and any other key kind is refused (fail closed). Mirrors
+         * void-which-binds-go v0.19.2 `enrolment.checkMemberKey`.
+         */
+        @Suppress("ThrowsCount") // one refusal per Go check, in Go's order
+        internal fun checkMemberKey(dev: String) {
+            when {
+                dev.startsWith(Labels.ALG_ED25519 + ":") -> canonicalEd25519(dev, "dev")
+
+                dev.startsWith(WEBAUTHN_ES256_PREFIX) -> {
+                    val hexed = dev.substring(WEBAUTHN_ES256_PREFIX.length)
+                    if (hexed.length != WEBAUTHN_POINT_HEX || hexed.lowercase() != hexed) {
+                        throw OpException(Failure.MALFORMED, "dev \"$dev\" is not a canonical webauthn:es256 key")
+                    }
+                    val raw = try {
+                        Hex.decode(hexed)
+                    } catch (_: IllegalArgumentException) {
+                        throw OpException(Failure.MALFORMED, "dev \"$dev\" is not hex")
+                    }
+                    if (!P256.isValidUncompressedPoint(raw)) {
+                        throw OpException(Failure.MALFORMED, "dev \"$dev\" is not a valid P-256 point")
+                    }
+                }
+
+                else -> throw OpException(
+                    Failure.MALFORMED,
+                    "dev \"$dev\" is not a member key (ed25519 or webauthn:es256)",
+                )
+            }
+        }
+
         /** Decode a cosig `sig` (base64url, no padding); null if malformed. */
         internal fun decodeSigOrNull(s: String): ByteArray? = decodeOrNull(s)
 
@@ -468,17 +522,8 @@ data class MembershipOp(
         ) {
             throw OpException(Failure.MALFORMED, "a binding is empty")
         }
-        val usrRef = try {
-            KeyRef.parse(user)
-        } catch (e: IllegalArgumentException) {
-            throw OpException(Failure.MALFORMED, "usr: ${e.message}")
-        }
-        if (usrRef.alg != Labels.ALG_ED25519 ||
-            usrRef.bytes.size != 32
-        ) {
-            throw OpException(Failure.MALFORMED, "usr: not an ed25519 key")
-        }
         if (device == user) throw OpException(Failure.GENESIS, "genesis cannot be added or removed")
+        checkKeys()
         if (issuedAt <= 0) throw OpException(Failure.MALFORMED, "no issued-at")
         if (prev.size > MAX_PREV) throw OpException(Failure.MALFORMED, "${prev.size} prev, max $MAX_PREV")
         for (h in prev) {
@@ -497,6 +542,23 @@ data class MembershipOp(
             }
         }
         if (!genesis && prev.isEmpty()) throw OpException(Failure.NO_PREV, "a member-signed op must cite its heads")
+    }
+
+    /**
+     * #116's rule: every key-bearing field of an op is in its ONE canonical spelling.
+     * `usr`, `by` and each cosig `by` are Ed25519 keys rendered exactly as
+     * [KeyRef.render] renders them; `dev` is a member key ([checkMemberKey]). The
+     * evaluator keys members, signers and the fleet high-water by these strings, so
+     * without this a padded or re-cased rendering of one key is a second member, can
+     * co-sign as a second signer (an ADR-0008 k=2 bypass), and inflates N. A
+     * non-canonical op is [Failure.MALFORMED], so it is uncitable and anything that
+     * cites it is `bad_prev`. Mirrors void-which-binds-go v0.19.2 `Op.checkKeys`.
+     */
+    private fun checkKeys() {
+        canonicalEd25519(user, "usr")
+        canonicalEd25519(by, "by")
+        checkMemberKey(device)
+        cosig.forEachIndexed { i, cs -> canonicalEd25519(cs.by, "cosig $i by") }
     }
 }
 
