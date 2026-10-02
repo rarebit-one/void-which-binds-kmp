@@ -78,3 +78,16 @@ replayed by `PairRefusalVectorTest`.
 
 Copied for completeness, so the whole directory matches void-which-binds-go. No test
 here replays it yet.
+
+## `custody-signer/`
+
+void-which-binds-go ADR-0021's custody-signer vector (added in v0.19.1): one body,
+the counting seed `00..1f`, and the token every Go custody signer must mint for it.
+`CustodySignerVectorTest` derives the same `signer_id` and mints the same
+`base64url(body) "." base64url(signature)` token byte for byte with this library's
+software Ed25519.
+
+## `custody-sealedfile/`
+
+Copied for completeness (v0.19.1), so the whole directory matches void-which-binds-go.
+It is Go's Argon2id-sealed key file for the same counting seed; nothing here replays it.

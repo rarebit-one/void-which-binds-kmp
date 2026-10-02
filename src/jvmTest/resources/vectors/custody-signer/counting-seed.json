@@ -1,0 +1,13 @@
+{
+  "name": "counting-seed",
+  "description": "one body and one counting seed (00..1f); sigtoken.SignWith through every listed custody signer must mint this token byte for byte (ADR-0021)",
+  "seed": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+  "signer_id": "ed25519:03a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b8",
+  "body": "7b2276223a312c226e6f7465223a22637573746f64792d7369676e657220766563746f723a206f6e6520626f64792c206f6e6520736565642c20657665727920637573746f6479207369676e6572227d",
+  "token": "eyJ2IjoxLCJub3RlIjoiY3VzdG9keS1zaWduZXIgdmVjdG9yOiBvbmUgYm9keSwgb25lIHNlZWQsIGV2ZXJ5IGN1c3RvZHkgc2lnbmVyIn0.9Ad1B3dDWZV3jFXl0JiXF00QKaumvffVq6fZCC-wTBItbT8eOv-VybvZvZnijPX_5pVUx2MB0DWeu1DXLu8dAw",
+  "signers": [
+    "raw-ed25519",
+    "sealedfile",
+    "software-keys"
+  ]
+}

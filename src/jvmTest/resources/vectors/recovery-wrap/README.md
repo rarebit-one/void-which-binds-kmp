@@ -10,6 +10,8 @@ The space key is sealed under the gen2 wrap label
 randomised, so the file is minted with
 `go test ./encryption -run TestRecoveryWrapVector -update` only when a label it
 depends on changes (last: the gen2 re-mint), and is otherwise only ever
-**replayed**. The replay must unwrap the space key, decrypt the
-change, and open the blob. `docs/recovery/reference.py selftest` checks the same
+**replayed**. The replay must unwrap the space key, both directly and
+through `encryption.UnwrapWithAgreement` with an in-process agreement function
+(the path a card- or hardware-held key takes, ADR-0021), decrypt the change,
+and open the blob. `docs/recovery/reference.py selftest` checks the same
 file from Python. All keys are test-only.
