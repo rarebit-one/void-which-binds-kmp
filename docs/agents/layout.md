@@ -7,6 +7,8 @@ src/
   commonMain/kotlin/one/rarebit/voidwhichbinds/
     Labels.kt          identity-defining constants (DO NOT rename)
     KeyRef.kt          ed25519:/x25519: hex rendering + parse
+    MemberKey.kt       ADR-0018 member keys (ed25519: / webauthn:es256:): parse, verifyBody, refusal words
+    WebAuthn.kt        ADR-0018 challenge derivation + WebAuthn assertion checks (§7.2 order), policy
     RecoverySecret.kt  256-bit bech32m secret (HRP void-which-binds; gen1 heyarr1… refused)
     RecoveryShares.kt  the Void-Which-Binds SLIP-39 profile: split/combine a RecoverySecret as
                        2-of-3 shares (void-which-binds-go ADR-0011, recovery.SplitShares/CombineShares)
@@ -27,7 +29,8 @@ src/
     offload/           cruciform-offload wire + phone responders (ADR-0098)
     policy/            per-RP approval policy (ADR-0002)
     crypto/            Hex, Base64Url (no-pad), Bech32m, MiniJson (compact, ordered),
-                       X25519, Ed25519Group, XChaCha20-Poly1305, VoidbindEncryption, expect AEAD
+                       X25519, Ed25519Group, XChaCha20-Poly1305, VoidbindEncryption, expect AEAD,
+                       P256 (point validation), Es256 (provider ECDSA verify), StrictJson
   commonTest/…         pure + cryptography-kotlin tests (run on every target)
   jvmMain/…            DeviceKeyStore actual (software), JdkHttpTransport, AEAD actual
   jvmTest/…            JvmEd25519 (JDK provider, test-only) + keystore test; golden-vector
