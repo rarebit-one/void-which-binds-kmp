@@ -97,6 +97,7 @@ class MemberKey private constructor(
      *
      * Mirrors void-which-binds-go `MemberKey.VerifyBody`.
      */
+    @Throws(Exception::class)
     fun verifyBody(domain: String, body: ByteArray, sig: ByteArray, policy: WebAuthnPolicy) {
         when (kind) {
             Kind.ED25519 -> {
@@ -148,6 +149,7 @@ class MemberKey private constructor(
          * [MemberKeyException] ([MemberKeyFailure.MALFORMED_PUBLIC_KEY]). Mirrors
          * void-which-binds-go `identity.ParseMemberKey`.
          */
+        @Throws(Exception::class)
         fun parse(s: String): MemberKey {
             if (s.isEmpty()) malformed("the member key is empty")
             if (GoStrings.trimSpace(s) != s) malformed("\"$s\" has surrounding whitespace")

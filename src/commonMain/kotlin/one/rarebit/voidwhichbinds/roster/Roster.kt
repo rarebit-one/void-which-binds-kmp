@@ -81,6 +81,7 @@ object Roster {
      * question. Mirrors Go `roster.CosignWith`.
      */
     @Suppress("LongParameterList")
+    @Throws(Exception::class)
     fun cosignWith(
         signer: Ed25519Signer,
         signerPublicKey: ByteArray,
@@ -103,6 +104,7 @@ object Roster {
      * Set the result as [RosterDraft.succSig] before [signWith]. Mirrors Go
      * `roster.SuccSigWith`.
      */
+    @Throws(Exception::class)
     fun succSigWith(
         succ: Ed25519Signer,
         succPublicKey: ByteArray,
@@ -123,6 +125,7 @@ object Roster {
      * [verify] would refuse as malformed, so a minted op always parses. Mirrors Go
      * `roster.SignWith`.
      */
+    @Throws(Exception::class)
     fun signWith(
         signer: Ed25519Signer,
         signerPublicKey: ByteArray,
@@ -150,6 +153,7 @@ object Roster {
      * cosigs, `prev`, `bprev` or authority. Mirrors Go `roster.Verify`.
      */
     @Suppress("ThrowsCount")
+    @Throws(Exception::class)
     fun verify(rawToken: String, verifier: Ed25519Verifier = Ed25519Engine.verifier()): RosterOp {
         val token = GoStrings.trimSpace(rawToken)
         val dot = token.indexOf('.')
@@ -212,6 +216,7 @@ object Roster {
      * core never carries one. Mirrors Go `roster.ParseCore`.
      */
     @Suppress("ThrowsCount", "CyclomaticComplexMethod", "ComplexCondition")
+    @Throws(Exception::class)
     fun parseCore(core: ByteArray): RosterDraft {
         // Go's sigtoken.CheckTyp first (a body that is not JSON is left to the parse
         // below), read by Go's own rules so the WRONG_TYPE / MALFORMED split matches.
@@ -289,6 +294,7 @@ object Roster {
      * [s] counts. Mirrors Go `roster.VerifyDraftCosig`.
      */
     @Suppress("ThrowsCount")
+    @Throws(Exception::class)
     fun verifyDraftCosig(d: RosterDraft, s: RosterSignature, verifier: Ed25519Verifier = Ed25519Engine.verifier()) {
         RosterWire.validateSigner(s.by, s.usr, s.bprev, primary = false)
         if (s.by == d.org || s.usr == d.org) {
@@ -328,6 +334,7 @@ object Roster {
      * Mirrors Go `roster.CheckDraftClosure`.
      */
     @Suppress("LongParameterList")
+    @Throws(Exception::class)
     fun checkDraftClosure(
         org: String,
         founding: String,
@@ -388,6 +395,7 @@ object Roster {
      * `roster.Evaluate`.
      */
     @Suppress("ComplexCondition", "LongParameterList", "ThrowsCount")
+    @Throws(Exception::class)
     fun evaluate(
         org: String,
         founding: String,

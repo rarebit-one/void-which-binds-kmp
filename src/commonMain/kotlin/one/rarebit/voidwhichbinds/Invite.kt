@@ -70,6 +70,7 @@ object Invite {
      * version, malformed salt, a salt below the freshness floor, or a missing /
      * unparseable user.
      */
+    @Throws(Exception::class)
     fun decode(uri: String): Parsed {
         require(uri.startsWith(PREFIX)) { "not a $SCHEME pairing invite" }
         val query = uri.substring(PREFIX.length)

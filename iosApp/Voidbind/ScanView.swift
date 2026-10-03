@@ -112,7 +112,7 @@ struct ScanView: View {
         let trimmed = uri.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
         do {
-            switch engine.parseScanned(trimmed) {
+            switch try engine.parseScanned(trimmed) {
             case is VoidbindQr.Login: error = nil; dispatch = .login(trimmed)
             case is VoidbindQr.Pair:  error = nil; dispatch = .pair(trimmed)
             default: error = "That isn’t a Void-Which-Binds code."

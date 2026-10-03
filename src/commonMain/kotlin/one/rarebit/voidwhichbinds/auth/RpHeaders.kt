@@ -72,6 +72,7 @@ object RpHeaders {
      * (surrounding Go whitespace trimmed). Empty, a list, or any other spelling is
      * [RpHeaderException.Failure.MALFORMED].
      */
+    @Throws(Exception::class)
     fun parseOrgHeader(value: String): String {
         val org = GoStrings.trimSpace(value)
         if (org.isEmpty()) malformed("empty $ORG_HEADER")
@@ -90,6 +91,7 @@ object RpHeaders {
      * else is [RpHeaderException.Failure.MALFORMED], so a client never sends an org
      * header every RP refuses.
      */
+    @Throws(Exception::class)
     fun formatOrgHeader(org: String): String {
         if (parseOrgHeader(org) != org) malformed("$ORG_HEADER: '$org' is not trimmed")
         return org
@@ -101,6 +103,7 @@ object RpHeaders {
      * [MAX_PRESENTED_ROSTER_OP_BYTES] UTF-8 bytes, is
      * [RpHeaderException.Failure.TOO_MANY_OPS]. An empty value is no ops.
      */
+    @Throws(Exception::class)
     fun parseRosterHeader(value: String): List<String> {
         val ops = splitOps(value) { tok ->
             val n = GoStrings.utf8Length(tok)
@@ -120,6 +123,7 @@ object RpHeaders {
      * empties. More than [MAX_PRESENTED_OPS] is [RpHeaderException.Failure.TOO_MANY_OPS]
      * (Go caps only the count here, not a token's size). An empty value is no ops.
      */
+    @Throws(Exception::class)
     fun parseMembershipHeader(value: String): List<String> {
         val ops = splitOps(value) {}
         if (ops.size > MAX_PRESENTED_OPS) tooMany("${ops.size} > $MAX_PRESENTED_OPS")

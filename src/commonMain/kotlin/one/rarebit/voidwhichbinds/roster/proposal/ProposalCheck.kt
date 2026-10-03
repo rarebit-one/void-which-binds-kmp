@@ -87,6 +87,7 @@ class Checked private constructor(
      * [verifyCosig] would, a cosig that would not count, so a cosigner never writes back
      * what the proposer must discard. Mirrors Go `Checked.Cosign`.
      */
+    @Throws(Exception::class)
     fun cosign(
         signer: Ed25519Signer,
         signerPublicKey: ByteArray,
@@ -118,6 +119,7 @@ class Checked private constructor(
      * the primary's key, a valid key of its person at the op's iat, and an admin in the
      * roster view of the op's closure. Mirrors Go `Checked.VerifyCosig`.
      */
+    @Throws(Exception::class)
     fun verifyCosig(raw: ByteArray): Cosig = RosterProposal.decodeCosig(raw).also { checkCosig(it) }
 
     @Suppress("ThrowsCount")
@@ -198,6 +200,7 @@ class Checked private constructor(
      * Mirrors Go `Checked.Assemble`.
      */
     @Suppress("LongParameterList")
+    @Throws(Exception::class)
     fun assemble(
         signer: Ed25519Signer,
         signerPublicKey: ByteArray,
