@@ -32,6 +32,7 @@ object LoginQr {
     }
 
     /** Parse a login QR back into (rp, id), refusing a wrong scheme or a missing field. */
+    @Throws(Exception::class)
     fun decode(uri: String): Parsed {
         require(uri.startsWith(PREFIX)) { "not a $SCHEME login QR" }
         val fields = UrlQuery.decode(uri.substring(PREFIX.length))
@@ -60,6 +61,7 @@ sealed class VoidbindQr {
         private const val PAIR_PREFIX = "${Invite.SCHEME}:pair?"
 
         /** Classify and parse a scanned QR. Throws on anything that is not a void-which-binds QR. */
+        @Throws(Exception::class)
         fun parse(uri: String): VoidbindQr = when {
             uri.startsWith(LOGIN_PREFIX) -> Login(LoginQr.decode(uri))
             uri.startsWith(PAIR_PREFIX) -> Pair(Invite.decode(uri))

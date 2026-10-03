@@ -170,7 +170,7 @@ let device   = engine.deviceIdentity()           // provisions the SE-sealed sig
 _ = engine.enrolFirstDevice(identity: identity, device: device)
 
 // scan dispatch (types drop the framework prefix — VoidbindQr.Login / .Pair):
-switch engine.parseScanned(qr) {
+switch try engine.parseScanned(qr) {   // throws on a non-Void-Which-Binds QR
 case let login as VoidbindQr.Login: /* engine.loginApproval(...).begin/approve */ break
 case let pair  as VoidbindQr.Pair:  /* engine.devicePairing(...).begin/confirm */ break
 default: break

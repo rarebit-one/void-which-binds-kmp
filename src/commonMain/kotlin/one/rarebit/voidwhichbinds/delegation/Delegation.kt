@@ -63,6 +63,7 @@ data class Delegation(
      * member key), then the claim grammar: [Failure.MALFORMED] naming the field,
      * [Failure.INCOMPLETE] (iat ≤ 0 or exp ≤ iat), [Failure.TTL_TOO_LONG]. Go `Body`.
      */
+    @Throws(Exception::class)
     fun body(): ByteArray {
         if (listOf(user, org, issuer, principal, audience, jti, nonce).any { it.isEmpty() }) {
             fail(Failure.INCOMPLETE, "a binding is empty")
@@ -281,6 +282,7 @@ data class Delegation(
          * signature is checked under [signerPublicKey] before it is returned. Ed25519 is
          * deterministic, so the same key and delegation mint the same token. Go `SignWith`.
          */
+        @Throws(Exception::class)
         fun signWith(
             signer: Ed25519Signer,
             signerPublicKey: ByteArray,
@@ -320,6 +322,7 @@ data class Delegation(
          * ([Failure.ISSUER_MISMATCH] otherwise) and that [envelope] is non-empty
          * ([Failure.INCOMPLETE]); it does not verify the assertion. Go `AssembleWebAuthn`.
          */
+        @Throws(Exception::class)
         fun assembleWebAuthn(body: ByteArray, envelope: ByteArray): String {
             val p = parseBody(body)
             val kind = runCatching { MemberKey.parse(p.issuer).kind }.getOrNull()
@@ -336,6 +339,7 @@ data class Delegation(
          * The proof's `dlg` for a delegation [token]: unpadded base64url of sha256 of the
          * token's BODY bytes (it binds the body, not the malleable signature). Go `BodyHash`.
          */
+        @Throws(Exception::class)
         fun bodyHash(token: String): String {
             val body = tokenBody(token.trim()) ?: fail(Failure.MALFORMED, "the delegation token")
             return bodyHashOf(body)
@@ -353,6 +357,7 @@ data class Delegation(
          * Go `SignProofWith`.
          */
         @Suppress("LongParameterList")
+        @Throws(Exception::class)
         fun signProofWith(
             signer: Ed25519Signer,
             signerPublicKey: ByteArray,
@@ -391,6 +396,7 @@ data class Delegation(
          * non-canonical scope list, or any claim outside its grammar. For logging and for
          * a minter checking what it holds; it authenticates nothing. Go `Parse`.
          */
+        @Throws(Exception::class)
         fun parse(token: String): Delegation {
             val t = token.trim()
             val dot = t.indexOf('.')

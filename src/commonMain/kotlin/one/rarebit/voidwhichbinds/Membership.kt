@@ -142,6 +142,7 @@ object Membership {
      * op is reported in the view, never fatal, so one junk token can never take an
      * identity's devices offline.
      */
+    @Throws(Exception::class)
     fun evaluate(
         usr: String,
         tokens: List<String>,
@@ -195,6 +196,7 @@ object Membership {
      * Mirrors void-which-binds-go `enrolment.MemberAt` (Phase 3 G1).
      */
     @Suppress("LongParameterList") // Go's MemberAt(usr, dev, ops, heads, at) plus the verifier seam
+    @Throws(Exception::class)
     fun memberAt(
         usr: String,
         dev: String,

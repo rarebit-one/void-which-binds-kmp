@@ -29,7 +29,13 @@ import one.rarebit.voidwhichbinds.crypto.GoStrings
  * Each header value is exactly what Go's `Format…Header` renders for the same lists,
  * and parses back ([RpHeaders]) to them.
  */
-class OrgRequest(org: String, rosterOps: List<String> = emptyList(), membershipOps: List<String> = emptyList()) {
+class OrgRequest
+@Throws(Exception::class)
+constructor(
+    org: String,
+    rosterOps: List<String> = emptyList(),
+    membershipOps: List<String> = emptyList(),
+) {
 
     /** The org id, canonical. */
     val org: String = RpHeaders.formatOrgHeader(org)
@@ -74,6 +80,7 @@ class OrgRequest(org: String, rosterOps: List<String> = emptyList(), membershipO
      * `Device <cred>~<proof>` value, e.g. [DeviceCredential.Presentation.headerValue]),
      * then [presentedHeaders].
      */
+    @Throws(Exception::class)
     fun headers(authorization: String): Map<String, String> {
         require(DeviceCredential.isDeviceHeader(authorization)) { "an org-path request needs a Device credential" }
         val h = LinkedHashMap<String, String>()
@@ -83,6 +90,7 @@ class OrgRequest(org: String, rosterOps: List<String> = emptyList(), membershipO
     }
 
     /** [headers] with [credential]'s live presentation (which may re-mint). */
+    @Throws(Exception::class)
     fun headers(credential: DeviceCredential): Map<String, String> = headers(credential.headerValue())
 
     override fun toString(): String =

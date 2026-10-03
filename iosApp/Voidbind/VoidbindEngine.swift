@@ -84,8 +84,8 @@ public final class VoidbindEngine {
     }
 
     /// Classify a scanned QR (login vs pairing) for the Scan screen's `switch`.
-    public func parseScanned(_ uri: String) -> VoidbindQr {
-        VoidbindQr.companion.parse(uri: uri)
+    public func parseScanned(_ uri: String) throws -> VoidbindQr {
+        try VoidbindQr.companion.parse(uri: uri)
     }
 
     // MARK: - Convenience builders (provision the SE device key, then build)

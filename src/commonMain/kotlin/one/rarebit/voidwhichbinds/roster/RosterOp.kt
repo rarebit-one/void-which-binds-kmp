@@ -129,6 +129,7 @@ data class RosterDraft(
      * Throws [RosterException] ([RosterException.Failure.MALFORMED]) for a draft
      * [Roster.signWith] would refuse.
      */
+    @Throws(Exception::class)
     fun core(): ByteArray {
         if (iat == 0L) throw RosterException(RosterException.Failure.MALFORMED, "an issued-at is required")
         val p = payload().copy(succSig = "")

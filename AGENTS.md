@@ -113,6 +113,18 @@ Platform code (`jvmMain`, `androidMain`, `iosMain`) supplies the `actual`s. Do n
 reach for `java.*` / platform APIs from `commonMain`, and do not add further
 third-party deps there without a reason as strong as cryptography-kotlin's.
 
+## Public throwing APIs carry `@Throws(Exception::class)`
+
+A Kotlin exception escaping a Kotlin/Native-exported function that lacks `@Throws`
+**aborts the process on iOS**; with it, Swift sees a `throws` method and an `NSError`.
+So every public `commonMain` function, constructor or getter that can throw (directly
+or through what it calls: `require`, a parse refusal, a signer) is annotated
+`@Throws(Exception::class)` (#109). Not on interface methods Swift implements
+(`HttpTransport`, `Ed25519Signer`, `CertSealer`): that changes the Swift protocol.
+Adding it to an existing function changes its Swift signature, so update `iosApp/`
+callers to `try`. CI checks only that it compiles (`compileKotlinIosSimulatorArm64`);
+nothing detects a missing one, so review for it.
+
 ## Build & test
 
 Host toolchain: **JDK 21** (bytecode targets JVM 17); use the wrapper (`./gradlew`),

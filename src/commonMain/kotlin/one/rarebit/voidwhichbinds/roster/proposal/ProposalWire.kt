@@ -80,6 +80,7 @@ object RosterProposal {
      * de-duplicated and put in op-hash order; whether they suffice is [check]'s question.
      * Mirrors Go `proposal.New`.
      */
+    @Throws(Exception::class)
     fun create(d: RosterDraft, roster: List<String>, persons: Map<String, List<String>>): Proposal {
         val core = try {
             d.core()
@@ -106,6 +107,7 @@ object RosterProposal {
      * and the restated usr and bprev (restatement_mismatch). It checks nothing against an
      * org or a roster: that is [check]. Mirrors Go `proposal.Decode`.
      */
+    @Throws(Exception::class)
     fun decode(raw: ByteArray): Proposal {
         val tree = SlotCodec.readHeader(raw, MAX_PROPOSAL_BYTES, SLOT_PROPOSAL)
         val w = SlotCodec.proposalWire(tree)
@@ -131,6 +133,7 @@ object RosterProposal {
      * entry's shape and signature are [Checked.verifyCosig]'s. Mirrors Go
      * `proposal.DecodeCosig`.
      */
+    @Throws(Exception::class)
     fun decodeCosig(raw: ByteArray): Cosig {
         val tree = SlotCodec.readHeader(raw, MAX_COSIG_BYTES, SLOT_COSIG)
         val w = SlotCodec.cosigWire(tree)
@@ -150,6 +153,7 @@ object RosterProposal {
      * [ProposalException] for a refusal; any other exception is the caller's (an org that
      * is not a key, a founding op that is not the org's). Mirrors Go `proposal.Check`.
      */
+    @Throws(Exception::class)
     fun check(raw: ByteArray, expect: Expect, verifier: Ed25519Verifier = Ed25519Engine.verifier()): Checked =
         Checked.of(decode(raw), expect, verifier)
 
@@ -161,6 +165,7 @@ object RosterProposal {
      * that does not is missing_person_context. Pass the result to [create]; if it is over
      * the caps, attach only what the cosigner lacks. Mirrors Go `proposal.Context`.
      */
+    @Throws(Exception::class)
     fun context(
         d: RosterDraft,
         founding: String,
@@ -269,6 +274,7 @@ class Proposal internal constructor(
      * ([ProposalReason.TOO_LARGE]) or with lists out of canonical form
      * ([ProposalReason.MALFORMED]). Mirrors Go `Proposal.Encode`.
      */
+    @Throws(Exception::class)
     fun encode(): ByteArray {
         val w = SlotCodec.ProposalWire(
             v = RosterProposal.VERSION.toLong(),
@@ -300,6 +306,7 @@ class Cosig(val entry: RosterSignature, val persons: Map<String, List<String>> =
      * ([ProposalReason.TOO_LARGE]) or out of canonical form ([ProposalReason.MALFORMED]).
      * Mirrors Go `Cosig.Encode`.
      */
+    @Throws(Exception::class)
     fun encode(): ByteArray {
         val w = SlotCodec.CosigWire(
             v = RosterProposal.VERSION.toLong(),
