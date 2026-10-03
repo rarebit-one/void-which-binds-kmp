@@ -29,6 +29,12 @@ src/
                        "Proposal transport"): proposal/cosig slot payloads (canonical JSON, caps),
                        RosterProposal.check, Checked.cosign/verifyCosig/assemble, context;
                        vectors/roster-proposal/ replayed by RosterProposalVectorTest
+    delegation/        the delegation grant, minting side (void-which-binds-go delegation,
+                       ADR-0017): Delegation.body/signWith, passkey challenge +
+                       assembleWebAuthn, agent signProofWith, parse; vectors/delegation/
+                       replayed by DelegationVectorTest
+    scope/             scope grammar + canonical scope lists (void-which-binds-go scope);
+                       vectors/scope/ replayed by ScopeVectorTest
     Ed25519.kt         signer/verifier seams; Ed25519Engine.kt = software Ed25519 (cryptography-kotlin)
     Pairing.kt         commit-before-reveal SAS derivation
     UserIdentity.kt / DeviceIdentity.kt / Enrolment.kt   identity + self-enrolment

@@ -20,8 +20,9 @@ Moved verbatim from the old `CLAUDE.md` ("Wire formats"). The rule that governs 
 - **Token type (`typ`, void-which-binds-go ADR-0009).** Every signed token carries a
   `typ` member, placed second in the body right after `v`: `void-which-binds.cert`,
   `void-which-binds.possession`, `void-which-binds.op`, `void-which-binds.grant` or
-  `void-which-binds.pair-refusal` (`void-which-binds.roster` and
-  `void-which-binds.delegation` are reserved).
+  `void-which-binds.pair-refusal` (`void-which-binds.roster`,
+  `void-which-binds.delegation` and `void-which-binds.delegation-pop` are typed by
+  their own packages).
   - **Gen2 is typed-only (ADR-0022).** Every minter emits `typ`
     (`MembershipOp.sign`, `PossessionProof.mint`/`signingBytes`, `Cert`), and
     [`TokenType.check`](../../src/commonMain/kotlin/one/rarebit/voidwhichbinds/TokenType.kt)
@@ -82,3 +83,20 @@ Moved verbatim from the old `CLAUDE.md` ("Wire formats"). The rule that governs 
   `roster/proposal` decodes through `GoJson`, not `MiniJson`. Refusal reasons and their
   order are Go's; `vectors/roster-proposal/` (19 cases) is replayed by
   `RosterProposalVectorTest`, which re-mints every `ok` cosig and assembled op byte for byte.
+- **Delegation grant (void-which-binds-go ADR-0017, G8), minting side.**
+  `delegation.Delegation` mints `void-which-binds.delegation` v1: body
+  `{"v":1,"typ","usr","org","iss","prn","aud","scp":[…],"jti","non","iat","exp"}`, exactly
+  Go's `json.Marshal` (compact, HTML-escaped: `&` in an `aud` is `\u0026`, rendered
+  through `GoJson.appendString`). `scp` is canonicalised at mint (`scope.Scope`: sorted,
+  de-duplicated, 1–32 scopes of `<ns>:<path>`); `jti` (16 bytes) and the broker's `non`
+  (32 bytes) are strict unpadded base64url; `exp − iat` ≤ 24 h. An Ed25519 member key
+  mints with `signWith`; a `webauthn:` passkey asserts over
+  `challenge(body)` = `WebAuthn.challenge("void-which-binds.delegation", body)` and
+  `assembleWebAuthn(body, webAuthnEnvelope(ad, cd, sig))` joins the token. The agent
+  proves possession with `signProofWith`: `void-which-binds.delegation-pop`
+  `{"v":1,"typ","dlg","aud","iat","exp"}`, `dlg` = base64url(sha256(delegation BODY)),
+  ttl ≤ 120 s. `parse` refuses anything but the canonical encoding (`malformed`) or
+  another `typ` (`wrong_type`). The broker's `Verify` is server-only and not ported.
+  `vectors/delegation/` (52 cases) is replayed by `DelegationVectorTest`, which re-mints
+  every Ed25519 delegation and proof byte for byte and reproduces every passkey body
+  and challenge; `vectors/scope/` by `ScopeVectorTest`.
