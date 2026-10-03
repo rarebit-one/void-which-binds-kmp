@@ -5,8 +5,8 @@ package one.rarebit.voidwhichbinds.crypto
 /**
  * A JSON reader and string encoder that behave as Go's `encoding/json` does, for the
  * payloads whose refusal ORDER depends on how Go reads non-canonical input (the roster
- * cosign transport's slots, `roster.ParseCore`). [MiniJson] is laxer than Go and
- * recursive; this reader is neither:
+ * cosign transport's slots, `roster.ParseCore`). [MiniJson] is laxer than Go; this
+ * reader is not:
  *
  * - [parse] accepts exactly what Go's scanner (`checkValid`) accepts: RFC 8259 syntax,
  *   whitespace limited to space, tab, CR and LF, and at most [MAX_DEPTH] nested arrays

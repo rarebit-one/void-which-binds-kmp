@@ -11,6 +11,7 @@ import one.rarebit.voidwhichbinds.MembershipOp
 import one.rarebit.voidwhichbinds.TokenType
 import one.rarebit.voidwhichbinds.crypto.Base64Url
 import one.rarebit.voidwhichbinds.crypto.GoJson
+import one.rarebit.voidwhichbinds.crypto.GoStrings
 import one.rarebit.voidwhichbinds.crypto.Hex
 import one.rarebit.voidwhichbinds.crypto.MiniJson
 import one.rarebit.voidwhichbinds.roster.RosterException.Failure
@@ -150,7 +151,7 @@ object Roster {
      */
     @Suppress("ThrowsCount")
     fun verify(rawToken: String, verifier: Ed25519Verifier = Ed25519Engine.verifier()): RosterOp {
-        val token = rawToken.trim()
+        val token = GoStrings.trimSpace(rawToken)
         val dot = token.indexOf('.')
         if (dot < 0) throw RosterException(Failure.MALFORMED, "roster: malformed roster op")
         val body = RosterWire.decodeRaw(token.substring(0, dot))
@@ -346,7 +347,7 @@ object Roster {
             cosig = emptyList(), succSig = "", iat = p.iat,
         )
         val e = RosterEvaluator(org, persons, verifier)
-        val f = founding.trim()
+        val f = GoStrings.trimSpace(founding)
         e.founding = opHash(f)
         e.ingest(listOf(f) + ops)
         e.addUnchecked(o.hash, o)
@@ -369,7 +370,7 @@ object Roster {
         val byHash = HashMap<String, String>()
         for (set in sets) {
             for (raw in set) {
-                val tok = raw.trim()
+                val tok = GoStrings.trimSpace(raw)
                 if (tok.isNotEmpty()) byHash[opHash(tok)] = tok
             }
         }
@@ -410,7 +411,7 @@ object Roster {
             throw RosterException(Failure.FOUNDING, "roster: not a founding op of this org")
         }
         val e = RosterEvaluator(org, persons, verifier)
-        e.founding = opHash(founding.trim())
+        e.founding = opHash(GoStrings.trimSpace(founding))
         e.ingest(listOf(founding) + ops)
         e.resolve()
         return e.view(now)

@@ -13,7 +13,6 @@ import one.rarebit.voidwhichbinds.roster.RosterOp
 import one.rarebit.voidwhichbinds.roster.RosterReason
 import one.rarebit.voidwhichbinds.roster.RosterSignature
 import one.rarebit.voidwhichbinds.roster.RosterView
-import one.rarebit.voidwhichbinds.roster.RosterWire
 import one.rarebit.voidwhichbinds.roster.proposal.ProposalReason.BAD_CONTEXT
 import one.rarebit.voidwhichbinds.roster.proposal.ProposalReason.BAD_CORE
 import one.rarebit.voidwhichbinds.roster.proposal.ProposalReason.BAD_COSIG
@@ -242,11 +241,6 @@ class Checked private constructor(
             val d = p.draft
             if (d.org != exp.org) refuse(WRONG_ORG, d.org)
             val founding = RosterProposal.goTrim(exp.founding)
-            // As in Closures: Roster.verify's Kotlin trim() would also strip U+001C..U+001F,
-            // which Go keeps (and so refuses the op).
-            if (founding.trim() != founding) {
-                throw RosterException(RosterException.Failure.FOUNDING, "roster: not a founding op of this org")
-            }
             val fOp = try {
                 Roster.verify(founding, verifier)
             } catch (e: RosterException) {
@@ -343,22 +337,12 @@ internal object Closures {
     /** A signer's person and that person's heads (Go's `sig`, whose key plays no part here). */
     class Sig(val usr: String, val bprev: List<String>)
 
-    /**
-     * Deeper than any canonical op body nests: a body past it is refused unread, so a
-     * hostile attachment cannot exhaust the stack of the recursive body parser.
-     */
-    private const val MAX_BODY_DEPTH = 32
-
     /** [Roster.verify], or null for a token that is not a roster op. */
     fun verifyRoster(raw: String, verifier: Ed25519Verifier): RosterOp? {
-        // Normalise once with Go's TrimSpace set, before both the depth guard
-        // and verification, so a token Go accepts is never dropped here.
-        val tok = RosterProposal.goTrim(raw)
-        // The downstream verifiers trim with Kotlin's whitespace set, which also strips
-        // U+001C..U+001F (Go's TrimSpace does not): refuse a token they would alter, as Go does.
-        if (tok.trim() != tok || tooDeep(tok)) return null
+        // Roster.verify trims with Go's TrimSpace set and reads the body iteratively under
+        // Go's nesting limit, so a hostile attachment is refused, never a stack overflow.
         return try {
-            Roster.verify(tok, verifier)
+            Roster.verify(raw, verifier)
         } catch (_: IllegalArgumentException) {
             null
         }
@@ -366,14 +350,9 @@ internal object Closures {
 
     /** [MembershipOp.verify] (Go `enrolment.VerifyOp`), or null for a token that is not a person op. */
     fun verifyPerson(raw: String, verifier: Ed25519Verifier): MembershipOp? {
-        // Normalise once with Go's TrimSpace set, before both the depth guard
-        // and verification, so a token Go accepts is never dropped here.
-        val tok = RosterProposal.goTrim(raw)
-        // The downstream verifiers trim with Kotlin's whitespace set, which also strips
-        // U+001C..U+001F (Go's TrimSpace does not): refuse a token they would alter, as Go does.
-        if (tok.trim() != tok || tooDeep(tok)) return null
+        // As verifyRoster: MembershipOp.verify is Go-exact on trimming and nesting.
         return try {
-            MembershipOp.verify(tok, verifier)
+            MembershipOp.verify(raw, verifier)
         } catch (_: IllegalArgumentException) {
             null
         }
@@ -387,34 +366,6 @@ internal object Closures {
                 if (o == null || o.user != usr) refuse(BAD_CONTEXT, "person op ${Roster.opHash(tok)}")
             }
         }
-    }
-
-    /** Whether a token's body nests arrays/objects deeper than [MAX_BODY_DEPTH] (outside strings). */
-    @Suppress("ReturnCount")
-    private fun tooDeep(tok: String): Boolean {
-        val t = tok.trim()
-        val body = RosterWire.decodeRaw(t.substringBefore('.')) ?: return false
-        var depth = 0
-        var inStr = false
-        var esc = false
-        for (b in body) {
-            val c = b.toInt().toChar()
-            when {
-                esc -> esc = false
-
-                inStr -> when (c) {
-                    '\\' -> esc = true
-                    '"' -> inStr = false
-                }
-
-                c == '"' -> inStr = true
-
-                c == '{' || c == '[' -> if (++depth > MAX_BODY_DEPTH) return true
-
-                c == '}' || c == ']' -> depth--
-            }
-        }
-        return false
     }
 
     /** The prev hashes and every op they cite, transitively, over [ops] (missing_roster_context). */

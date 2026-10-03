@@ -3,6 +3,7 @@ package one.rarebit.voidwhichbinds.roster
 import one.rarebit.voidwhichbinds.KeyRef
 import one.rarebit.voidwhichbinds.MembershipOp
 import one.rarebit.voidwhichbinds.crypto.Base64Url
+import one.rarebit.voidwhichbinds.crypto.GoStrings
 import one.rarebit.voidwhichbinds.crypto.MiniJson
 import one.rarebit.voidwhichbinds.roster.RosterException.Failure
 
@@ -152,12 +153,21 @@ internal object RosterWire {
         )
     }
 
-    /** True if the parsed JSON holds a `null` anywhere (no canonical body does). */
-    fun containsNull(x: Any?): Boolean = when (x) {
-        is MiniJson.Null -> true
-        is Map<*, *> -> x.values.any(::containsNull)
-        is List<*> -> x.any(::containsNull)
-        else -> false
+    /**
+     * True if the parsed JSON holds a `null` anywhere (no canonical body does). Iterative:
+     * a parsed body may nest as deep as Go's scanner allows.
+     */
+    fun containsNull(x: Any?): Boolean {
+        val stack = ArrayList<Any?>()
+        stack.add(x)
+        while (stack.isNotEmpty()) {
+            when (val n = stack.removeAt(stack.size - 1)) {
+                is MiniJson.Null -> return true
+                is Map<*, *> -> stack.addAll(n.values)
+                is List<*> -> stack.addAll(n)
+            }
+        }
+        return false
     }
 
     private fun bad(msg: String): Nothing =
@@ -338,6 +348,7 @@ internal object RosterWire {
     /** Whether an enrolled key can sign roster ops: only an Ed25519 key can (a passkey is live but inert here). */
     fun canSign(key: String): Boolean = isEdKey(key)
 
-    /** Trim, drop empties, de-duplicate and sort (Go `normalise`). */
-    fun normalise(hs: List<String>): List<String> = hs.map { it.trim() }.filter { it.isNotEmpty() }.distinct().sorted()
+    /** Trim (Go's `strings.TrimSpace` set), drop empties, de-duplicate and sort (Go `normalise`). */
+    fun normalise(hs: List<String>): List<String> =
+        hs.map { GoStrings.trimSpace(it) }.filter { it.isNotEmpty() }.distinct().sorted()
 }
