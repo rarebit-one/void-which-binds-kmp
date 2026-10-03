@@ -60,7 +60,7 @@ class DeepChainTest {
 
     @Test
     fun opDagAncestorsOfALongChain() = onSmallStack {
-        val n = 3_000 // ancestor sets are memoised per node (quadratic), so a shorter chain
+        val n = 3_000 // ancestor bitsets are quadratic in a chain (n²/16 bytes), so a shorter chain
         val dag = OpDag<Node>({ it.prev }, null)
         for (i in 0 until n) dag.add("n$i", Node("n$i", if (i == 0) emptyList() else listOf("n${i - 1}")))
         dag.resolveAll()

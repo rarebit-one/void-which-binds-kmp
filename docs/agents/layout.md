@@ -18,9 +18,13 @@ src/
     Cert.kt            enrolment cert model + token encode/parse/verify
     MembershipOp.kt    v3 membership op (add/remove) sign/verify/hash; v1/v2 certs read as genesis adds
     Membership.kt      the CRDT evaluator (void-which-binds-go enrolment.Evaluate, ADR-0007) + merge,
-                       memberAt (enrolment.MemberAt, the roster's person-signature check)
-    OpDag.kt           content-addressed op DAG (void-which-binds-go internal/opdag), iterative walks;
-                       shared by Membership and the roster
+                       memberAt / newLog + Log (enrolment.MemberAt / NewLog, the roster's
+                       person-signature check); the rule 6 history cap (MAX_LOG_OPS, unanchored,
+                       LogTooLargeException; #122)
+    OpDag.kt           content-addressed op DAG (void-which-binds-go internal/opdag), iterative walks,
+                       ancestors as bitsets over a (depth, hash) index (#122); shared by
+                       Membership and the roster
+    IntList.kt         unboxed int list, the evaluators' scratch
     roster/            org roster (void-which-binds-go roster, ADR-0014/0015): op wire (Roster,
                        RosterDraft/RosterOp), the evaluator (RosterEvaluator, RosterView);
                        vectors/roster/ replayed by RosterVectorTest; parseCore, verifyDraftCosig,

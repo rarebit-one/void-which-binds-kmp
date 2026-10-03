@@ -1,0 +1,10 @@
+{
+  "name": "slack-payload-bytes",
+  "description": "ADR-0020 vector 6: a login tuple → the exact chat.postMessage body: the DM channel, the fixed sentence, a newline and the tuple as a Slack link (its & escaped as &amp;, as Slack requires), unfurl_links and unfurl_media false, and no blocks, attachments or actions.",
+  "kind": "slack-payload",
+  "slack": {
+    "dm": "D0VWB0001",
+    "tuple": "void-which-binds:login?id=8f14e45fceea167a5a36dedd4bea2543&rp=https%3A%2F%2Frp.example",
+    "body": "{\"channel\":\"D0VWB0001\",\"text\":\"A Void-Which-Binds request is waiting for you. Open your approver.\\n<void-which-binds:login?id=8f14e45fceea167a5a36dedd4bea2543&amp;rp=https%3A%2F%2Frp.example>\",\"unfurl_links\":false,\"unfurl_media\":false}"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "rfc8291-section-5-example",
+  "description": "ADR-0020 vector 1: RFC 8291 §5's worked example (its fixed keys, salt and record size 4096) encrypts to the RFC's exact bytes, with Appendix A's ecdh_secret, CEK, nonce and header, and decrypts back.",
+  "kind": "webpush-encrypt",
+  "webpush": {
+    "plaintext": "When I grow up, I want to be a watermelon",
+    "ua_private": "q1dXpw3UpT5VOmu_cf_v6ih07Aems3njxI-JWgLcM94",
+    "ua_public": "BCVxsr7N_eNgVRqvHtD0zTZsEc6-VV-JvLexhqUzORcxaOzi6-AYWXvTBHm4bjyPjs7Vd8pZGH6SRpkNtoIAiw4",
+    "auth": "BTBZMqHH6r4Tts7J_aSIgg",
+    "as_private": "yfWPiYE-n46HLnH0KqZOF1fJJU3MYrct3AELtAQ-oRw",
+    "as_public": "BP4z9KsN6nGRTbVYI_c7VJSPQTBtkgcy27mlmlMoZIIgDll6e3vCYLocInmYWAmS6TlzAC8wEqKK6PBru3jl7A8",
+    "salt": "DGv6ra1nlYgDCS1FRnbzlw",
+    "rs": 4096,
+    "ecdh_secret": "kyrL1jIIOHEzg3sM2ZWRHDRB62YACZhhSlknJ672kSs",
+    "cek": "oIhVW04MRdy2XN9CiKLxTg",
+    "nonce": "4h_95klXJ5E_qnoN",
+    "header": "DGv6ra1nlYgDCS1FRnbzlwAAEABBBP4z9KsN6nGRTbVYI_c7VJSPQTBtkgcy27mlmlMoZIIgDll6e3vCYLocInmYWAmS6TlzAC8wEqKK6PBru3jl7A8",
+    "body": "DGv6ra1nlYgDCS1FRnbzlwAAEABBBP4z9KsN6nGRTbVYI_c7VJSPQTBtkgcy27mlmlMoZIIgDll6e3vCYLocInmYWAmS6TlzAC8wEqKK6PBru3jl7A_yl95bQpu6cVPTpK4Mqgkf1CXztLVBSt2Ks3oZwbuwXPXLWyouBWLVWGNWQexSgSxsj_Qulcy4a-fN"
+  }
+}

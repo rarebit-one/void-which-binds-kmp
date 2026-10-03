@@ -1,0 +1,27 @@
+{
+  "name": "approve-wake-handle-only",
+  "description": "ADR-0020 vector 10 (amended #98): an approval wake's wire bytes on each channel carry exactly the handle-only tuple void-which-binds:approve?h=<handle>, with no rp and no approval id: the ntfy body is the tuple, the Slack body is the fixed sentence and the tuple, and the Web Push body decrypts to the tuple.",
+  "kind": "approve-wake",
+  "approve_wake": {
+    "handle": "XJ8fbA6KTSt-MaCfTG2LKh5_PF2bCi5PbI0bOl5_nA0",
+    "tuple": "void-which-binds:approve?h=XJ8fbA6KTSt-MaCfTG2LKh5_PF2bCi5PbI0bOl5_nA0",
+    "ntfy_body": "void-which-binds:approve?h=XJ8fbA6KTSt-MaCfTG2LKh5_PF2bCi5PbI0bOl5_nA0",
+    "slack_dm": "D0VWB0001",
+    "slack_body": "{\"channel\":\"D0VWB0001\",\"text\":\"A Void-Which-Binds request is waiting for you. Open your approver.\\n<void-which-binds:approve?h=XJ8fbA6KTSt-MaCfTG2LKh5_PF2bCi5PbI0bOl5_nA0>\",\"unfurl_links\":false,\"unfurl_media\":false}",
+    "webpush": {
+      "plaintext": "void-which-binds:approve?h=XJ8fbA6KTSt-MaCfTG2LKh5_PF2bCi5PbI0bOl5_nA0",
+      "ua_private": "p93DdPlH3moZBOsL_j72_NviPythM6OnOqDgD55hrV0",
+      "ua_public": "BKSWQmwt6RuVxCqiWr0ybC0m8hVoCVua-2m70mmlAoP8WCqq6fN6V5xU8U9VssPTpXcIpJNUkbeEXeTygEwiDxk",
+      "auth": "-I266FxC21zqk5Zc_AO34Q",
+      "as_private": "c-FcACuIWiH5hJPQx6zxxT9aUf50i7W0bIMIqsX3LbU",
+      "as_public": "BPrccwihMjP-gMOC6PbhHEBshJ3p54TPFYo0RRFqg40cmW9UHTxj3R0-xdhCCDi8jqNPwpzNRV2TdQI3ISte1pM",
+      "salt": "dLcgbFaoOXv0Rp3WwhZUVw",
+      "rs": 4096,
+      "ecdh_secret": "mOXjgjeUVtt-TltTbp9jvP1YthPdKcCgWFp8QWPUN88",
+      "cek": "uk2fg7v_8DnnTofBgpgAPA",
+      "nonce": "aQW2SuZKNU-feV23",
+      "header": "dLcgbFaoOXv0Rp3WwhZUVwAAEABBBPrccwihMjP-gMOC6PbhHEBshJ3p54TPFYo0RRFqg40cmW9UHTxj3R0-xdhCCDi8jqNPwpzNRV2TdQI3ISte1pM",
+      "body": "dLcgbFaoOXv0Rp3WwhZUVwAAEABBBPrccwihMjP-gMOC6PbhHEBshJ3p54TPFYo0RRFqg40cmW9UHTxj3R0-xdhCCDi8jqNPwpzNRV2TdQI3ISte1pNm8i_QFVDZdHg2mLya_wZlFHh7pRQTqIoQJwDaFJ7g2mLP7MnrdoXfzYvXpFHwAUNen0xFyiYS-ejH9Xj96T4tmb8ZCRQjBZ4YFujlb0eOL4w9teFsLPg"
+    }
+  }
+}

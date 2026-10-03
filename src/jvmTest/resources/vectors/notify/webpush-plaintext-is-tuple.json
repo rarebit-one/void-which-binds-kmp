@@ -1,0 +1,20 @@
+{
+  "name": "webpush-plaintext-is-tuple",
+  "description": "ADR-0020 vector 2: a login wake's tuple, encrypted with fixed test keys and salt; the decrypted plaintext is the tuple's bytes and nothing else.",
+  "kind": "webpush-encrypt",
+  "webpush": {
+    "plaintext": "void-which-binds:login?id=8f14e45fceea167a5a36dedd4bea2543&rp=https%3A%2F%2Frp.example",
+    "ua_private": "p93DdPlH3moZBOsL_j72_NviPythM6OnOqDgD55hrV0",
+    "ua_public": "BKSWQmwt6RuVxCqiWr0ybC0m8hVoCVua-2m70mmlAoP8WCqq6fN6V5xU8U9VssPTpXcIpJNUkbeEXeTygEwiDxk",
+    "auth": "-I266FxC21zqk5Zc_AO34Q",
+    "as_private": "Zyv7gGX8O2zQxLP_nPrto4defQ9HwMU1sZiF-LgnF4c",
+    "as_public": "BLpU4wehI-mx1BCOH23hiIdz_gB2m82dgwEpUuCVmvjaaWOvmDoxUSc4cFAsQdFT9ILHkPkI_70Qi_Cwm6EQw0o",
+    "salt": "uafUrCzW-nlp93taQ4Q1DA",
+    "rs": 4096,
+    "ecdh_secret": "Y3rHZ9ONIAbz12ZcfxrutzzD21ffEyjiKJ4uaDySVTY",
+    "cek": "VYn8bX2U6LtN3Hj5C7sHyw",
+    "nonce": "HEvuwDS7a4NnYkjb",
+    "header": "uafUrCzW-nlp93taQ4Q1DAAAEABBBLpU4wehI-mx1BCOH23hiIdz_gB2m82dgwEpUuCVmvjaaWOvmDoxUSc4cFAsQdFT9ILHkPkI_70Qi_Cwm6EQw0o",
+    "body": "uafUrCzW-nlp93taQ4Q1DAAAEABBBLpU4wehI-mx1BCOH23hiIdz_gB2m82dgwEpUuCVmvjaaWOvmDoxUSc4cFAsQdFT9ILHkPkI_70Qi_Cwm6EQw0qY90CwiIawQw8uQmYohc6OptkoI0aRvtBEtKLEzsAYeEeZ1yEYReRw7g5u51QxXA6KuMYcb9sPXud0xTgzugIyp9OEFgfTnplLCEj3WicHM3Y1k1hoGK6D5018Rz182xgY2F2Ve592"
+  }
+}

@@ -59,6 +59,30 @@ object Roster {
     /** Bounds the cosig entries on one op. */
     const val MAX_COSIGS = 8
 
+    /**
+     * ADR-0014's history cap (amended 2026-10-03, #122): the most roster ops, the
+     * founding op included, one org's roster is evaluated over.
+     *
+     * Up to MAX_LOG_OPS well-formed ops (those passing rule 1's op-local half: parse,
+     * typ, fields, signatures, org, person context) are judged whole. A larger set is
+     * judged by its ANCHORED HISTORY alone: the anchored ops and every op they cite,
+     * transitively. An op is anchored when it is signed in the authority shape by an
+     * anchored authority key, or when any of its signatures (the primary or a verified
+     * cosig) is a plausible person signature: by a person some anchored `set` names, with
+     * the person's own genesis key and no bprev, a device that is a member of the
+     * person's log as of bprev ([one.rarebit.voidwhichbinds.Membership.memberAt]), or, for
+     * a managed person, a key an anchored `enrol` enrols. The anchored authority keys are
+     * the org id and the `succ` of every anchored authority-shape re-root. Every other op
+     * is rejected as [RosterReason.UNANCHORED]. If the anchored history itself exceeds
+     * MAX_LOG_OPS, [evaluate] fails closed with [RosterException.Failure.LOG_TOO_LARGE].
+     * Both branches are functions of the set. A stranger's junk is rejected and can never
+     * push an honest roster over the cap; an anchored signer can (an authority key, any
+     * person an anchored `set` names, even a viewer, or a device removed from its
+     * person's log but still a member as of a stale bprev). Mirrors void-which-binds-go
+     * `roster.MaxLogOps`.
+     */
+    const val MAX_LOG_OPS: Int = 10_000
+
     /** Starts an org-managed person id: `mp:` and 32 lowercase hex characters. */
     const val MANAGED_PREFIX = "mp:"
 
@@ -385,11 +409,12 @@ object Roster {
      * the org id (it is merged into ops). [persons] returns the person-op tokens the
      * evaluator holds for a sovereign person (their recorded log merged with any
      * presented ops), and may be null. Throws [RosterException] ([Failure.NO_ORG],
-     * [Failure.FOUNDING]) or [IllegalArgumentException] for a missing clock; every
-     * problem with an individual op is reported in the [RosterView]. Mirrors Go
+     * [Failure.FOUNDING], and [Failure.LOG_TOO_LARGE] for an op set whose anchored
+     * history exceeds [MAX_LOG_OPS]) or [IllegalArgumentException] for a missing clock;
+     * every problem with an individual op is reported in the [RosterView]. Mirrors Go
      * `roster.Evaluate`.
      */
-    @Suppress("ComplexCondition", "LongParameterList", "ThrowsCount")
+    @Suppress("LongParameterList")
     @Throws(Exception::class)
     fun evaluate(
         org: String,
@@ -398,6 +423,22 @@ object Roster {
         persons: ((String) -> List<String>)?,
         now: Long,
         verifier: Ed25519Verifier = Ed25519Engine.verifier(),
+    ): RosterView = evaluateWithCap(org, founding, ops, persons, now, verifier, MAX_LOG_OPS)
+
+    /**
+     * [evaluate] with the history cap as a parameter: [MAX_LOG_OPS] in production,
+     * smaller in the `op-log-cap` vectors so they stay readable (Go's test-only
+     * `evaluate(…, maxOps)` seam).
+     */
+    @Suppress("ComplexCondition", "LongParameterList", "ThrowsCount")
+    internal fun evaluateWithCap(
+        org: String,
+        founding: String,
+        ops: List<String>,
+        persons: ((String) -> List<String>)?,
+        now: Long,
+        verifier: Ed25519Verifier,
+        maxOps: Int,
     ): RosterView {
         if (!RosterWire.isEdKey(org)) {
             throw RosterException(Failure.NO_ORG, "roster: the org id must be an Ed25519 key")
@@ -416,6 +457,7 @@ object Roster {
         val e = RosterEvaluator(org, persons, verifier)
         e.founding = opHash(GoStrings.trimSpace(founding))
         e.ingest(listOf(founding) + ops)
+        e.applyCap(maxOps)
         e.resolve()
         return e.view(now)
     }

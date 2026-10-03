@@ -17,6 +17,17 @@ Moved verbatim from the old `CLAUDE.md` ("Wire formats"). The rule that governs 
   `src/jvmTest/resources/vectors/VOID_WHICH_BINDS_GO_REF`; the `vector-drift` CI job
   (`scripts/check-vector-drift.sh`) fails on any difference. `MembershipVectorTest` enumerates the directory, so a
   newly copied vector is picked up automatically.
+- **History cap (void-which-binds-go #122, ADR-0007 rule 6 and ADR-0014, amended
+  2026-10-03).** A membership log and a roster log are each evaluated over at most
+  10,000 ops (`Membership.MAX_LOG_OPS`, `Roster.MAX_LOG_OPS`); only well-formed ops
+  (rule 1's op-local half) count. A larger set keeps only its anchored history and
+  rejects every other op as `unanchored`; if the anchored history is itself over the
+  cap, `Membership.evaluate`, `Membership.memberAt` and `Membership.newLog` throw
+  `Membership.LogTooLargeException` and `Roster.evaluate` throws
+  `RosterException(LOG_TOO_LARGE)`, fail-closed. `vectors/op-log-cap/` (8 cases, each
+  under a small `max_ops`) is replayed by `OpLogCapVectorTest` through the internal
+  `evaluateWithCap` / `newLogWithCap` seams, which also pins the constant and the rule
+  at 10,000 itself.
 - **Token type (`typ`, void-which-binds-go ADR-0009).** Every signed token carries a
   `typ` member, placed second in the body right after `v`: `void-which-binds.cert`,
   `void-which-binds.possession`, `void-which-binds.op`, `void-which-binds.grant` or

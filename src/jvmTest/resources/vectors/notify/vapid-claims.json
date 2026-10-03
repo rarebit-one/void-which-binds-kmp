@@ -1,0 +1,16 @@
+{
+  "name": "vapid-claims",
+  "description": "ADR-0020 vector 3: the VAPID Authorization header (RFC 8292 §3) for a push resource: the exact JWT header, aud = the origin with the path stripped, exp after now and at most now + 24 h, sub, and an ES256 signature that verifies under k. Verify-only: ECDSA is randomised, so a port re-checks rather than re-mints.",
+  "kind": "vapid",
+  "vapid": {
+    "private": "NTc1T-d7Qkqg66DQSha-MYEvuI97qS2I_DPFNnLhyac",
+    "public": "BFI8to2yDQ07Lf4wiFhbiBQ3bWM7V1A2b2GVLefDXpidXC2g3ydFfWBBpv7Qgh7uxHtSTLjKfEqG2pd6Kz-qJL0",
+    "endpoint": "https://push.example.net/push/JzLQ3raZJfFBR0aqvOMsLrt54w4rJUsV",
+    "subject": "mailto:ops@example.net",
+    "now": 1791028800,
+    "authorization": "vapid t=eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJodHRwczovL3B1c2guZXhhbXBsZS5uZXQiLCJleHAiOjE3OTEwNzIwMDAsInN1YiI6Im1haWx0bzpvcHNAZXhhbXBsZS5uZXQifQ.tU1GJ3YLu5QWfTRrdPd9JKuQEgNef92LMBossWnzHfKVygUet6f6LFbGreWae9n3Uo4X3FcCwvjDUqAEjpyYgQ, k=BFI8to2yDQ07Lf4wiFhbiBQ3bWM7V1A2b2GVLefDXpidXC2g3ydFfWBBpv7Qgh7uxHtSTLjKfEqG2pd6Kz-qJL0",
+    "header": "{\"typ\":\"JWT\",\"alg\":\"ES256\"}",
+    "aud": "https://push.example.net",
+    "max_exp": 1791115200
+  }
+}
