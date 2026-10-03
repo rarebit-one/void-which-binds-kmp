@@ -109,3 +109,18 @@ directory matches void-which-binds-go. Nothing here replays them yet.
 
 Copied for completeness (v0.19.1), so the whole directory matches void-which-binds-go.
 It is Go's Argon2id-sealed key file for the same counting seed; nothing here replays it.
+
+## `rp-roster/`
+
+void-which-binds-go's relying-party org-trust vectors (ADR-0016, G5; see
+`rp-roster/README.md`, Go's schema note copied verbatim): each file is a sequence of
+requests against one RP. The RP's evaluation is server-side and not ported;
+`RpRosterHeaderVectorTest` replays the client half: every request's
+`Void-Which-Binds-Org` / `-Roster` / `-Membership` values re-format from their parsed
+contents to the exact bytes, header refusals match Go's reason, and `OrgRequest`
+rebuilds the same headers.
+
+## `delegation/`
+
+Copied for completeness (ADR-0017, G8), so the whole directory matches
+void-which-binds-go. Nothing here replays it yet.

@@ -49,6 +49,12 @@ Moved verbatim from the old `CLAUDE.md` ("Wire formats"). The rule that governs 
 - **URIs.** The scheme is `void-which-binds:` for `login`, `pair` (invite `v=4`),
   `offload-pair` and `unwrap`; a `voidbind:` URI or a `v=3` invite is refused.
 - **Headers.** `DeviceCredential.MEMBERSHIP_HEADER` is `Void-Which-Binds-Membership`.
+  The org path (void-which-binds-go ADR-0016, G5) adds `Void-Which-Binds-Org` (one
+  canonical `ed25519:` org id) and `Void-Which-Binds-Roster` (comma-separated roster
+  ops, at most 16, each at most 4 KiB of UTF-8): `RpHeaders` holds the names, caps and
+  Go-identical `parse…`/`format…` pairs (refusals `malformed` / `too_many_ops`), and
+  `OrgRequest` assembles an org-path request's headers; `vectors/rp-roster/` is
+  replayed by `RpRosterHeaderVectorTest` (headers only; the RP evaluation is Go's).
 - **Pairing** = short-authentication-string with **commit-before-reveal**: each
   side commits to its nonce (H(label ‖ role ‖ nonce)) before either nonce is
   revealed, so neither party can bias the final digits; both derive the SAS from a
