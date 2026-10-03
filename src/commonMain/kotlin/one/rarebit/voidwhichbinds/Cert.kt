@@ -1,6 +1,7 @@
 package one.rarebit.voidwhichbinds
 
 import one.rarebit.voidwhichbinds.crypto.Base64Url
+import one.rarebit.voidwhichbinds.crypto.GoStruct
 import one.rarebit.voidwhichbinds.crypto.MiniJson
 
 /**
@@ -77,6 +78,13 @@ data class Cert(
 
     companion object {
         /**
+         * The members of void-which-binds-go's cert `payload` that [parse] reads. Its `typ`
+         * field is left out: [TokenType.checkTree] has already refused any `typ` (or
+         * case variant) that is not a string, so decoding it can never fail.
+         */
+        private val FIELDS = listOf("v", "usr", "dev", "denc", "iat", "exp")
+
+        /**
          * Parse a token into a [Cert] and its raw signature. Does NOT verify the
          * signature (that needs an [Ed25519Verifier]) — call [Cert.verify] with the
          * same token afterwards.
@@ -85,38 +93,62 @@ data class Cert(
          * untyped cert) or any other kind (a gen1 `voidbind.cert` included) throws
          * [TokenType.TypeException] ([TokenType.Failure.WRONG_TYPE]); a malformed
          * `typ` throws it with [TokenType.Failure.MALFORMED].
+         *
+         * The body is decoded as Go's `json.Unmarshal` into the cert `payload` (#107): an
+         * absent or `null` `iat`/`exp` is 0, and an unknown member may hold any JSON.
          */
+        @Suppress("ThrowsCount") // one refusal per Go decode step
         fun parse(token: String): Parsed {
             val dot = token.indexOf('.')
             require(dot > 0 && dot < token.length - 1) { "malformed cert token (missing '.')" }
             val payloadBytes = Base64Url.decode(token.substring(0, dot))
             val sig = Base64Url.decode(token.substring(dot + 1))
-            val obj = MiniJson.parseObject(payloadBytes.decodeToString())
-            val typ = TokenType.check(obj, TokenType.CERT)
-
-            fun str(k: String): String =
-                (obj[k] as? String) ?: throw IllegalArgumentException("cert payload missing string '$k'")
-            fun num(k: String): Long =
-                (obj[k] as? Long) ?: throw IllegalArgumentException("cert payload missing int '$k'")
+            // Read as Go's VerifyCert reads it (#107): CheckTyp, then `json.Unmarshal`
+            // into `payload` (case-folded names, the last duplicate winning, an absent or
+            // `null` field left zero, a value of the wrong JSON type refused).
+            val tree = GoStruct.parse(payloadBytes)
+            val typ = TokenType.checkTree(tree, TokenType.CERT)
+                ?: throw IllegalArgumentException("cert payload is not a JSON object")
+            var v = 0L
+            var usr = ""
+            var dev = ""
+            var denc = ""
+            var iat = 0L
+            var exp = 0L
+            try {
+                GoStruct.members(tree!!, FIELDS) { f, n ->
+                    when (f) {
+                        "v" -> v = GoStruct.long(n, v)
+                        "usr" -> usr = GoStruct.str(n, usr)
+                        "dev" -> dev = GoStruct.str(n, dev)
+                        "denc" -> denc = GoStruct.str(n, denc)
+                        "iat" -> iat = GoStruct.long(n, iat)
+                        else -> exp = GoStruct.long(n, exp)
+                    }
+                }
+            } catch (e: GoStruct.TypeError) {
+                throw IllegalArgumentException("cert payload does not decode", e)
+            }
+            require(v in 1L..Labels.CERT_VERSION.toLong() && TokenType.versionOk(typ, v.toInt())) {
+                "a cert is v1 or v2, got v$v"
+            }
 
             // #116: a cert's device is an Ed25519 key in its one canonical spelling; a
             // padded or re-cased rendering would name the same key as a different
             // device (void-which-binds-go enrolment.VerifyCert).
-            val dev = str("dev")
             try {
                 KeyRef.parseCanonicalEd25519(dev)
             } catch (e: IllegalArgumentException) {
                 throw IllegalArgumentException("cert device: ${e.message}", e)
             }
             val cert = Cert(
-                version = num("v").toInt(),
-                user = KeyRef.parse(str("usr")),
+                version = v.toInt(),
+                user = KeyRef.parse(usr),
                 device = KeyRef.parse(dev),
-                deviceEnc = KeyRef.parse(str("denc")),
-                issuedAt = num("iat"),
-                expiresAt = num("exp"),
+                deviceEnc = KeyRef.parse(denc),
+                issuedAt = iat,
+                expiresAt = exp,
             )
-            require(TokenType.versionOk(typ, cert.version)) { "a cert is v1 or v2, got v${cert.version}" }
             return Parsed(cert, payloadBytes, sig)
         }
     }

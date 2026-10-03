@@ -6,6 +6,7 @@ import one.rarebit.voidwhichbinds.Ed25519Signer
 import one.rarebit.voidwhichbinds.Ed25519Verifier
 import one.rarebit.voidwhichbinds.TokenType
 import one.rarebit.voidwhichbinds.crypto.Base64Url
+import one.rarebit.voidwhichbinds.crypto.GoStruct
 import one.rarebit.voidwhichbinds.crypto.MiniJson
 
 /**
@@ -110,10 +111,9 @@ object PossessionProof {
     private fun checkTyp(body: ByteArray) {
         // A body that is not a JSON object is not a type question: leave it to the
         // checks below, so a body corrupted in flight is still BAD_SIGNATURE (Go's
-        // sigtoken.CheckTyp does the same).
-        val obj = runCatching { MiniJson.parseObject(body.decodeToString()) }.getOrNull() ?: return
+        // sigtoken.CheckTyp does the same). A bare `null` is an absent typ.
         try {
-            TokenType.check(obj, TokenType.POSSESSION)
+            TokenType.checkTree(GoStruct.parse(body), TokenType.POSSESSION)
         } catch (e: TokenType.TypeException) {
             val r = when (e.failure) {
                 TokenType.Failure.WRONG_TYPE -> Reason.WRONG_TYPE
@@ -123,23 +123,49 @@ object PossessionProof {
         }
     }
 
-    /** Split and decode a proof WITHOUT verifying it (a client-side freshness read). */
-    fun parse(proof: String): Payload = try {
+    /**
+     * Split and decode a proof WITHOUT verifying it (a client-side freshness read). The
+     * body is decoded as Go's `json.Unmarshal` into `possessionPayload` (#107): member
+     * names case-folded, the last duplicate winning, an absent or `null` field left zero,
+     * any JSON in an unknown member; a value of the wrong JSON type is [Reason.MALFORMED].
+     */
+    @Suppress("ThrowsCount") // one refusal per Go decode step
+    fun parse(proof: String): Payload {
         val dot = proof.indexOf('.')
-        require(dot > 0 && dot < proof.length - 1) { "possession proof is not <body>.<sig>" }
-        val obj = MiniJson.parseObject(Base64Url.decode(proof.substring(0, dot)).decodeToString())
-        Payload(
-            version = (obj["v"] as Long).toInt(),
-            certHash = obj["crt"] as String,
-            issuedAt = obj["iat"] as Long,
-            expiresAt = obj["exp"] as Long,
-            typ = obj["typ"] as? String ?: "",
-        )
-    } catch (e: Refused) {
-        throw e
-    } catch (e: Exception) {
-        throw Refused(Reason.MALFORMED, "malformed possession proof: ${e.message}")
+        if (dot <= 0 || dot >= proof.length - 1) throw Refused(Reason.MALFORMED, "possession proof is not <body>.<sig>")
+        val body = try {
+            Base64Url.decode(proof.substring(0, dot))
+        } catch (e: IllegalArgumentException) {
+            throw Refused(Reason.MALFORMED, "malformed possession proof: ${e.message}", e)
+        }
+        val tree = GoStruct.parse(body) ?: throw Refused(Reason.MALFORMED, "malformed possession proof: not JSON")
+        var v = 0L
+        var typ = ""
+        var crt = ""
+        var iat = 0L
+        var exp = 0L
+        try {
+            GoStruct.members(tree, FIELDS) { f, n ->
+                when (f) {
+                    "v" -> v = GoStruct.long(n, v)
+                    "typ" -> typ = GoStruct.str(n, typ)
+                    "crt" -> crt = GoStruct.str(n, crt)
+                    "iat" -> iat = GoStruct.long(n, iat)
+                    else -> exp = GoStruct.long(n, exp)
+                }
+            }
+        } catch (e: GoStruct.TypeError) {
+            throw Refused(Reason.MALFORMED, "malformed possession proof: a member has the wrong JSON type", e)
+        }
+        // Go compares the int64 `v`; one that does not fit an Int is never VERSION.
+        if (v !in Int.MIN_VALUE.toLong()..Int.MAX_VALUE.toLong()) {
+            throw Refused(Reason.MALFORMED, "possession proof payload is v$v")
+        }
+        return Payload(version = v.toInt(), certHash = crt, issuedAt = iat, expiresAt = exp, typ = typ)
     }
+
+    /** The members of void-which-binds-go's `possessionPayload`. */
+    private val FIELDS = listOf("v", "typ", "crt", "iat", "exp")
 
     /**
      * Verify [proof] exactly as a relying party does (`enrolment.VerifyPossession`):
