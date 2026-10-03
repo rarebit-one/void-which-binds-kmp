@@ -102,8 +102,23 @@ re-checked with the provider's ES256 on its own.
 
 ## `roster/` and `scope/`
 
-Copied for completeness (the ADR-0014 roster and ADR-0017/0019 scope vectors), so the whole
-directory matches void-which-binds-go. Nothing here replays them yet.
+The ADR-0014 roster vectors are replayed by `RosterVectorTest`. The ADR-0017/0019 scope
+vectors (`valid`, `refusals`, `lists`) are replayed by `ScopeVectorTest`; `intersect` is
+the broker's rule and is not.
+
+## `delegation/`
+
+void-which-binds-go ADR-0017's delegation-grant vectors (52 cases, G8; see
+`delegation/README.md`). `DelegationVectorTest` replays the minting side of every
+file's `mints`: each `ed25519` delegation and `proof` is re-minted byte for byte from
+its claims and seed, each `webauthn` body is reproduced and its assertion verified over
+`Delegation.challenge`, and each `hand-built` token is re-signed. The broker's
+`requests` are server-side and not replayed.
+
+## `rp-roster/`
+
+Copied for completeness (G5, ADR-0016 RP roster trust), so the whole directory matches
+void-which-binds-go; the RP side is server-only and nothing here replays it.
 
 ## `custody-sealedfile/`
 

@@ -10,8 +10,10 @@ package one.rarebit.voidwhichbinds
  * [one.rarebit.voidwhichbinds.auth.PossessionProof.mint] `void-which-binds.possession`,
  * [Cert] `void-which-binds.cert`), and every verifier refuses a body without one, or
  * with a gen1 `voidbind.*` value, as [Failure.WRONG_TYPE]. There is no generation to
- * dispatch on: a gen1 `typ` is simply foreign. `void-which-binds.roster` and
- * `void-which-binds.delegation` are reserved (nothing here mints or accepts them).
+ * dispatch on: a gen1 `typ` is simply foreign. `void-which-binds.roster`
+ * ([one.rarebit.voidwhichbinds.roster.Roster]) and `void-which-binds.delegation` /
+ * `void-which-binds.delegation-pop` ([one.rarebit.voidwhichbinds.delegation.Delegation])
+ * are checked by their own packages, not here.
  *
  * Values are dotted, not slashed, so no JSON encoder ever escapes them, and they
  * are compared byte-for-byte.
