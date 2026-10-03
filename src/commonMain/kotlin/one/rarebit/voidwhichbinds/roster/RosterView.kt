@@ -22,6 +22,12 @@ object RosterReason {
      */
     const val MISSING_PERSON_CONTEXT = "missing_person_context"
 
+    /**
+     * An op of a set over [Roster.MAX_LOG_OPS] that is outside the anchored history
+     * (ADR-0014's history cap, amended 2026-10-03, #122).
+     */
+    const val UNANCHORED = "unanchored"
+
     // Ineffective: the op is in the state, citable, and changes nothing.
     const val UNAUTHORISED = "unauthorised"
     const val UNDER_THRESHOLD = "under_threshold"

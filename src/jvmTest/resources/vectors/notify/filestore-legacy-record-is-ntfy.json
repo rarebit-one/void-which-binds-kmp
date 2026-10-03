@@ -1,0 +1,33 @@
+{
+  "name": "filestore-legacy-record-is-ntfy",
+  "description": "ADR-0020 vector 9: a FileStore file written before subscriptions were keyed per channel (records with no channel, or an empty one) loads with every record on channel ntfy; no migration.",
+  "kind": "filestore",
+  "filestore": {
+    "file": "[\n  {\n    \"user_id\": \"ed25519:aa\",\n    \"device_key\": \"ed25519:phone\",\n    \"endpoint\": \"https://ntfy.example/up1\",\n    \"expires_at\": \"2026-11-01T00:00:00Z\"\n  },\n  {\n    \"user_id\": \"ed25519:aa\",\n    \"device_key\": \"ed25519:tablet\",\n    \"channel\": \"\",\n    \"endpoint\": \"https://ntfy.example/up2\",\n    \"expires_at\": \"2026-11-01T00:00:00Z\"\n  },\n  {\n    \"user_id\": \"ed25519:bb\",\n    \"device_key\": \"ed25519:phone\",\n    \"channel\": \"ntfy\",\n    \"endpoint\": \"https://ntfy.example/up3\",\n    \"expires_at\": \"2026-11-01T00:00:00Z\"\n  }\n]\n",
+    "now": 1791028800,
+    "users": [
+      "ed25519:aa",
+      "ed25519:bb"
+    ],
+    "expect": [
+      {
+        "user_id": "ed25519:aa",
+        "device_key": "ed25519:phone",
+        "channel": "ntfy",
+        "endpoint": "https://ntfy.example/up1"
+      },
+      {
+        "user_id": "ed25519:aa",
+        "device_key": "ed25519:tablet",
+        "channel": "ntfy",
+        "endpoint": "https://ntfy.example/up2"
+      },
+      {
+        "user_id": "ed25519:bb",
+        "device_key": "ed25519:phone",
+        "channel": "ntfy",
+        "endpoint": "https://ntfy.example/up3"
+      }
+    ]
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "name": "register-member-ok-slack",
+  "description": "ADR-0020 G10d: the honest registration of the person's own Slack directory id is stored.",
+  "kind": "register-member",
+  "registry": {
+    "config": {
+      "channels": [
+        "ntfy",
+        "slack",
+        "webpush"
+      ],
+      "ntfy_base": "https://ntfy.example",
+      "webpush_origins": [
+        "https://push.example.net"
+      ],
+      "slack_directory": {
+        "mp:dce5650668f8d22f2881841a769ea0f4": "U0VWB0001"
+      },
+      "org": "ed25519:ad83ed545fbdd8447833a9621948e5b9bd6f55a344366eebf9fe5a7c45dda40e"
+    },
+    "principal": {
+      "org": "ed25519:ad83ed545fbdd8447833a9621948e5b9bd6f55a344366eebf9fe5a7c45dda40e",
+      "user_id": "mp:dce5650668f8d22f2881841a769ea0f4",
+      "member_key": "webauthn:es256:04e7240595f7b62b562f8d2e0f859640cf7c7be081cee28ce925982ba757a7e6fb2b0ae00e6268eafdd6c67945a6d5d05ae538624700072d6afc419c6d935b674a"
+    },
+    "request": {
+      "channel": "slack",
+      "endpoint": "U0VWB0001"
+    },
+    "action": {
+      "kind": "notify-register",
+      "resource": "notify:channel/slack",
+      "summary": "Receive Void-Which-Binds wakes by Slack direct message",
+      "params": "{\"channel\":\"slack\",\"endpoint\":\"U0VWB0001\"}",
+      "digest": "b2acef947eb36e9b29909bfe12f646b06925053cc2e3d4a0cd2fb98e1923335f"
+    },
+    "expect": "ok"
+  }
+}

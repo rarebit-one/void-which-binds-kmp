@@ -1,0 +1,43 @@
+{
+  "name": "register-member-summary-other-channel",
+  "description": "void-which-binds-go#114 item 3: a Summary that is another channel's fixed sentence is still not this channel's: registration_mismatch.",
+  "kind": "register-member",
+  "registry": {
+    "config": {
+      "channels": [
+        "ntfy",
+        "slack",
+        "webpush"
+      ],
+      "ntfy_base": "https://ntfy.example",
+      "webpush_origins": [
+        "https://push.example.net"
+      ],
+      "slack_directory": {
+        "mp:dce5650668f8d22f2881841a769ea0f4": "U0VWB0001"
+      },
+      "org": "ed25519:ad83ed545fbdd8447833a9621948e5b9bd6f55a344366eebf9fe5a7c45dda40e"
+    },
+    "principal": {
+      "org": "ed25519:ad83ed545fbdd8447833a9621948e5b9bd6f55a344366eebf9fe5a7c45dda40e",
+      "user_id": "mp:dce5650668f8d22f2881841a769ea0f4",
+      "member_key": "webauthn:es256:04e7240595f7b62b562f8d2e0f859640cf7c7be081cee28ce925982ba757a7e6fb2b0ae00e6268eafdd6c67945a6d5d05ae538624700072d6afc419c6d935b674a"
+    },
+    "request": {
+      "channel": "webpush",
+      "endpoint": "https://push.example.net/push/abc",
+      "keys": {
+        "auth": "-I266FxC21zqk5Zc_AO34Q",
+        "p256dh": "BKSWQmwt6RuVxCqiWr0ybC0m8hVoCVua-2m70mmlAoP8WCqq6fN6V5xU8U9VssPTpXcIpJNUkbeEXeTygEwiDxk"
+      }
+    },
+    "action": {
+      "kind": "notify-register",
+      "resource": "notify:channel/webpush",
+      "summary": "Receive Void-Which-Binds wakes by Slack direct message",
+      "params": "{\"channel\":\"webpush\",\"endpoint\":\"https://push.example.net/push/abc\",\"keys\":{\"auth\":\"-I266FxC21zqk5Zc_AO34Q\",\"p256dh\":\"BKSWQmwt6RuVxCqiWr0ybC0m8hVoCVua-2m70mmlAoP8WCqq6fN6V5xU8U9VssPTpXcIpJNUkbeEXeTygEwiDxk\"}}",
+      "digest": "7fa298ecb53e00c612e0b6653df3eb58319d7fbe0c5f71ef8cfd8a8111268074"
+    },
+    "expect": "registration_mismatch"
+  }
+}

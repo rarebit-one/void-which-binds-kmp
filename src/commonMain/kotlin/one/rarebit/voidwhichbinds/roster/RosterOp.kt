@@ -208,5 +208,12 @@ class RosterException(val failure: Failure, message: String, cause: Throwable? =
 
         /** `ErrFounding`: a founding op that is not the org's ([Roster.evaluate]). */
         FOUNDING,
+
+        /**
+         * `ErrLogTooLarge`: a roster op set whose anchored history exceeds
+         * [Roster.MAX_LOG_OPS] (ADR-0014's history cap, #122), refused whole, fail-closed
+         * ([Roster.evaluate]).
+         */
+        LOG_TOO_LARGE,
     }
 }

@@ -67,7 +67,8 @@ seed, listed so a consumer can re-sign and reproduce every `hash`.
   earliest `exp` among them.
 - `rejected` reasons: `malformed`, `bad_signature`, `wrong_type`,
   `foreign_usr` (an `org` naming another org), `bad_prev`,
-  `missing_person_context`. A re-root whose `succ` is the org id, its own
+  `missing_person_context`, and, only in a set over the history cap,
+  `unanchored` (ADR-0014, amended #122; see `../op-log-cap/README.md`). A re-root whose `succ` is the org id, its own
   `by`, the `by` or `succ` of an authority-shape re-root in its closure, or a
   `mem` in its closure, and an op whose `mem` is the `succ` of an
   authority-shape re-root in its closure, are `malformed`.

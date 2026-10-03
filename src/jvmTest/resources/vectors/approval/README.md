@@ -12,8 +12,8 @@ These are the **byte-layer** cases: everything here needs no broker state. The
 cases that need the broker (an unknown or already-approved challenge, the
 approver's roster standing and authority, nothing written on refusal,
 consumption, the fetch nonce store, a wrong approver, a removed person, and the
-rate limits) are added with the broker (G9b). The approvals' `credential` is a
-placeholder that this layer does not judge.
+rate limits) are in `../approval-broker/` (G9b). The approvals' `credential` is
+a placeholder that this layer does not judge.
 
 ## Layout
 

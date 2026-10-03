@@ -55,8 +55,10 @@ appear in the file so a consumer can re-sign and reproduce every `hash`):
   point. No surrounding whitespace, no upper case, no other key kind. Anything
   else is `malformed`. A port that trims or case-folds before comparing keys
   diverges on `noncanonical-key-rendering-malformed`.
-- `rejected` reasons: `malformed`, `bad_signature`, `foreign_usr`, `bad_prev`.
-  A rejected op is keyed by the hash of its raw token bytes.
+- `rejected` reasons: `malformed`, `bad_signature`, `foreign_usr`, `bad_prev`,
+  and, only in a set over the history cap, `unanchored` (ADR-0007 rule 6; see
+  `../op-log-cap/README.md`). A rejected op is keyed by the hash of its raw
+  token bytes.
 - `ineffective` reasons: `unauthorised`, `outranked`, `removed`, `superseded`,
   `expired`, `not_yet_valid`, `under_threshold` (ADR-0008). An ineffective op is still part of the state (citable as
   `prev`, counts toward `heads`).
