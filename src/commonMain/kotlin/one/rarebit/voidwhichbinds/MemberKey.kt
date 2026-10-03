@@ -2,6 +2,7 @@ package one.rarebit.voidwhichbinds
 
 import dev.whyoleg.cryptography.algorithms.ECDSA
 import one.rarebit.voidwhichbinds.crypto.Es256
+import one.rarebit.voidwhichbinds.crypto.GoStrings
 import one.rarebit.voidwhichbinds.crypto.Hex
 import one.rarebit.voidwhichbinds.crypto.P256
 
@@ -149,7 +150,7 @@ class MemberKey private constructor(
          */
         fun parse(s: String): MemberKey {
             if (s.isEmpty()) malformed("the member key is empty")
-            if (s.trim() != s) malformed("\"$s\" has surrounding whitespace")
+            if (GoStrings.trimSpace(s) != s) malformed("\"$s\" has surrounding whitespace")
             val colon = s.indexOf(':')
             if (colon < 0) malformed("\"$s\" has no key-kind prefix")
             return when (val prefix = s.substring(0, colon)) {

@@ -16,6 +16,7 @@ import one.rarebit.voidwhichbinds.Ed25519Verifier
 import one.rarebit.voidwhichbinds.Membership
 import one.rarebit.voidwhichbinds.MembershipOp
 import one.rarebit.voidwhichbinds.OpDag
+import one.rarebit.voidwhichbinds.crypto.GoStrings
 
 /**
  * One [Roster.evaluate] call's working state: a structure-for-structure port of
@@ -103,7 +104,7 @@ internal class RosterEvaluator(
     /** Rule 1's op-local half: parse, typ, fields, primary signature, org, and every signature's person context. */
     fun ingest(tokens: List<String>) {
         for (raw in tokens) {
-            val tok = raw.trim()
+            val tok = GoStrings.trimSpace(raw)
             if (tok.isEmpty()) continue
             val h = Roster.opHash(tok)
             if (rejected.containsKey(h) || dag.has(h)) continue
@@ -117,9 +118,8 @@ internal class RosterEvaluator(
                 }
                 continue
             } catch (@Suppress("TooGenericExceptionCaught") _: Throwable) {
-                // A body the codec cannot hold at all (e.g. nesting deep enough to exhaust
-                // the stack, where Go's decoder stops at its depth limit) is malformed, as
-                // in Membership.evaluate: one junk token never takes the roster down.
+                // Anything else Roster.verify throws is malformed, as in Membership.evaluate:
+                // one junk token never takes the roster down.
                 rejected[h] = RosterReason.MALFORMED
                 continue
             }

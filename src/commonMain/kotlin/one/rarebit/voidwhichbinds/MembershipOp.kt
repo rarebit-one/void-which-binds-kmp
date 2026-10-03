@@ -3,6 +3,7 @@ package one.rarebit.voidwhichbinds
 import dev.whyoleg.cryptography.CryptographyProvider
 import dev.whyoleg.cryptography.algorithms.SHA256
 import one.rarebit.voidwhichbinds.crypto.Base64Url
+import one.rarebit.voidwhichbinds.crypto.GoStrings
 import one.rarebit.voidwhichbinds.crypto.Hex
 import one.rarebit.voidwhichbinds.crypto.MiniJson
 import one.rarebit.voidwhichbinds.crypto.P256
@@ -198,7 +199,7 @@ data class MembershipOp(
          * not an op. Mirrors void-which-binds-go `enrolment.VerifyOp`.
          */
         fun verify(rawToken: String, verifier: Ed25519Verifier = Ed25519Engine.verifier()): MembershipOp {
-            val token = rawToken.trim()
+            val token = GoStrings.trimSpace(rawToken)
             val dot = token.indexOf('.')
             if (dot < 0) throw OpException(Failure.MALFORMED, "malformed membership op")
             val body =
@@ -300,7 +301,7 @@ data class MembershipOp(
          * Accepts every version [verify] accepts; throws [OpException] otherwise.
          */
         fun user(rawToken: String): String {
-            val token = rawToken.trim()
+            val token = GoStrings.trimSpace(rawToken)
             val dot = token.indexOf('.')
             if (dot < 0) throw OpException(Failure.MALFORMED, "malformed membership op")
             val body =
@@ -321,7 +322,7 @@ data class MembershipOp(
 
         /** Sort + de-duplicate a prev list so equal head sets sign to equal bytes. */
         fun normalisePrev(prev: List<String>): List<String> =
-            prev.map { it.trim() }.filter { it.isNotEmpty() }.distinct().sorted()
+            prev.map { GoStrings.trimSpace(it) }.filter { it.isNotEmpty() }.distinct().sorted()
 
         /**
          * Domain tag separating a co-signature's preimage from every other thing an
