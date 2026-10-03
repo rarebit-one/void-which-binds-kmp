@@ -1,5 +1,7 @@
 package one.rarebit.voidwhichbinds
 
+import one.rarebit.voidwhichbinds.approval.Approval
+import one.rarebit.voidwhichbinds.approval.Handle
 import one.rarebit.voidwhichbinds.crypto.UrlQuery
 
 /**
@@ -106,6 +108,15 @@ object VoidbindDeepLink {
     } catch (_: Throwable) {
         null
     }
+
+    /**
+     * An **action-approval** link (void-which-binds-go ADR-0019): the same exact
+     * `void-which-binds:approve?h=<handle>` tuple a wake carries, opened under the one
+     * `void-which-binds:` filter. It takes no `callback` and nothing else — any other
+     * spelling is refused ([Approval.parseApprove] is an exact match, not a URI parse),
+     * so this returns null for it, and for a login or pair link (use [parseOrNull]).
+     */
+    fun parseApproveOrNull(uri: String): Handle? = Approval.parseApproveOrNull(uri)
 
     /**
      * Whether [callback] is a URI the authenticator will launch after approval: a

@@ -100,3 +100,19 @@ Moved verbatim from the old `CLAUDE.md` ("Wire formats"). The rule that governs 
   `vectors/delegation/` (52 cases) is replayed by `DelegationVectorTest`, which re-mints
   every Ed25519 delegation and proof byte for byte and reproduces every passkey body
   and challenge; `vectors/scope/` by `ScopeVectorTest`.
+- **Action approval (void-which-binds-go ADR-0019, G9a), approver side.** `approval.Approval`
+  parses the wake `void-which-binds:approve?h=<43 b64url>` as an exact string (no trim,
+  no URI parse); handles and nonces are 32 non-zero bytes of canonical unpadded base64url
+  (re-encode compare, so CR/LF, padding and stray trailing bits are refused). Frames are
+  `uint64be(len) ‖ bytes`. Action digest = SHA-256(frame(`void-which-binds/approval/action/v1`)
+  ‖ kind ‖ resource ‖ summary ‖ params); challenge preimage = frame(`…/approval/challenge/v1`)
+  ‖ id ‖ nonce ‖ audience ‖ u64(exp) ‖ u64(match) ‖ digest ‖ resource ‖ u64(ttl); fetch
+  preimage = frame(`…/approval/fetch/v1`) ‖ audience ‖ handle ‖ nonce. A passkey asserts over
+  `WebAuthn.challenge(domain, preimage)`. `net.ApprovalClient` POSTs `/approval/fetch-nonce`
+  and `/approval/fetch` (`{handle,nonce,credential,ops,roster,proof}`, the ops from an
+  `OrgRequest`; no org header — the broker uses its own org). The answer is decoded as Go's
+  `json.Unmarshal` does (`GoJson`, folded keys, merged duplicates, Go's UTF-8 replacement)
+  and `FetchResponse.open` recomputes the digest over the fetched bytes (never
+  canonicalised). Every refusal is `404 {"error":"not_found"}`. The approval body is
+  `{"credential","ops"?,"roster"?,"sig","match_number"}`; the chosen number must be one of
+  the candidates. `vectors/approval/` (28 cases) is replayed by `ApprovalVectorTest`.

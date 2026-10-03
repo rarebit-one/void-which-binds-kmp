@@ -139,3 +139,15 @@ rebuilds the same headers.
 
 Copied for completeness (ADR-0017, G8), so the whole directory matches
 void-which-binds-go. Nothing here replays it yet.
+
+## `approval/`
+
+void-which-binds-go ADR-0019's action-approval byte-layer vectors (28 cases, G9a; see
+`approval/README.md`). `ApprovalVectorTest` replays the approver's side: every action
+digest, challenge preimage, WebAuthn challenge and fetch preimage byte for byte; every
+`approve` tuple (and the push / deep-link wrappers); every `ed25519` mint re-signed,
+and every approval and fetch proof the approver could have made re-minted through
+`Approval.signAssertionWith` / `signFetchProofWith`; every `webauthn` mint verified;
+every fetch `response` round-tripped and opened; the refusal body. Approval and fetch
+verdicts are reproduced by a test-side mirror of Go's verifier; the broker (G9b) is
+server-only.
