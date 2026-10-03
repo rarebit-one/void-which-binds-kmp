@@ -1,5 +1,8 @@
 package one.rarebit.voidwhichbinds
 
+import one.rarebit.voidwhichbinds.approval.Approval
+import one.rarebit.voidwhichbinds.approval.Handle
+
 /**
  * The device side of the **push/wake ping** (void-which-binds-go `notify.Ping`). When a
  * push login is initiated, the notify plane fans an OPAQUE ping to a user's
@@ -42,4 +45,16 @@ object PushPing {
     } catch (_: Throwable) {
         null
     }
+
+    /**
+     * Parse a delivered wake payload as an **action-approval** wake (void-which-binds-go
+     * ADR-0019): `void-which-binds:approve?h=<handle>`, which carries only an opaque
+     * [Handle] — no rp, no challenge id, nothing about the action. The approver then
+     * fetches the action from the broker it holds standing at
+     * ([one.rarebit.voidwhichbinds.net.ApprovalClient]), proving a member key. Unlike
+     * [parse], nothing is trimmed: the notify plane's wire bytes ARE the tuple, and
+     * [Approval.parseApprove] is an exact match. Null for anything else (a login ping
+     * included — try [parseOrNull] for those).
+     */
+    fun parseApproveOrNull(rawBody: String): Handle? = Approval.parseApproveOrNull(rawBody)
 }

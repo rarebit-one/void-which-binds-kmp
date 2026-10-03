@@ -33,6 +33,10 @@ src/
                        ADR-0017): Delegation.body/signWith, passkey challenge +
                        assembleWebAuthn, agent signProofWith, parse; vectors/delegation/
                        replayed by DelegationVectorTest
+    approval/          action approval, approver side (void-which-binds-go approval,
+                       ADR-0019 G9a): approve tuple, Action/digest, Challenge preimage,
+                       fetch proof, FetchRequest/FetchResponse.open, signAssertionWith,
+                       passkey challenges; vectors/approval/ replayed by ApprovalVectorTest
     scope/             scope grammar + canonical scope lists (void-which-binds-go scope);
                        vectors/scope/ replayed by ScopeVectorTest
     Ed25519.kt         signer/verifier seams; Ed25519Engine.kt = software Ed25519 (cryptography-kotlin)
@@ -43,7 +47,7 @@ src/
     auth/              Device-scheme possession proof, credential, 401 re-mint policy;
                        RpHeaders (org/roster/membership header names, caps, Go-identical
                        parse/format) and OrgRequest (the org-path request's headers, ADR-0016)
-    net/               HttpTransport seam; Relay/Pairflow/WebLogin/Notify clients; cert sealer
+    net/               HttpTransport seam; Relay/Pairflow/WebLogin/Notify/Approval clients; cert sealer
     flow/              LoginApproval / DevicePairing / DeviceAuthorization coordinators
     offload/           cruciform-offload wire + phone responders (ADR-0098)
     policy/            per-RP approval policy (ADR-0002)

@@ -66,6 +66,7 @@ refused, never read.
 | Space-key wrap label | `void-which-binds/space-key-wrap/v1` (`VoidbindEncryption`) | HKDF info of the sealed space key (cert delivery, offload unwrap) |
 | Cosig domain | `void-which-binds-cosig-v1\u0000` (`MembershipOp.cosigDomain`) | prefix of a co-signature preimage (ADR-0008) |
 | Web-login domains | `void-which-binds/weblogin/challenge/{v1,v2}` (`WebLogin`) | login-assertion preimage |
+| Approval domains | `void-which-binds/approval/{challenge,action,fetch}/v1` (`Approval`) | action-approval preimage, action digest, fetch proof (ADR-0019) |
 | Refusal session label | `void-which-binds/pairflow/refusal/session/v1` (`PairRefusal`) | binds a pairing refusal to its session |
 | `typ` | `void-which-binds.{cert,possession,op,grant,pair-refusal}` (`TokenType`) | token kind; untyped tokens are refused |
 
