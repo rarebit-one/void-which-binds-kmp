@@ -143,6 +143,17 @@ internal class RosterEvaluator(
     }
 
     /**
+     * Offer [o] under [hash] straight to the DAG, past [ingest]'s checks: Go
+     * `CheckDraftClosure`'s `e.dag.Add`, for a draft that has no token (or signatures) yet.
+     */
+    fun addUnchecked(hash: String, o: RosterOp) {
+        dag.add(hash, o)
+    }
+
+    /** The rule-1 rejection [resolve] recorded for [hash], or null. */
+    fun rejectedReason(hash: String): String? = rejected[hash]
+
+    /**
      * The cross-identity rule's first bullet: every hash in every signature's bprev names
      * a structurally valid op of L(usr) issued no later than the roster op.
      */
@@ -884,11 +895,7 @@ internal class RosterEvaluator(
 
     private fun personBase(f: Frame, x: RosterOp): String {
         when {
-            x.kind == OpKind.RESET || x.kind == OpKind.REROOT || x.kind == OpKind.RESOLVE ->
-                return RosterReason.UNAUTHORISED
-
-            // authority key only
-
+            Roster.authorityOnly(x.kind) -> return RosterReason.UNAUTHORISED
             selfRemove(x) -> return if (lastOwner(f, x)) RosterReason.LAST_OWNER else ""
         }
         if (!primaryCounts(x)) return RosterReason.UNAUTHORISED

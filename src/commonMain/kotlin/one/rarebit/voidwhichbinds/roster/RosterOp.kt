@@ -199,6 +199,9 @@ class RosterException(val failure: Failure, message: String, cause: Throwable? =
         /** `ErrSignature`: the primary signature does not verify under `by`. */
         BAD_SIGNATURE,
 
+        /** `ErrCosigSignature`: a cosig entry's signature does not verify ([Roster.verifyDraftCosig]). */
+        COSIG_SIGNATURE,
+
         /** `ErrNoOrg`: an org id that is not a canonical Ed25519 key ([Roster.evaluate]). */
         NO_ORG,
 

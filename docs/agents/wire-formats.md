@@ -64,3 +64,15 @@ Moved verbatim from the old `CLAUDE.md` ("Wire formats"). The rule that governs 
   `PairflowResponder.receive` watches that slot (`RelayClient.fetchWatching`) and
   throws `PairingRefusedException` for a refusal that verifies, instead of timing
   out. It ignores anything else there.
+- **Roster cosign transport (void-which-binds-go ADR-0014 "Proposal transport", G4).**
+  Two relay slots (`RelayClient.COSIGN_TYPES` = `proposal`, `cosig`; slot bound
+  `COSIGN_MAX_MESSAGE_BYTES` = 512 KiB) carry
+  `{"v":1,"slot":"proposal","core","usr"?,"bprev"?,"roster":[…],"persons":{…}}` and
+  `{"v":1,"slot":"cosig","entry":{"by","usr","bprev"?,"sig"},"persons":{…}}`. A payload
+  must be exactly Go's `json.Marshal` of what it parses to; caps (512/128 KiB, 256 roster
+  ops, 64 persons, 256 / 128 person ops) are checked before any token is parsed. Which
+  refusal a non-canonical payload gets depends on how Go's struct decoding reads it
+  (case-folded keys, last duplicate wins, `null` leaves a scalar), so
+  `roster/proposal` decodes through `GoJson`, not `MiniJson`. Refusal reasons and their
+  order are Go's; `vectors/roster-proposal/` (19 cases) is replayed by
+  `RosterProposalVectorTest`, which re-mints every `ok` cosig and assembled op byte for byte.
