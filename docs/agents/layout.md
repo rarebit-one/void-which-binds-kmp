@@ -23,7 +23,12 @@ src/
                        shared by Membership and the roster
     roster/            org roster (void-which-binds-go roster, ADR-0014/0015): op wire (Roster,
                        RosterDraft/RosterOp), the evaluator (RosterEvaluator, RosterView);
-                       vectors/roster/ replayed by RosterVectorTest
+                       vectors/roster/ replayed by RosterVectorTest; parseCore, verifyDraftCosig,
+                       checkDraftClosure, authorityOnly (Go roster/core.go)
+    roster/proposal/   the roster cosign transport (void-which-binds-go roster/proposal, ADR-0014
+                       "Proposal transport"): proposal/cosig slot payloads (canonical JSON, caps),
+                       RosterProposal.check, Checked.cosign/verifyCosig/assemble, context;
+                       vectors/roster-proposal/ replayed by RosterProposalVectorTest
     Ed25519.kt         signer/verifier seams; Ed25519Engine.kt = software Ed25519 (cryptography-kotlin)
     Pairing.kt         commit-before-reveal SAS derivation
     UserIdentity.kt / DeviceIdentity.kt / Enrolment.kt   identity + self-enrolment
@@ -36,7 +41,8 @@ src/
     policy/            per-RP approval policy (ADR-0002)
     crypto/            Hex, Base64Url (no-pad), Bech32m, MiniJson (compact, ordered),
                        X25519, Ed25519Group, XChaCha20-Poly1305, VoidbindEncryption, expect AEAD,
-                       P256 (point validation), Es256 (provider ECDSA verify), StrictJson
+                       P256 (point validation), Es256 (provider ECDSA verify), StrictJson,
+                       GoJson (iterative reader + string encoder with Go encoding/json semantics)
   commonTest/…         pure + cryptography-kotlin tests (run on every target)
   jvmMain/…            DeviceKeyStore actual (software), JdkHttpTransport, AEAD actual
   jvmTest/…            JvmEd25519 (JDK provider, test-only) + keystore test; golden-vector

@@ -34,6 +34,23 @@ class RelayClient(
         const val ROLE_INITIATOR = "initiator"
         const val ROLE_RESPONDER = "responder"
 
+        /**
+         * The message-slot set of the roster cosign transport (void-which-binds-go
+         * `relay.CosignTypes`; ADR-0014 "Proposal transport", payloads in
+         * [one.rarebit.voidwhichbinds.roster.proposal.RosterProposal]): the proposer writes
+         * `proposal` as the initiator, and the cosigner writes `cosig` back as the
+         * responder, one session per cosigner. A relay that carries it is configured with
+         * these types and [COSIGN_MAX_MESSAGE_BYTES].
+         */
+        val COSIGN_TYPES: List<String> = listOf("proposal", "cosig")
+
+        /**
+         * The slot bound a cosign relay needs: the largest slot payload the transport
+         * accepts (512 KiB, `RosterProposal.MAX_PROPOSAL_BYTES`). Mirrors
+         * void-which-binds-go `relay.CosignMaxMessageBytes`.
+         */
+        const val COSIGN_MAX_MESSAGE_BYTES: Int = 512 shl 10
+
         /** The historical poll bound (60 s) — fine for a peer already in the handshake. */
         const val DEFAULT_MAX_WAIT_MILLIS: Long = 60_000
 

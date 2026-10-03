@@ -1,5 +1,7 @@
 package one.rarebit.voidwhichbinds.roster
 
+import dev.whyoleg.cryptography.CryptographyProvider
+import dev.whyoleg.cryptography.algorithms.SHA256
 import dev.whyoleg.cryptography.random.CryptographyRandom
 import one.rarebit.voidwhichbinds.Ed25519Engine
 import one.rarebit.voidwhichbinds.Ed25519Signer
@@ -8,6 +10,7 @@ import one.rarebit.voidwhichbinds.KeyRef
 import one.rarebit.voidwhichbinds.MembershipOp
 import one.rarebit.voidwhichbinds.TokenType
 import one.rarebit.voidwhichbinds.crypto.Base64Url
+import one.rarebit.voidwhichbinds.crypto.GoJson
 import one.rarebit.voidwhichbinds.crypto.Hex
 import one.rarebit.voidwhichbinds.crypto.MiniJson
 import one.rarebit.voidwhichbinds.roster.RosterException.Failure
@@ -197,6 +200,162 @@ object Roster {
         return safeVerify(verifier, pub, RosterWire.cosigPreimage(op.core, s.usr, s.bprev), sig)
     }
 
+    /**
+     * Decode a cosig core, the bytes [RosterDraft.core] returns, back into the draft it
+     * was made from (ADR-0014, "Proposal transport"): what a cosigner does with the core
+     * a proposal carries before it shows the op to its human and signs it. Refuses
+     * ([Failure.MALFORMED], or [Failure.WRONG_TYPE] for another `typ` or none) any core
+     * that is not exactly the core of the draft it parses to: another field order, extra
+     * or case-variant members, `cosig` or `succsig` present, unsorted lists, or a draft
+     * [RosterDraft.core] itself refuses. The draft's [RosterDraft.succSig] is empty: a
+     * core never carries one. Mirrors Go `roster.ParseCore`.
+     */
+    @Suppress("ThrowsCount", "CyclomaticComplexMethod", "ComplexCondition")
+    fun parseCore(core: ByteArray): RosterDraft {
+        // Go's sigtoken.CheckTyp first (a body that is not JSON is left to the parse
+        // below), read by Go's own rules so the WRONG_TYPE / MALFORMED split matches.
+        val tree = GoJson.parse(core.decodeToString())
+        if (tree is GoJson.Null) throw RosterException(Failure.WRONG_TYPE, "roster: no typ claim")
+        if (tree is GoJson.Obj) {
+            val members = LinkedHashMap<String, GoJson.Node>()
+            for ((k, v) in tree.members) members[k] = v
+            val typ = members["typ"]
+            if (members.keys.any { it != "typ" && it.equals("typ", ignoreCase = true) } ||
+                (typ != null && typ !is GoJson.Str)
+            ) {
+                throw RosterException(Failure.MALFORMED, "roster: malformed roster op: token type claim is malformed")
+            }
+            if ((typ as GoJson.Str?)?.value != TYP) {
+                throw RosterException(Failure.WRONG_TYPE, "roster: token type does not match")
+            }
+        }
+        fun bad(why: String): Nothing = throw RosterException(Failure.MALFORMED, "roster: malformed roster op: $why")
+        val obj = (tree as? GoJson.Obj)?.let { shallowMap(it) } ?: bad("not a JSON object")
+        val p = try {
+            RosterWire.parse(obj)
+        } catch (e: IllegalArgumentException) {
+            throw RosterException(Failure.MALFORMED, "roster: malformed roster op: ${e.message}", e)
+        }
+        if (p.v != VERSION.toLong()) bad("version ${p.v}")
+        if (p.iat <= 0) bad("no issued-at")
+        val d = RosterDraft(
+            org = p.org, op = OpKind.fromWire(p.op) ?: bad("op \"${p.op}\""), mem = p.mem, role = p.role,
+            key = p.key, exp = p.exp, succ = p.succ, pick = p.pick, by = p.by, usr = p.usr, bprev = p.bprev,
+            prev = p.prev, iat = p.iat,
+        )
+        if (!d.core().contentEquals(core)) bad("not the canonical core")
+        return d
+    }
+
+    /**
+     * The members of a core's top-level object as [RosterWire.parse] reads them. A
+     * canonical core nests at most an object in an array, so anything deeper is refused
+     * here rather than converted (Go refuses it too: it is never the canonical core).
+     */
+    private fun shallowMap(o: GoJson.Obj): Map<String, Any> {
+        fun conv(n: GoJson.Node, depth: Int): Any {
+            require(depth <= CORE_MAX_DEPTH) { "nested too deeply" }
+            return when (n) {
+                is GoJson.Str -> n.value
+
+                is GoJson.Num -> n.text.toLongOrNull() ?: throw IllegalArgumentException("non-integer number")
+
+                is GoJson.Bool -> n.value
+
+                is GoJson.Null -> MiniJson.Null
+
+                is GoJson.Arr -> n.items.map { conv(it, depth + 1) }
+
+                is GoJson.Obj -> LinkedHashMap<String, Any>().also { m ->
+                    for ((k, v) in n.members) m[k] = conv(v, depth + 1)
+                }
+            }
+        }
+        return try {
+            @Suppress("UNCHECKED_CAST")
+            conv(o, 0) as Map<String, Any>
+        } catch (e: IllegalArgumentException) {
+            throw RosterException(Failure.MALFORMED, "roster: malformed roster op: ${e.message}", e)
+        }
+    }
+
+    /**
+     * Check one cosig entry against a draft before the op is minted, as a proposer does
+     * with each entry it collects: the entry's shape ([Failure.MALFORMED]: a cosig entry
+     * always names a usr, a managed person's or a genesis signature carries no bprev, the
+     * org never cosigns, the signature is 64 bytes) and its signature over [d]'s cosig
+     * preimage under `s.by` ([Failure.COSIG_SIGNATURE]). It says nothing about whether
+     * [s] counts. Mirrors Go `roster.VerifyDraftCosig`.
+     */
+    @Suppress("ThrowsCount")
+    fun verifyDraftCosig(d: RosterDraft, s: RosterSignature, verifier: Ed25519Verifier = Ed25519Engine.verifier()) {
+        RosterWire.validateSigner(s.by, s.usr, s.bprev, primary = false)
+        if (s.by == d.org || s.usr == d.org) {
+            throw RosterException(
+                Failure.MALFORMED,
+                "roster: malformed roster op: the org key signs only as the authority",
+            )
+        }
+        val sig = RosterWire.decodeRaw(s.sig)
+        if (sig == null || sig.size != SIGNATURE_LEN) {
+            throw RosterException(Failure.MALFORMED, "roster: malformed roster op: cosig entry signature")
+        }
+        val core = d.copy(succSig = "").core()
+        val pub = RosterWire.edKeyOrNull(s.by)!!
+        if (!safeVerify(verifier, pub, RosterWire.cosigPreimage(core, s.usr, s.bprev), sig)) {
+            throw RosterException(Failure.COSIG_SIGNATURE, "roster: co-signature does not verify")
+        }
+    }
+
+    /**
+     * Whether an op kind may be signed only by the authority key, in the authority shape
+     * (`reset`, `reroot` and `resolve`): a person-signed op of such a kind is
+     * unauthorised (rule 2). Mirrors Go `roster.AuthorityOnly`.
+     */
+    fun authorityOnly(k: OpKind): Boolean = k == OpKind.RESET || k == OpKind.REROOT || k == OpKind.RESOLVE
+
+    /**
+     * Judge [d] by rule 1's set-dependent half as if it were an op whose past is [ops],
+     * before it is signed: what [RosterDraft.core] cannot check alone. It runs the
+     * evaluator's own resolution over [ops] (with the pinned [founding] op) plus d, so the
+     * rules are [evaluate]'s: every prev must resolve to a valid op issued no later than
+     * d; a `set` with `exp` must be a grant in d's closure; and a re-root's `succ` must not
+     * be an earlier authority key or a roster mem in d's closure, nor d's `mem` an
+     * authority key there (ADR-0014, ADR-0015). Throws [RosterException]
+     * ([Failure.MALFORMED], with the evaluator's reason, `malformed` or `bad_prev`). It
+     * does not judge signatures, person context or authority: d has none of its own yet.
+     * Mirrors Go `roster.CheckDraftClosure`.
+     */
+    @Suppress("LongParameterList")
+    fun checkDraftClosure(
+        org: String,
+        founding: String,
+        d: RosterDraft,
+        ops: List<String>,
+        persons: ((String) -> List<String>)?,
+        verifier: Ed25519Verifier = Ed25519Engine.verifier(),
+    ) {
+        val core = d.core()
+        val p = d.payload()
+        val o = RosterOp(
+            // A name no token can have: the hash of a domain-tagged core, never of a token,
+            // so it cannot collide with an op in ops.
+            hash = HASH_PREFIX + Hex.encode(sha256.hashBlocking(DRAFT_DOMAIN.encodeToByteArray() + core)),
+            token = "", org = p.org, kind = d.op, mem = p.mem, role = p.role, key = p.key, exp = d.exp,
+            succ = p.succ, pick = p.pick, by = p.by, usr = p.usr, bprev = p.bprev, prev = p.prev,
+            cosig = emptyList(), succSig = "", iat = p.iat,
+        )
+        val e = RosterEvaluator(org, persons, verifier)
+        val f = founding.trim()
+        e.founding = opHash(f)
+        e.ingest(listOf(f) + ops)
+        e.addUnchecked(o.hash, o)
+        e.resolve()
+        e.rejectedReason(o.hash)?.let {
+            throw RosterException(Failure.MALFORMED, "roster: malformed roster op: $it in its closure")
+        }
+    }
+
     /** A fresh org-managed person id: `mp:` and 16 random bytes as lowercase hex. */
     fun newManagedId(random: Random = CryptographyRandom.Default): String =
         MANAGED_PREFIX + Hex.encode(random.nextBytes(MANAGED_ID_BYTES))
@@ -298,4 +457,12 @@ object Roster {
 
     private const val ED25519_KEY_LEN = 32
     private const val SIGNATURE_LEN = 64
+
+    /** A canonical core's deepest value: an entry list's strings (object → array → string). */
+    private const val CORE_MAX_DEPTH = 2
+
+    /** [checkDraftClosure]'s domain for a draft's stand-in hash. */
+    private const val DRAFT_DOMAIN = "void-which-binds-roster-draft-v1\u0000"
+
+    private val sha256 = CryptographyProvider.Default.get(SHA256).hasher()
 }
