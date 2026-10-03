@@ -3,6 +3,8 @@ package one.rarebit.voidwhichbinds
 import dev.whyoleg.cryptography.CryptographyProvider
 import dev.whyoleg.cryptography.algorithms.SHA256
 import one.rarebit.voidwhichbinds.crypto.Base64Url
+import one.rarebit.voidwhichbinds.crypto.GoJson
+import one.rarebit.voidwhichbinds.crypto.GoStruct
 import one.rarebit.voidwhichbinds.crypto.MiniJson
 
 /**
@@ -82,12 +84,21 @@ object PairRefusal {
         val body = decodeStrict(parts[0])
         val sig = decodeStrict(parts[1])
         require(sig.size == SIG_LEN && verifier.verify(initiator, body, sig))
-        val obj = MiniJson.parseObject(body.decodeToString())
         // A refusal is typed from its first version: typ must be present, and exactly TYP.
-        TokenType.check(obj, TYP) == TYP &&
-            obj["v"] == VERSION.toLong() &&
-            obj["by"] == KeyRef.ed25519(initiator).render() &&
-            obj["ses"] == session(salt)
+        val tree = GoStruct.parse(body) as? GoJson.Obj ?: return@runCatching false
+        TokenType.checkTree(tree, TYP)
+        // Go reads each claim from a map by its exact key (the last duplicate wins) and
+        // json.Unmarshal's it: absent is an error, `null` leaves the zero value, and a
+        // value of another JSON type (or a `v` that is not an int literal) is an error.
+        val m = tree.members.toMap()
+        fun claim(k: String): String? = when (val n = m[k]) {
+            GoJson.Null -> ""
+            is GoJson.Str -> n.value
+            else -> null
+        }
+        (m["v"] as? GoJson.Num)?.text?.toLongOrNull() == VERSION.toLong() &&
+            claim("by") == KeyRef.ed25519(initiator).render() &&
+            claim("ses") == session(salt)
     }.getOrDefault(false)
 
     private fun decodeStrict(s: String): ByteArray {

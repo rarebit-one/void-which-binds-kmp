@@ -1,5 +1,7 @@
 package one.rarebit.voidwhichbinds
 
+import one.rarebit.voidwhichbinds.crypto.GoJson
+
 /**
  * The token-type claim of void-which-binds-go ADR-0009: every signed token names its kind in
  * a `typ` member, placed **second** in the body, right after `v`. It is a byte-exact
@@ -65,6 +67,22 @@ object TokenType {
         }
         if (refusal != null) throw refusal
         return raw as String
+    }
+
+    /**
+     * [check] over a body parsed by Go's rules
+     * ([one.rarebit.voidwhichbinds.crypto.GoStruct.parse]), with Go `CheckTyp`'s handling
+     * of a body that is not an object: null (not a type question; the caller's
+     * own decode refuses it) for a syntax error or a non-object value, and
+     * [Failure.WRONG_TYPE] for a bare `null`, which Go decodes as an empty map. Of
+     * duplicate members the last wins, as in Go's map.
+     */
+    internal fun checkTree(tree: GoJson.Node?, vararg allowed: String): String? {
+        if (tree is GoJson.Null) throw TypeException(Failure.WRONG_TYPE, "token type is absent (gen2 is typed-only)")
+        val obj = tree as? GoJson.Obj ?: return null
+        val members = LinkedHashMap<String, Any>()
+        for ((k, v) in obj.members) members[k] = if (v is GoJson.Str) v.value else v
+        return check(members, *allowed)
     }
 
     /**

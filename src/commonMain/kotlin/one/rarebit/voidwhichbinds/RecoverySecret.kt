@@ -1,6 +1,7 @@
 package one.rarebit.voidwhichbinds
 
 import one.rarebit.voidwhichbinds.crypto.Bech32m
+import one.rarebit.voidwhichbinds.crypto.GoStrings
 
 /**
  * The 256-bit account recovery secret, rendered as a bech32m string with HRP
@@ -71,7 +72,8 @@ class RecoverySecret private constructor(val bytes: ByteArray) {
          * deliberately distinct from a malformed or mistyped secret, so a caller can say
          * "this is the old sheet" rather than "you mistyped it".
          *
-         * Whitespace anywhere is ignored, so the grouped form the secret is displayed
+         * Whitespace (Go's `unicode.IsSpace`: U+0085 is, U+001C..U+001F are not) anywhere is
+         * ignored, so the grouped form the secret is displayed
          * and written down in (`void -whi ch-b inds 1q…`, possibly across lines) parses as typed,
          * and so does the all-uppercase form a QR code carries. Neither can change
          * which secret is read: whitespace is not in the bech32 alphabet, and case is
@@ -79,7 +81,8 @@ class RecoverySecret private constructor(val bytes: ByteArray) {
          * void-which-binds-go `recovery.ParseSecret`.
          */
         fun parse(s: String): RecoverySecret {
-            val compact = s.filterNot { it.isWhitespace() }
+            // Go's strings.Fields set (unicode.IsSpace), not Kotlin's isWhitespace (#107).
+            val compact = s.filterNot(GoStrings::isSpace)
             if (Bech32m.hrpOf(compact) == RETIRED_HRP) throw GenerationRetiredException()
             val decoded = Bech32m.decode(compact)
             require(decoded.hrp == Labels.RECOVERY_HRP) {

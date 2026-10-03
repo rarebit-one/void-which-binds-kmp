@@ -1,5 +1,7 @@
 package one.rarebit.voidwhichbinds.slip39
 
+import one.rarebit.voidwhichbinds.crypto.GoStrings
+
 /**
  * What every share of one split agrees on: the random identifier, the extendable
  * flag, the iteration exponent, and the group threshold and count (real values;
@@ -109,7 +111,9 @@ internal class Share(
         }
 
         private fun toWords(mnemonic: String): IntArray {
-            val fields = mnemonic.lowercase().split(Regex("\\s+")).filter { it.isNotEmpty() }
+            // Go `strings.Fields(strings.ToLower(mnemonic))` (#107): split on unicode.IsSpace,
+            // lower-cased rune by rune (simple case mapping: U+0130 is "i", not "i̇").
+            val fields = GoStrings.fields(GoStrings.toLower(mnemonic))
             return IntArray(fields.size) { i ->
                 val word = fields[i]
                 Slip39Wordlist.indexOf(word)

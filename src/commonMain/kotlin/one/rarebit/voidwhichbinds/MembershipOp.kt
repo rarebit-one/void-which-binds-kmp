@@ -3,7 +3,9 @@ package one.rarebit.voidwhichbinds
 import dev.whyoleg.cryptography.CryptographyProvider
 import dev.whyoleg.cryptography.algorithms.SHA256
 import one.rarebit.voidwhichbinds.crypto.Base64Url
+import one.rarebit.voidwhichbinds.crypto.GoJson
 import one.rarebit.voidwhichbinds.crypto.GoStrings
+import one.rarebit.voidwhichbinds.crypto.GoStruct
 import one.rarebit.voidwhichbinds.crypto.Hex
 import one.rarebit.voidwhichbinds.crypto.MiniJson
 import one.rarebit.voidwhichbinds.crypto.P256
@@ -208,74 +210,39 @@ data class MembershipOp(
             val sig =
                 decodeOrNull(token.substring(dot + 1))
                     ?: throw OpException(Failure.MALFORMED, "signature is not base64url")
-            val obj = try {
-                MiniJson.parseObject(body.decodeToString())
-            } catch (_: Throwable) {
-                throw OpException(Failure.MALFORMED, "payload is not JSON")
-            }
             // ADR-0009: an op verifier accepts an op or a cert (a genesis add). Any
             // other `typ`, or none (gen2 is typed-only, ADR-0022), is refused before
-            // the body is read as either.
-            val typ = checkOpTyp(obj)
-            val v = (obj["v"] as? Long)?.toInt() ?: throw OpException(Failure.MALFORMED, "no version")
-            if (!TokenType.versionOk(typ, v)) throw OpException(Failure.MALFORMED, "$typ at v$v")
-            val usr = obj["usr"] as? String ?: ""
-            val op: MembershipOp = when {
-                v in 1 until VERSION -> {
-                    // A cert: genesis add, no prev. Its payload has no op/by/prev fields.
-                    val dev = obj["dev"] as? String ?: ""
-                    if (usr.isEmpty() || dev.isEmpty()) throw OpException(Failure.MALFORMED, "a binding is empty")
-                    MembershipOp(
-                        hash = hash(token), token = token, version = v, user = usr,
-                        kind = Kind.ADD, device = dev,
-                        deviceEnc = obj["denc"] as? String ?: "",
-                        by = usr, prev = emptyList(), cosig = emptyList(),
-                        issuedAt = obj["iat"] as? Long ?: 0L,
-                        expiresAt = obj["exp"] as? Long ?: 0L,
-                        typ = typ,
-                    )
-                }
-
-                v == VERSION -> {
-                    val kindWire = obj["op"] as? String ?: ""
-                    val prevRaw = obj["prev"]
-                    val prev = when (prevRaw) {
-                        null, is MiniJson.Null -> emptyList()
-
-                        is List<*> -> prevRaw.map {
-                            it as? String
-                                ?: throw OpException(Failure.MALFORMED, "prev is not a string list")
-                        }
-
-                        else -> throw OpException(Failure.MALFORMED, "prev is not a list")
-                    }
-                    val cosigRaw = obj["cosig"]
-                    val cosig = when (cosigRaw) {
-                        null, is MiniJson.Null -> emptyList()
-
-                        is List<*> -> cosigRaw.map { e ->
-                            val m =
-                                e as? Map<*, *> ?: throw OpException(Failure.MALFORMED, "cosig entry is not an object")
-                            Cosig(m["by"] as? String ?: "", m["sig"] as? String ?: "")
-                        }
-
-                        else -> throw OpException(Failure.MALFORMED, "cosig is not a list")
-                    }
-                    MembershipOp(
-                        hash = hash(token), token = token, version = v, user = usr,
-                        kind = Kind.fromWire(kindWire) ?: throw OpException(Failure.MALFORMED, "op \"$kindWire\""),
-                        device = obj["dev"] as? String ?: "",
-                        deviceEnc = obj["denc"] as? String ?: "",
-                        by = obj["by"] as? String ?: "",
-                        prev = normalisePrev(prev),
-                        cosig = cosig,
-                        issuedAt = obj["iat"] as? Long ?: 0L,
-                        expiresAt = obj["exp"] as? Long ?: 0L,
-                        typ = typ,
-                    )
-                }
-
-                else -> throw OpException(Failure.MALFORMED, "unknown op version $v")
+            // the body is read as either. The body is then read as Go's
+            // `json.Unmarshal` into `opPayload` reads it (#107).
+            val tree = GoStruct.parse(body)
+            val typ = checkOpTyp(tree) ?: throw OpException(Failure.MALFORMED, "payload is not a JSON object")
+            val p = OpPayload.decode(tree!!)
+            if (p.v !in 1L..VERSION.toLong() || !TokenType.versionOk(typ, p.v.toInt())) {
+                throw OpException(Failure.MALFORMED, "$typ at v${p.v}")
+            }
+            val v = p.v.toInt()
+            val op: MembershipOp = if (v < VERSION) {
+                // A cert: genesis add, no prev. Its payload has no op/by/prev fields.
+                if (p.usr.isEmpty() || p.dev.isEmpty()) throw OpException(Failure.MALFORMED, "a binding is empty")
+                MembershipOp(
+                    hash = hash(token), token = token, version = v, user = p.usr,
+                    kind = Kind.ADD, device = p.dev, deviceEnc = p.denc,
+                    by = p.usr, prev = emptyList(), cosig = emptyList(),
+                    issuedAt = p.iat, expiresAt = p.exp, typ = typ,
+                )
+            } else {
+                MembershipOp(
+                    hash = hash(token), token = token, version = v, user = p.usr,
+                    kind = Kind.fromWire(p.op) ?: throw OpException(Failure.MALFORMED, "op \"${p.op}\""),
+                    device = p.dev,
+                    deviceEnc = p.denc,
+                    by = p.by,
+                    prev = normalisePrev(p.prev.value().orEmpty()),
+                    cosig = p.cosig.value().orEmpty(),
+                    issuedAt = p.iat,
+                    expiresAt = p.exp,
+                    typ = typ,
+                )
             }
             op.validate()
             // The signature is checked under `by` — the claimed signer. That `by` is a
@@ -307,15 +274,19 @@ data class MembershipOp(
             val body =
                 decodeOrNull(token.substring(0, dot))
                     ?: throw OpException(Failure.MALFORMED, "payload is not base64url")
-            val obj = try {
-                MiniJson.parseObject(body.decodeToString())
-            } catch (_: Throwable) {
-                throw OpException(Failure.MALFORMED, "payload is not JSON")
+            // Go decodes only `v` and `usr` here, so no other member can refuse the hint.
+            val tree = GoStruct.parse(body)
+            val typ = checkOpTyp(tree) ?: throw OpException(Failure.MALFORMED, "payload is not a JSON object")
+            var v = 0L
+            var usr = ""
+            try {
+                GoStruct.members(tree!!, USER_FIELDS) { f, n ->
+                    if (f == "v") v = GoStruct.long(n, v) else usr = GoStruct.str(n, usr)
+                }
+            } catch (_: GoStruct.TypeError) {
+                throw OpException(Failure.MALFORMED, "malformed membership op")
             }
-            val typ = checkOpTyp(obj)
-            val v = (obj["v"] as? Long)?.toInt() ?: 0
-            val usr = obj["usr"] as? String ?: ""
-            val known = v in 1..VERSION && TokenType.versionOk(typ, v)
+            val known = v in 1L..VERSION.toLong() && TokenType.versionOk(typ, v.toInt())
             if (!known || usr.isEmpty()) throw OpException(Failure.MALFORMED, "malformed membership op")
             return usr
         }
@@ -563,9 +534,12 @@ data class MembershipOp(
     }
 }
 
-/** [TokenType.check] for the op verifiers, mapped onto [MembershipOp.OpException]. */
-private fun checkOpTyp(obj: Map<String, Any>): String = try {
-    TokenType.check(obj, TokenType.OP, TokenType.CERT)
+/**
+ * [TokenType.checkTree] for the op verifiers, mapped onto [MembershipOp.OpException]: the
+ * `typ`, or null for a body that is not a JSON object (left to the decode to refuse).
+ */
+private fun checkOpTyp(tree: GoJson.Node?): String? = try {
+    TokenType.checkTree(tree, TokenType.OP, TokenType.CERT)
 } catch (e: TokenType.TypeException) {
     val f = when (e.failure) {
         TokenType.Failure.WRONG_TYPE -> MembershipOp.Failure.WRONG_TYPE
@@ -573,3 +547,63 @@ private fun checkOpTyp(obj: Map<String, Any>): String = try {
     }
     throw MembershipOp.OpException(f, e.message ?: "bad typ", e)
 }
+
+/**
+ * void-which-binds-go `opPayload`, decoded as `json.Unmarshal` decodes it ([GoStruct]):
+ * case-folded member names, the last duplicate winning, `null` leaving a field as it was,
+ * and a value of the wrong JSON type failing the decode ([MembershipOp.Failure.MALFORMED]).
+ * A cert body (v1/v2) decodes through it too: Go's second decode into the cert `payload`
+ * reads a subset of these fields by the same rules, so it can neither fail nor differ.
+ */
+private class OpPayload {
+    var v = 0L
+    var usr = ""
+    var op = ""
+    var dev = ""
+    var denc = ""
+    var by = ""
+    val prev = GoStruct.Slice { "" }
+    val cosig = GoStruct.Slice { MembershipOp.Cosig("", "") }
+    var iat = 0L
+    var exp = 0L
+
+    fun set(f: String, n: GoJson.Node) {
+        when (f) {
+            "v" -> v = GoStruct.long(n, v)
+            "usr" -> usr = GoStruct.str(n, usr)
+            "op" -> op = GoStruct.str(n, op)
+            "dev" -> dev = GoStruct.str(n, dev)
+            "denc" -> denc = GoStruct.str(n, denc)
+            "by" -> by = GoStruct.str(n, by)
+            "prev" -> prev.decode(n) { e, cur -> GoStruct.str(e, cur) }
+            "cosig" -> cosig.decode(n, ::cosigEntry)
+            "iat" -> iat = GoStruct.long(n, iat)
+            else -> exp = GoStruct.long(n, exp)
+        }
+    }
+
+    companion object {
+        // `typ` is left out: checkOpTyp has refused any non-string `typ` (or case variant).
+        private val FIELDS = listOf("v", "usr", "op", "dev", "denc", "by", "prev", "cosig", "iat", "exp")
+        private val COSIG_FIELDS = listOf("by", "sig")
+
+        fun decode(tree: GoJson.Node): OpPayload = try {
+            OpPayload().also { p -> GoStruct.members(tree, FIELDS, p::set) }
+        } catch (_: GoStruct.TypeError) {
+            throw MembershipOp.OpException(MembershipOp.Failure.MALFORMED, "payload does not decode as an op")
+        }
+
+        /** One `Cosig` element, decoded into the [cur] value Go's slice already holds at its index. */
+        private fun cosigEntry(n: GoJson.Node, cur: MembershipOp.Cosig): MembershipOp.Cosig {
+            var by = cur.by
+            var sig = cur.sig
+            GoStruct.members(n, COSIG_FIELDS) { f, v ->
+                if (f == "by") by = GoStruct.str(v, by) else sig = GoStruct.str(v, sig)
+            }
+            return MembershipOp.Cosig(by, sig)
+        }
+    }
+}
+
+/** The members `enrolment.OpUser` decodes. */
+private val USER_FIELDS = listOf("v", "usr")

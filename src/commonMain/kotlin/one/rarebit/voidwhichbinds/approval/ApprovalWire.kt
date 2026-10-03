@@ -366,58 +366,6 @@ internal object ApprovalJson {
         else -> throw TypeError()
     }
 
-    private const val REPLACEMENT = '�'
-    private const val CONT_MIN = 0x80
-    private const val CONT_MAX = 0xBF
-    private const val CONT_BITS = 6
-    private const val CONT_MASK = 0x3F
-
-    /**
-     * [b] as a string, each byte Go's `utf8.DecodeRune` finds invalid (a stray
-     * continuation byte, a truncated or overlong sequence, a surrogate, a value past
-     * U+10FFFF) replaced by one U+FFFD, as Go's JSON decoder does inside a string.
-     */
-    @Suppress("MagicNumber", "CyclomaticComplexMethod", "LoopWithTooManyJumpStatements")
-    fun goUtf8(b: ByteArray): String {
-        val sb = StringBuilder(b.size)
-        var i = 0
-        while (i < b.size) {
-            val b0 = b[i].toInt() and 0xFF
-            if (b0 < 0x80) {
-                sb.append(b0.toChar())
-                i++
-                continue
-            }
-            // (sequence length, accepted range of the second byte) per Go's `first`/`acceptRanges`.
-            val (len, lo, hi) = when (b0) {
-                in 0xC2..0xDF -> Triple(2, CONT_MIN, CONT_MAX)
-                0xE0 -> Triple(3, 0xA0, CONT_MAX)
-                in 0xE1..0xEC, 0xEE, 0xEF -> Triple(3, CONT_MIN, CONT_MAX)
-                0xED -> Triple(3, CONT_MIN, 0x9F)
-                0xF0 -> Triple(4, 0x90, CONT_MAX)
-                in 0xF1..0xF3 -> Triple(4, CONT_MIN, CONT_MAX)
-                0xF4 -> Triple(4, CONT_MIN, 0x8F)
-                else -> Triple(0, 0, 0)
-            }
-            val ok = len > 0 && i + len <= b.size && (1 until len).all { k ->
-                val x = b[i + k].toInt() and 0xFF
-                if (k == 1) x in lo..hi else x in CONT_MIN..CONT_MAX
-            }
-            if (!ok) {
-                sb.append(REPLACEMENT)
-                i++
-                continue
-            }
-            var cp = b0 and (0xFF ushr (len + 1))
-            for (k in 1 until len) cp = (cp shl CONT_BITS) or (b[i + k].toInt() and CONT_MASK)
-            if (cp >= 0x10000) {
-                val v = cp - 0x10000
-                sb.append((0xD800 + (v ushr 10)).toChar()).append((0xDC00 + (v and 0x3FF)).toChar())
-            } else {
-                sb.append(cp.toChar())
-            }
-            i += len
-        }
-        return sb.toString()
-    }
+    /** [GoJson.decodeUtf8]: [b] as Go's JSON decoder reads a string. */
+    fun goUtf8(b: ByteArray): String = GoJson.decodeUtf8(b)
 }

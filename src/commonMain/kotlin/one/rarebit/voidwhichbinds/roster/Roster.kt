@@ -12,6 +12,7 @@ import one.rarebit.voidwhichbinds.TokenType
 import one.rarebit.voidwhichbinds.crypto.Base64Url
 import one.rarebit.voidwhichbinds.crypto.GoJson
 import one.rarebit.voidwhichbinds.crypto.GoStrings
+import one.rarebit.voidwhichbinds.crypto.GoStruct
 import one.rarebit.voidwhichbinds.crypto.Hex
 import one.rarebit.voidwhichbinds.crypto.MiniJson
 import one.rarebit.voidwhichbinds.roster.RosterException.Failure
@@ -161,17 +162,13 @@ object Roster {
         val body = RosterWire.decodeRaw(token.substring(0, dot))
         val sig = RosterWire.decodeRaw(token.substring(dot + 1))
         if (body == null || sig == null) throw RosterException(Failure.MALFORMED, "roster: malformed roster op")
-        val obj = try {
-            MiniJson.parseObject(body.decodeToString())
-        } catch (e: IllegalArgumentException) {
-            throw RosterException(Failure.MALFORMED, "roster: malformed roster op: not JSON", e)
-        }
-        try {
-            TokenType.check(obj, TYP)
-        } catch (e: TokenType.TypeException) {
-            val f = if (e.failure == TokenType.Failure.WRONG_TYPE) Failure.WRONG_TYPE else Failure.MALFORMED
-            throw RosterException(f, "roster: ${e.message}", e)
-        }
+        // Go's CheckTyp reads the body with encoding/json before anything else (#107): a
+        // body Go's scanner refuses is malformed, but a valid one with the wrong typ is
+        // wrong_type whatever else it holds (a fraction in an unknown member included).
+        val tree = GoStruct.parse(body)
+        checkTyp(tree)
+        val obj = (tree as? GoJson.Obj)?.let { shallowMap(it, BODY_MAX_DEPTH) }
+            ?: throw RosterException(Failure.MALFORMED, "roster: malformed roster op: not a JSON object")
         // Deterministic minting is part of the contract (ADR-0009): a body that is not
         // exactly the canonical encoding of what it parses to is refused.
         val p = try {
@@ -220,23 +217,10 @@ object Roster {
     fun parseCore(core: ByteArray): RosterDraft {
         // Go's sigtoken.CheckTyp first (a body that is not JSON is left to the parse
         // below), read by Go's own rules so the WRONG_TYPE / MALFORMED split matches.
-        val tree = GoJson.parse(core.decodeToString())
-        if (tree is GoJson.Null) throw RosterException(Failure.WRONG_TYPE, "roster: no typ claim")
-        if (tree is GoJson.Obj) {
-            val members = LinkedHashMap<String, GoJson.Node>()
-            for ((k, v) in tree.members) members[k] = v
-            val typ = members["typ"]
-            if (members.keys.any { it != "typ" && it.equals("typ", ignoreCase = true) } ||
-                (typ != null && typ !is GoJson.Str)
-            ) {
-                throw RosterException(Failure.MALFORMED, "roster: malformed roster op: token type claim is malformed")
-            }
-            if ((typ as GoJson.Str?)?.value != TYP) {
-                throw RosterException(Failure.WRONG_TYPE, "roster: token type does not match")
-            }
-        }
+        val tree = GoStruct.parse(core)
+        checkTyp(tree)
         fun bad(why: String): Nothing = throw RosterException(Failure.MALFORMED, "roster: malformed roster op: $why")
-        val obj = (tree as? GoJson.Obj)?.let { shallowMap(it) } ?: bad("not a JSON object")
+        val obj = (tree as? GoJson.Obj)?.let { shallowMap(it, CORE_MAX_DEPTH) } ?: bad("not a JSON object")
         val p = try {
             RosterWire.parse(obj)
         } catch (e: IllegalArgumentException) {
@@ -253,14 +237,25 @@ object Roster {
         return d
     }
 
+    /** Go `sigtoken.CheckTyp` for a roster op ([TokenType.checkTree]), as a [RosterException]. */
+    private fun checkTyp(tree: GoJson.Node?) {
+        try {
+            TokenType.checkTree(tree, TYP)
+        } catch (e: TokenType.TypeException) {
+            val f = if (e.failure == TokenType.Failure.WRONG_TYPE) Failure.WRONG_TYPE else Failure.MALFORMED
+            throw RosterException(f, "roster: ${e.message}", e)
+        }
+    }
+
     /**
-     * The members of a core's top-level object as [RosterWire.parse] reads them. A
-     * canonical core nests at most an object in an array, so anything deeper is refused
-     * here rather than converted (Go refuses it too: it is never the canonical core).
+     * The members of a body's or core's top-level object as [RosterWire.parse] reads them.
+     * A canonical core nests at most an object in an array ([CORE_MAX_DEPTH]), and a
+     * body at most a cosig's `bprev` list ([BODY_MAX_DEPTH]), so anything deeper is
+     * refused here rather than converted (Go refuses it too: it is never canonical).
      */
-    private fun shallowMap(o: GoJson.Obj): Map<String, Any> {
+    private fun shallowMap(o: GoJson.Obj, maxDepth: Int): Map<String, Any> {
         fun conv(n: GoJson.Node, depth: Int): Any {
-            require(depth <= CORE_MAX_DEPTH) { "nested too deeply" }
+            require(depth <= maxDepth) { "nested too deeply" }
             return when (n) {
                 is GoJson.Str -> n.value
 
@@ -469,6 +464,9 @@ object Roster {
 
     /** A canonical core's deepest value: an entry list's strings (object → array → string). */
     private const val CORE_MAX_DEPTH = 2
+
+    /** A body's deepest canonical value: a string in a cosig entry's `bprev` (object, array, object, array, string). */
+    private const val BODY_MAX_DEPTH = 4
 
     /** [checkDraftClosure]'s domain for a draft's stand-in hash. */
     private const val DRAFT_DOMAIN = "void-which-binds-roster-draft-v1\u0000"
