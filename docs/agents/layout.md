@@ -34,7 +34,9 @@ src/
     UserIdentity.kt / DeviceIdentity.kt / Enrolment.kt   identity + self-enrolment
     Invite.kt / LoginQr.kt / WebLogin.kt / DeepLink.kt / PushPing.kt   QR, deep-link, push wire
     DeviceKeyStore.kt  expect: hardware signing key
-    auth/              Device-scheme possession proof, credential, 401 re-mint policy
+    auth/              Device-scheme possession proof, credential, 401 re-mint policy;
+                       RpHeaders (org/roster/membership header names, caps, Go-identical
+                       parse/format) and OrgRequest (the org-path request's headers, ADR-0016)
     net/               HttpTransport seam; Relay/Pairflow/WebLogin/Notify clients; cert sealer
     flow/              LoginApproval / DevicePairing / DeviceAuthorization coordinators
     offload/           cruciform-offload wire + phone responders (ADR-0098)
@@ -42,7 +44,8 @@ src/
     crypto/            Hex, Base64Url (no-pad), Bech32m, MiniJson (compact, ordered),
                        X25519, Ed25519Group, XChaCha20-Poly1305, VoidbindEncryption, expect AEAD,
                        P256 (point validation), Es256 (provider ECDSA verify), StrictJson,
-                       GoJson (iterative reader + string encoder with Go encoding/json semantics)
+                       GoJson (iterative reader + string encoder with Go encoding/json semantics),
+                       GoStrings (Go TrimSpace whitespace, UTF-8 len)
   commonTest/…         pure + cryptography-kotlin tests (run on every target)
   jvmMain/…            DeviceKeyStore actual (software), JdkHttpTransport, AEAD actual
   jvmTest/…            JvmEd25519 (JDK provider, test-only) + keystore test; golden-vector

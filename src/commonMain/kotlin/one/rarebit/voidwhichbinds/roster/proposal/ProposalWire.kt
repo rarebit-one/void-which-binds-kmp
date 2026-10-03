@@ -4,6 +4,7 @@ import one.rarebit.voidwhichbinds.Ed25519Engine
 import one.rarebit.voidwhichbinds.Ed25519Verifier
 import one.rarebit.voidwhichbinds.crypto.Base64Url
 import one.rarebit.voidwhichbinds.crypto.GoJson
+import one.rarebit.voidwhichbinds.crypto.GoStrings
 import one.rarebit.voidwhichbinds.roster.Roster
 import one.rarebit.voidwhichbinds.roster.RosterDraft
 import one.rarebit.voidwhichbinds.roster.RosterException
@@ -246,17 +247,7 @@ object RosterProposal {
     }
 
     /** Go's `strings.TrimSpace`, whose whitespace (`unicode.IsSpace`) differs from Kotlin's `trim()`. */
-    internal fun goTrim(s: String): String = s.trim(::goIsSpace)
-
-    private fun goIsSpace(c: Char): Boolean = when (c) {
-        '\t', '\n', '\u000B', '\u000C', '\r', ' ', '\u0085', ' ', ' ',
-        ' ', ' ', ' ', ' ', '　',
-        -> true
-
-        in ' '..' ' -> true
-
-        else -> false
-    }
+    internal fun goTrim(s: String): String = GoStrings.trimSpace(s)
 }
 
 /**

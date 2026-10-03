@@ -1,0 +1,56 @@
+{
+  "name": "org-header-no-fallback",
+  "description": "M is pinned directly but not on the roster; with the org header the request is refused not_on_roster, and never retried on the TrustStore",
+  "org": "ed25519:30d6fc5c2729046ad577bba0893c1034f9f1aae45858b285e00d9281dc5b9bb9",
+  "founding": "eyJ2IjoxLCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLnJvc3RlciIsIm9yZyI6ImVkMjU1MTk6MzBkNmZjNWMyNzI5MDQ2YWQ1NzdiYmEwODkzYzEwMzRmOWYxYWFlNDU4NThiMjg1ZTAwZDkyODFkYzViOWJiOSIsIm9wIjoic2V0IiwibWVtIjoiZWQyNTUxOTphOGE4MWUxN2VlNTQzNTI1NTViZDQ1ZjgxMTBiNzY2NGM3YmJhYThmYzNlNTcxMTFmZjYwYjE5MTNhNTBkOWRkIiwicm9sZSI6Im93bmVyIiwiYnkiOiJlZDI1NTE5OjMwZDZmYzVjMjcyOTA0NmFkNTc3YmJhMDg5M2MxMDM0ZjlmMWFhZTQ1ODU4YjI4NWUwMGQ5MjgxZGM1YjliYjkiLCJwcmV2IjpbXSwiaWF0IjoxNzkwODU2MDYwfQ.FFNanAqOPGjrDyvjdcn8reFcJL68ZpdRXH-1VopE1YhfGnd1KyghzXoR03P4iL4etUtUoaimXs6QzlPSvqM4DA",
+  "pinned": true,
+  "now": 1790859600,
+  "keys": {
+    "M": {
+      "sign_seed": "bf01311f8d3397611b2d8bcd3eb6939d59c32b6b83f20a365ae855d47b5e41c3",
+      "id": "ed25519:ed4e528d79b35b8ab36fd23fad235097411cb894d58b5584cf122a2cf0b1d6e3"
+    },
+    "M.D": {
+      "sign_seed": "220dc5b8f15f01c2bef9a3f1156a5d8791f9189a4b30e0160f9b9fac82181a93",
+      "id": "ed25519:302d64a957ed8eb613fba7f578bc767b5834c9149892e93a01cb1caa34d5eb3b"
+    },
+    "P": {
+      "sign_seed": "6236dd211f0e67c19f913ec50ac88426f74cf1fb45f92dd815031ba1cd8fc34a",
+      "id": "ed25519:a8a81e17ee54352555bd45f8110b7664c7bbaa8fc3e57111ff60b1913a50d9dd"
+    },
+    "P.D": {
+      "sign_seed": "b498ecd208223bc0fbbeba07eb8690a151a1cc82d6f710bf2a39b244ff85f239",
+      "id": "ed25519:67e915753c4df977551a51072e98fd2282e4a61eaa8f84c0a4351fd03a2daa74"
+    },
+    "P.E": {
+      "sign_seed": "552a03f5e6f41f07ee93d7ce8520a6866288196661ae97824594dbc9d96df457",
+      "id": "ed25519:8a555374700088aca28ab60fd09c6a0cb387007940b754e413eb7482408ac287"
+    },
+    "org": {
+      "sign_seed": "f491fc0495b18a6d266af7f8b7f2593d80f21ed4ce5ae37d7ee439a6f0594a9e",
+      "id": "ed25519:30d6fc5c2729046ad577bba0893c1034f9f1aae45858b285e00d9281dc5b9bb9"
+    }
+  },
+  "trust_pins": [
+    "ed25519:ed4e528d79b35b8ab36fd23fad235097411cb894d58b5584cf122a2cf0b1d6e3"
+  ],
+  "stored": {
+    "roster": [],
+    "persons": {}
+  },
+  "requests": [
+    {
+      "label": "m",
+      "mode": "possession",
+      "headers": {
+        "Void-Which-Binds-Org": "ed25519:30d6fc5c2729046ad577bba0893c1034f9f1aae45858b285e00d9281dc5b9bb9"
+      },
+      "credential": "eyJ2IjozLCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLm9wIiwidXNyIjoiZWQyNTUxOTplZDRlNTI4ZDc5YjM1YjhhYjM2ZmQyM2ZhZDIzNTA5NzQxMWNiODk0ZDU4YjU1ODRjZjEyMmEyY2YwYjFkNmUzIiwib3AiOiJhZGQiLCJkZXYiOiJlZDI1NTE5OjMwMmQ2NGE5NTdlZDhlYjYxM2ZiYTdmNTc4YmM3NjdiNTgzNGM5MTQ5ODkyZTkzYTAxY2IxY2FhMzRkNWViM2IiLCJieSI6ImVkMjU1MTk6ZWQ0ZTUyOGQ3OWIzNWI4YWIzNmZkMjNmYWQyMzUwOTc0MTFjYjg5NGQ1OGI1NTg0Y2YxMjJhMmNmMGIxZDZlMyIsInByZXYiOltdLCJpYXQiOjE3OTA4NTYwMDAsImV4cCI6MTc5ODYzMjAwMH0.vvSSEK8tS4WDyYmEEdk58OlpvKJ1M2oN4wJo1-SpG7vPfvbYPqxQFQztiEK_vY3F23oDzKoIFevueo0AYKNJDQ",
+      "possession": "eyJ2IjoyLCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLnBvc3Nlc3Npb24iLCJjcnQiOiJENVF0Y0ljcXlyaXphNDV1WTJIbHVlNFAzclh5ZkJOS3MyZHNZYXlla2RrIiwiaWF0IjoxNzkwODU5NjAwLCJleHAiOjE3OTA4NTk3MjB9.gfwgb_kI-uwG1WNlQLO8LXAxG6Mo5cW1Li7RBcVIAPJ7K4hA0hZuzHwt0YhHXrdJ59ZS-_YnVBnPImawmA5KAw",
+      "expect": {
+        "error": "not_on_roster",
+        "commits": {}
+      }
+    }
+  ]
+}
