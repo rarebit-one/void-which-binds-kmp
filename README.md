@@ -53,8 +53,8 @@ element** (Secure Enclave / StrongBox).
 
 ## Status
 
-In use. `void-which-binds-client` is published (0.10.0; 0.11.0 is the gen2-only
-release) and consumed by heyarr-kmp. All
+In use. `void-which-binds-client` is published (0.11.0 is the gen2-only release;
+0.12.0 adds Phase 3 and the space-key chain) and consumed by heyarr-kmp. All
 three targets are real. **Android** seals the Ed25519 seed with a StrongBox/TEE
 AndroidKeyStore key. **iOS** seals it with a Secure-Enclave P-256 key through the
 app-provided Swift `SecureEnclaveSealer`. **JVM** is software-only, for dev/test.
