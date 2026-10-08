@@ -1,0 +1,40 @@
+{
+  "name": "jwk-thumbprint",
+  "description": "RFC 8037 Appendix A.3's thumbprint as an independent check; then the current assert key's JWK and kid, and the JWKS bytes with the current key alone and with current and next (a rotation).",
+  "kind": "jwk",
+  "keys": {
+    "current": {
+      "seed": "a3e49d83a62f325288d1edd8a3f04edc7aa5c999da74fc23a248049996962962",
+      "jwk": {
+        "kty": "OKP",
+        "crv": "Ed25519",
+        "x": "-lHW-V3IAnMSEM_HWC1FI7-Y9WpczrbS2vypp5PGGJA",
+        "kid": "DZgWU2dqfo6E9dQGjojGQI_0Zqqpp_3V5WtcOd-ybJ8",
+        "use": "sig",
+        "alg": "EdDSA"
+      }
+    },
+    "next": {
+      "seed": "355fb5360c63507da2664803d4bfe4ed0885393d6da5e539952b53654c2952a4",
+      "jwk": {
+        "kty": "OKP",
+        "crv": "Ed25519",
+        "x": "lTHtCPlkO7I4GqccHi4-qfy9gqIPegCPZAhUk6YYMls",
+        "kid": "xUnXy2ekiWvcoFXqr3ZsfzHhGkHtiL6uB9C-8747DUc",
+        "use": "sig",
+        "alg": "EdDSA"
+      }
+    }
+  },
+  "rfc8037_jwk": {
+    "kty": "OKP",
+    "crv": "Ed25519",
+    "x": "11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo",
+    "kid": "",
+    "use": "",
+    "alg": ""
+  },
+  "rfc8037_thumbprint": "kPrK_qmxVWaYVA9wwBF6Iuo3vVzz7TxHCTwXBygrS4k",
+  "jwks_current": "{\"keys\":[{\"kty\":\"OKP\",\"crv\":\"Ed25519\",\"x\":\"-lHW-V3IAnMSEM_HWC1FI7-Y9WpczrbS2vypp5PGGJA\",\"kid\":\"DZgWU2dqfo6E9dQGjojGQI_0Zqqpp_3V5WtcOd-ybJ8\",\"use\":\"sig\",\"alg\":\"EdDSA\"}]}",
+  "jwks_rotation": "{\"keys\":[{\"kty\":\"OKP\",\"crv\":\"Ed25519\",\"x\":\"-lHW-V3IAnMSEM_HWC1FI7-Y9WpczrbS2vypp5PGGJA\",\"kid\":\"DZgWU2dqfo6E9dQGjojGQI_0Zqqpp_3V5WtcOd-ybJ8\",\"use\":\"sig\",\"alg\":\"EdDSA\"},{\"kty\":\"OKP\",\"crv\":\"Ed25519\",\"x\":\"lTHtCPlkO7I4GqccHi4-qfy9gqIPegCPZAhUk6YYMls\",\"kid\":\"xUnXy2ekiWvcoFXqr3ZsfzHhGkHtiL6uB9C-8747DUc\",\"use\":\"sig\",\"alg\":\"EdDSA\"}]}"
+}

@@ -65,6 +65,10 @@ request writes nothing, except a frozen org's conflict evidence.
 | `pin`            | `Roster.Pin` of `founding` |
 | `unpin`          | `Roster.Unpin` of the org |
 
+Every `pin` and `unpin` starts a new pin generation (#133), even a `pin` of the
+founding op already pinned: a `commit` of a request checked before it is
+`pin_changed`, whatever founding op is pinned when it runs.
+
 ## Reasons
 
 `unknown_org`, `org_frozen`, `not_on_roster`, `roster_removed`,

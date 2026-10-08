@@ -1,0 +1,107 @@
+{
+  "name": "pin-rotation",
+  "description": "The JWKS lists current and next. A next-signed token is refused until next is pinned and accepted with {current, next}; once current is unpinned, a current-signed token is refused.",
+  "kind": "pin-rotation",
+  "keys": {
+    "current": {
+      "seed": "a3e49d83a62f325288d1edd8a3f04edc7aa5c999da74fc23a248049996962962",
+      "jwk": {
+        "kty": "OKP",
+        "crv": "Ed25519",
+        "x": "-lHW-V3IAnMSEM_HWC1FI7-Y9WpczrbS2vypp5PGGJA",
+        "kid": "DZgWU2dqfo6E9dQGjojGQI_0Zqqpp_3V5WtcOd-ybJ8",
+        "use": "sig",
+        "alg": "EdDSA"
+      }
+    },
+    "next": {
+      "seed": "355fb5360c63507da2664803d4bfe4ed0885393d6da5e539952b53654c2952a4",
+      "jwk": {
+        "kty": "OKP",
+        "crv": "Ed25519",
+        "x": "lTHtCPlkO7I4GqccHi4-qfy9gqIPegCPZAhUk6YYMls",
+        "kid": "xUnXy2ekiWvcoFXqr3ZsfzHhGkHtiL6uB9C-8747DUc",
+        "use": "sig",
+        "alg": "EdDSA"
+      }
+    }
+  },
+  "jwks": {
+    "keys": [
+      {
+        "kty": "OKP",
+        "crv": "Ed25519",
+        "x": "-lHW-V3IAnMSEM_HWC1FI7-Y9WpczrbS2vypp5PGGJA",
+        "kid": "DZgWU2dqfo6E9dQGjojGQI_0Zqqpp_3V5WtcOd-ybJ8",
+        "use": "sig",
+        "alg": "EdDSA"
+      },
+      {
+        "kty": "OKP",
+        "crv": "Ed25519",
+        "x": "lTHtCPlkO7I4GqccHi4-qfy9gqIPegCPZAhUk6YYMls",
+        "kid": "xUnXy2ekiWvcoFXqr3ZsfzHhGkHtiL6uB9C-8747DUc",
+        "use": "sig",
+        "alg": "EdDSA"
+      }
+    ]
+  },
+  "expect": {
+    "issuer": "https://moneta.example",
+    "client_id": "nutripod-web",
+    "org": "ed25519:65214fc93773949e91197bf15d29c81f34538cfc0d479da9560d8bd12f2bc582",
+    "nonce": "n-0S6_WzA2Mj",
+    "now": 1791000300,
+    "leeway": 60
+  },
+  "tokens": {
+    "current": "eyJhbGciOiJFZERTQSIsImtpZCI6IkRaZ1dVMmRxZm82RTlkUUdqb2pHUUlfMFpxcXBwXzNWNVd0Y09kLXliSjgiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL21vbmV0YS5leGFtcGxlIiwic3ViIjoiZWQyNTUxOTpjZWFmNjliMGIyZjVhMjNiYTM3YjkwOTUxZWVhNWY2NTExNjBjYzNlNmY3YmE4ZGI3ZmEyNzhmODg2ZDUyYTg2IiwiYXVkIjoibnV0cmlwb2Qtd2ViIiwiaWF0IjoxNzkxMDAwMzAwLCJleHAiOjE3OTEwMDA2MDAsImF1dGhfdGltZSI6MTc5MTAwMDI4MCwibm9uY2UiOiJuLTBTNl9XekEyTWoiLCJvcmciOiJlZDI1NTE5OjY1MjE0ZmM5Mzc3Mzk0OWU5MTE5N2JmMTVkMjljODFmMzQ1MzhjZmMwZDQ3OWRhOTU2MGQ4YmQxMmYyYmM1ODIiLCJyb2xlIjoibWVtYmVyIiwiYW1yIjpbIm1jYSIsInBvcCJdfQ.1pVytn0HvoZ3kFEVdor8mjdo4qKw-rEwUpnZ7GCv5CuXc7ycx_JJaPiEd3LIzvMeOA2iljhy61pgY-0MlaXtCg",
+    "next": "eyJhbGciOiJFZERTQSIsImtpZCI6InhVblh5MmVraVd2Y29GWHFyM1pzZnpIaEdrSHRpTDZ1QjlDLTg3NDdEVWMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL21vbmV0YS5leGFtcGxlIiwic3ViIjoiZWQyNTUxOTpjZWFmNjliMGIyZjVhMjNiYTM3YjkwOTUxZWVhNWY2NTExNjBjYzNlNmY3YmE4ZGI3ZmEyNzhmODg2ZDUyYTg2IiwiYXVkIjoibnV0cmlwb2Qtd2ViIiwiaWF0IjoxNzkxMDAwMzAwLCJleHAiOjE3OTEwMDA2MDAsImF1dGhfdGltZSI6MTc5MTAwMDI4MCwibm9uY2UiOiJuLTBTNl9XekEyTWoiLCJvcmciOiJlZDI1NTE5OjY1MjE0ZmM5Mzc3Mzk0OWU5MTE5N2JmMTVkMjljODFmMzQ1MzhjZmMwZDQ3OWRhOTU2MGQ4YmQxMmYyYmM1ODIiLCJyb2xlIjoibWVtYmVyIiwiYW1yIjpbIm1jYSIsInBvcCJdfQ.JSDAVJg2v58Ve5SgddFjvkAq6_feDiCS1R6eSvyAVId1BshPN6YXRaDOHYdWlCm3h8tk_vBirYFfTesX3y9GAw"
+  },
+  "rows": [
+    {
+      "token": "next",
+      "pins": [
+        "DZgWU2dqfo6E9dQGjojGQI_0Zqqpp_3V5WtcOd-ybJ8"
+      ],
+      "verdict": "kid_not_pinned"
+    },
+    {
+      "token": "current",
+      "pins": [
+        "DZgWU2dqfo6E9dQGjojGQI_0Zqqpp_3V5WtcOd-ybJ8"
+      ],
+      "verdict": "ok"
+    },
+    {
+      "token": "next",
+      "pins": [
+        "DZgWU2dqfo6E9dQGjojGQI_0Zqqpp_3V5WtcOd-ybJ8",
+        "xUnXy2ekiWvcoFXqr3ZsfzHhGkHtiL6uB9C-8747DUc"
+      ],
+      "verdict": "ok"
+    },
+    {
+      "token": "current",
+      "pins": [
+        "DZgWU2dqfo6E9dQGjojGQI_0Zqqpp_3V5WtcOd-ybJ8",
+        "xUnXy2ekiWvcoFXqr3ZsfzHhGkHtiL6uB9C-8747DUc"
+      ],
+      "verdict": "ok"
+    },
+    {
+      "token": "current",
+      "pins": [
+        "xUnXy2ekiWvcoFXqr3ZsfzHhGkHtiL6uB9C-8747DUc"
+      ],
+      "verdict": "kid_not_pinned"
+    },
+    {
+      "token": "next",
+      "pins": [
+        "xUnXy2ekiWvcoFXqr3ZsfzHhGkHtiL6uB9C-8747DUc"
+      ],
+      "verdict": "ok"
+    }
+  ]
+}

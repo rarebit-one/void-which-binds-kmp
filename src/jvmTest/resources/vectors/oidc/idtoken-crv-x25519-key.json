@@ -1,0 +1,46 @@
+{
+  "name": "idtoken-crv-x25519-key",
+  "description": "The pinned key is an OKP key on X25519 whose x is the bytes of the Ed25519 key that signed the token: refused for its curve, though the signature would verify.",
+  "kind": "idtoken",
+  "keys": {
+    "x25519": {
+      "seed": "82da4cc1a7f796081f6763fe8f758a630832db0626abbb8e75c65113a517e894",
+      "jwk": {
+        "kty": "OKP",
+        "crv": "Ed25519",
+        "x": "g8pFiArhwQHlcL5Q8W1hEIAjosgq9ztZmG2TVf_fYFM",
+        "kid": "Us_TtSN3zhQb22qG6F_zV8rsXctGN7L-HEZ3IKcdQJA",
+        "use": "sig",
+        "alg": "EdDSA"
+      }
+    }
+  },
+  "jwks": {
+    "keys": [
+      {
+        "kty": "OKP",
+        "crv": "X25519",
+        "x": "g8pFiArhwQHlcL5Q8W1hEIAjosgq9ztZmG2TVf_fYFM",
+        "kid": "A2LW5iyrm0PL87Gbqrprez5dJfanYKoE_uYGpKnJez8",
+        "use": "sig",
+        "alg": "EdDSA"
+      }
+    ]
+  },
+  "pins": [
+    "A2LW5iyrm0PL87Gbqrprez5dJfanYKoE_uYGpKnJez8"
+  ],
+  "expect": {
+    "issuer": "https://moneta.example",
+    "client_id": "nutripod-web",
+    "org": "ed25519:65214fc93773949e91197bf15d29c81f34538cfc0d479da9560d8bd12f2bc582",
+    "nonce": "n-0S6_WzA2Mj",
+    "now": 1791000300,
+    "leeway": 60
+  },
+  "signer": "x25519",
+  "header": "{\"alg\":\"EdDSA\",\"kid\":\"A2LW5iyrm0PL87Gbqrprez5dJfanYKoE_uYGpKnJez8\",\"typ\":\"JWT\"}",
+  "payload": "{\"iss\":\"https://moneta.example\",\"sub\":\"ed25519:ceaf69b0b2f5a23ba37b90951eea5f651160cc3e6f7ba8db7fa278f886d52a86\",\"aud\":\"nutripod-web\",\"iat\":1791000300,\"exp\":1791000600,\"auth_time\":1791000280,\"nonce\":\"n-0S6_WzA2Mj\",\"org\":\"ed25519:65214fc93773949e91197bf15d29c81f34538cfc0d479da9560d8bd12f2bc582\",\"role\":\"member\",\"amr\":[\"mca\",\"pop\"]}",
+  "token": "eyJhbGciOiJFZERTQSIsImtpZCI6IkEyTFc1aXlybTBQTDg3R2JxcnByZXo1ZEpmYW5ZS29FX3VZR3BLbkplejgiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL21vbmV0YS5leGFtcGxlIiwic3ViIjoiZWQyNTUxOTpjZWFmNjliMGIyZjVhMjNiYTM3YjkwOTUxZWVhNWY2NTExNjBjYzNlNmY3YmE4ZGI3ZmEyNzhmODg2ZDUyYTg2IiwiYXVkIjoibnV0cmlwb2Qtd2ViIiwiaWF0IjoxNzkxMDAwMzAwLCJleHAiOjE3OTEwMDA2MDAsImF1dGhfdGltZSI6MTc5MTAwMDI4MCwibm9uY2UiOiJuLTBTNl9XekEyTWoiLCJvcmciOiJlZDI1NTE5OjY1MjE0ZmM5Mzc3Mzk0OWU5MTE5N2JmMTVkMjljODFmMzQ1MzhjZmMwZDQ3OWRhOTU2MGQ4YmQxMmYyYmM1ODIiLCJyb2xlIjoibWVtYmVyIiwiYW1yIjpbIm1jYSIsInBvcCJdfQ.CLdxtGNN48UAQusxFfEFGHv4Idb2B4Sw01A_GLEDQ-Cu0nGS-R3-BeHk3iP8wQe742g-abvRLkT4RgP4toLsAg",
+  "verdict": "key_not_ed25519"
+}
