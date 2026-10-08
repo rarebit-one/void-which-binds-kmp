@@ -113,7 +113,13 @@ group = "one.rarebit.voidwhichbinds"
 // fresh names (gen2 enrols fresh devices; nothing reads the gen1 ones). Adds
 // `MembershipOp.verifyCosig` (Go `VerifyCosig`), and ADR-0018's high-water rule: only
 // Ed25519 members count toward N, so a `webauthn:` passkey never raises k.
-version = "0.11.0"
+// 0.11.1 is the gen2 security patch for the C2 cutover (void-which-binds-go ADR-0022),
+// cut from release/v0.11, so it carries none of Phase 3. Membership now requires
+// canonical key renderings (#99, Go #116): a padded or upper-case key no longer counts
+// as a second member, so one device can't supply both signatures of a k=2 op. The
+// vectors are pinned to void-which-binds-go v0.19.2 (9ac4d5e), and it adds the custody
+// vectors (#98).
+version = "0.11.1"
 
 repositories {
     mavenCentral()
