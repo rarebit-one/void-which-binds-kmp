@@ -113,7 +113,18 @@ group = "one.rarebit.voidwhichbinds"
 // fresh names (gen2 enrols fresh devices; nothing reads the gen1 ones). Adds
 // `MembershipOp.verifyCosig` (Go `VerifyCosig`), and ADR-0018's high-water rule: only
 // Ed25519 members count toward N, so a `webauthn:` passkey never raises k.
-version = "0.11.0"
+// 0.12.0 is Phase 3 plus the space-key chain, matching void-which-binds-go up to
+// v0.26.0 (vectors pinned there). BREAKING: membership requires canonical key
+// renderings (#99, Go #116) and op logs are capped at MAX_LOG_OPS = 10,000 with
+// compact evaluation and the UNANCHORED reason (#114, Go #122); token bodies decode
+// exactly as Go's encoding/json, with Go-exact trimming and bounded depth (#106,
+// #112). Adds the org roster and re-root evaluator and its cosign transport (K1, K2,
+// ADR-0014/0015), org and roster request headers (K3, ADR-0016), WebAuthn member
+// keys (K4, ADR-0018), delegation minting (K5, ADR-0017), the approval client (K6,
+// ADR-0019), @Throws on the Phase 3 public APIs for iOS, and
+// `VoidbindEncryption.sealSpaceKey` / `openSpaceKey`: one space key sealed under
+// another, a link of a rotated space's key history (heyarr ADR-0103, #116).
+version = "0.12.0"
 
 repositories {
     mavenCentral()
