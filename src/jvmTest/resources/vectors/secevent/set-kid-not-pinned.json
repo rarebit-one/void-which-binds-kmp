@@ -1,0 +1,54 @@
+{
+  "name": "set-kid-not-pinned",
+  "description": "Signed by a published but unpinned key.",
+  "kind": "token",
+  "verifier": "set",
+  "keys": {
+    "attacker": {
+      "seed": "47f417ceebc0f9a55b9ac580cea96d7767f43852cdfaddb01264b5cd1a730903",
+      "jwk": {
+        "kty": "OKP",
+        "crv": "Ed25519",
+        "x": "ojRO3sojlC5rnxv9HCnWgj43KIBqpLDuxKtBplYfx20",
+        "kid": "517o1mdyt9i6BK2rKxEEkEoRAv8KQazxvtYGHQC0EfU",
+        "use": "sig",
+        "alg": "EdDSA"
+      }
+    }
+  },
+  "jwks": {
+    "keys": [
+      {
+        "kty": "OKP",
+        "crv": "Ed25519",
+        "x": "-lHW-V3IAnMSEM_HWC1FI7-Y9WpczrbS2vypp5PGGJA",
+        "kid": "DZgWU2dqfo6E9dQGjojGQI_0Zqqpp_3V5WtcOd-ybJ8",
+        "use": "sig",
+        "alg": "EdDSA"
+      },
+      {
+        "kty": "OKP",
+        "crv": "Ed25519",
+        "x": "ojRO3sojlC5rnxv9HCnWgj43KIBqpLDuxKtBplYfx20",
+        "kid": "517o1mdyt9i6BK2rKxEEkEoRAv8KQazxvtYGHQC0EfU",
+        "use": "sig",
+        "alg": "EdDSA"
+      }
+    ]
+  },
+  "pins": [
+    "DZgWU2dqfo6E9dQGjojGQI_0Zqqpp_3V5WtcOd-ybJ8"
+  ],
+  "expect_set": {
+    "issuer": "https://moneta.example",
+    "audience": "nutripod-web",
+    "now": 1791000300,
+    "max_age": 604800
+  },
+  "signer": "attacker",
+  "header": "{\"alg\":\"EdDSA\",\"kid\":\"517o1mdyt9i6BK2rKxEEkEoRAv8KQazxvtYGHQC0EfU\",\"typ\":\"secevent+jwt\"}",
+  "payload": "{\"iss\":\"https://moneta.example\",\"aud\":\"nutripod-web\",\"jti\":\"_y8Iq1ORu9A3klHTt4mPbw\",\"iat\":1791000300,\"toe\":1791000000,\"txn\":\"sha256:df21853a765aaaa1a21201c781d133d3c6a5793b67a7692eef7f724cb2bb495a\",\"sub_id\":{\"format\":\"iss_sub\",\"iss\":\"https://moneta.example\",\"sub\":\"mp:f5eacf5a96f9f986d13f20a4621d5f71\"},\"events\":{\"https://schemas.openid.net/secevent/caep/event-type/session-revoked\":{\"event_timestamp\":1791000000,\"initiating_entity\":\"admin\",\"reason_admin\":{\"en\":\"roster_remove\"}}}}",
+  "token": "eyJhbGciOiJFZERTQSIsImtpZCI6IjUxN28xbWR5dDlpNkJLMnJLeEVFa0VvUkF2OEtRYXp4dnRZR0hRQzBFZlUiLCJ0eXAiOiJzZWNldmVudCtqd3QifQ.eyJpc3MiOiJodHRwczovL21vbmV0YS5leGFtcGxlIiwiYXVkIjoibnV0cmlwb2Qtd2ViIiwianRpIjoiX3k4SXExT1J1OUEza2xIVHQ0bVBidyIsImlhdCI6MTc5MTAwMDMwMCwidG9lIjoxNzkxMDAwMDAwLCJ0eG4iOiJzaGEyNTY6ZGYyMTg1M2E3NjVhYWFhMWEyMTIwMWM3ODFkMTMzZDNjNmE1NzkzYjY3YTc2OTJlZWY3ZjcyNGNiMmJiNDk1YSIsInN1Yl9pZCI6eyJmb3JtYXQiOiJpc3Nfc3ViIiwiaXNzIjoiaHR0cHM6Ly9tb25ldGEuZXhhbXBsZSIsInN1YiI6Im1wOmY1ZWFjZjVhOTZmOWY5ODZkMTNmMjBhNDYyMWQ1ZjcxIn0sImV2ZW50cyI6eyJodHRwczovL3NjaGVtYXMub3BlbmlkLm5ldC9zZWNldmVudC9jYWVwL2V2ZW50LXR5cGUvc2Vzc2lvbi1yZXZva2VkIjp7ImV2ZW50X3RpbWVzdGFtcCI6MTc5MTAwMDAwMCwiaW5pdGlhdGluZ19lbnRpdHkiOiJhZG1pbiIsInJlYXNvbl9hZG1pbiI6eyJlbiI6InJvc3Rlcl9yZW1vdmUifX19fQ.Yk6nv6IOu4fTZSVglYROVBSCdoe5J2JjUCF6XAMFsxf6J73dXzXLaa_xxGipHgxNsN8cC7isqO5b3UcczngUBw",
+  "verdict": "kid_not_pinned",
+  "rfc8935_err": "invalid_key"
+}

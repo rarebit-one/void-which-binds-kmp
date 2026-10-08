@@ -1,0 +1,90 @@
+{
+  "name": "pkce-s256",
+  "description": "RFC 7636 Appendix B's verifier and challenge; S256 only (plain and a missing method refused); a verifier must be 43-128 unreserved characters and hash to the challenge.",
+  "kind": "pkce",
+  "pkce": [
+    {
+      "check": "challenge",
+      "method": "S256",
+      "challenge": "E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM",
+      "verdict": "ok",
+      "note": "RFC 7636 Appendix B's challenge"
+    },
+    {
+      "check": "challenge",
+      "method": "plain",
+      "challenge": "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk",
+      "verdict": "pkce",
+      "note": "plain is refused"
+    },
+    {
+      "check": "challenge",
+      "challenge": "E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM",
+      "verdict": "pkce",
+      "note": "a missing method is refused"
+    },
+    {
+      "check": "challenge",
+      "method": "S256",
+      "challenge": "",
+      "verdict": "pkce",
+      "note": "a missing challenge is refused"
+    },
+    {
+      "check": "challenge",
+      "method": "S256",
+      "challenge": "E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-c",
+      "verdict": "pkce",
+      "note": "a challenge that is not a SHA-256"
+    },
+    {
+      "check": "verifier",
+      "challenge": "E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM",
+      "verifier": "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk",
+      "verdict": "ok",
+      "note": "RFC 7636 Appendix B's pair"
+    },
+    {
+      "check": "verifier",
+      "challenge": "ZtNPunH49FD35FWYhT5Tv8I7vRKQJ8uxMaL0_9eHjNA",
+      "verifier": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "verdict": "ok",
+      "note": "43 characters, the minimum"
+    },
+    {
+      "check": "verifier",
+      "challenge": "aDbPE7rEAOkQUHHNavRwhN-srU5eMCyUv-0k4BOvtz4",
+      "verifier": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "verdict": "ok",
+      "note": "128 characters, the maximum"
+    },
+    {
+      "check": "verifier",
+      "challenge": "elOGB_2quSlplZKfRRVlu7gULhhEEXMiqv0rPXawGv8",
+      "verifier": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "verdict": "pkce",
+      "note": "42 characters, too short even though it hashes to the challenge"
+    },
+    {
+      "check": "verifier",
+      "challenge": "wSywJKLlVRzKDgj86PHF4xRVXMP-9jKe6ZSj23UhZq4",
+      "verifier": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "verdict": "pkce",
+      "note": "129 characters, too long"
+    },
+    {
+      "check": "verifier",
+      "challenge": "E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM",
+      "verifier": "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXX",
+      "verdict": "pkce",
+      "note": "does not hash to the challenge"
+    },
+    {
+      "check": "verifier",
+      "challenge": "GEQzKnlMKuWdiqG5OGQaeLyu4bt9JQqQivfuxi4fm50",
+      "verifier": "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjX+",
+      "verdict": "pkce",
+      "note": "'+' is outside the unreserved set"
+    }
+  ]
+}

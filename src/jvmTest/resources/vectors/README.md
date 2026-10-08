@@ -140,6 +140,20 @@ rebuilds the same headers.
 Copied for completeness (ADR-0017, G8), so the whole directory matches
 void-which-binds-go. Nothing here replays it yet.
 
+## `key-chain/`
+
+void-which-binds-go v0.26.0's space-key chain (heyarr ADR-0103; see
+`key-chain/README.md`, Go's schema note copied verbatim): three deterministic epoch
+keys, the two history links sealing each previous key under the next, and four
+refuse blobs. `KeyChainVectorTest` opens every link with `VoidbindEncryption.openSpaceKey`,
+re-seals it byte for byte under its fixed nonce, and refuses every refuse blob with
+`VoidbindEncryption.UnwrapException`.
+
+## `enrol-proof/`, `oidc/` and `secevent/`
+
+Copied for completeness (added upstream after the previous pin), so the whole directory
+matches void-which-binds-go. Nothing here replays them yet.
+
 ## `approval/`
 
 void-which-binds-go ADR-0019's action-approval byte-layer vectors (28 cases, G9a; see

@@ -1,0 +1,9 @@
+{
+  "name": "discovery",
+  "description": "The exact /.well-known/openid-configuration for a fixed issuer and endpoints (the endpoint paths are this vector's, not the protocol's).",
+  "kind": "discovery",
+  "issuer": "https://moneta.example",
+  "authorization_endpoint": "https://moneta.example/oidc/authorize",
+  "token_endpoint": "https://moneta.example/oidc/token",
+  "document": "{\"issuer\":\"https://moneta.example\",\"authorization_endpoint\":\"https://moneta.example/oidc/authorize\",\"token_endpoint\":\"https://moneta.example/oidc/token\",\"jwks_uri\":\"https://moneta.example/.well-known/jwks.json\",\"response_types_supported\":[\"code\"],\"response_modes_supported\":[\"query\"],\"grant_types_supported\":[\"authorization_code\"],\"subject_types_supported\":[\"public\"],\"id_token_signing_alg_values_supported\":[\"EdDSA\"],\"token_endpoint_auth_methods_supported\":[\"client_secret_basic\"],\"code_challenge_methods_supported\":[\"S256\"],\"scopes_supported\":[\"openid\",\"email\"],\"claims_supported\":[\"iss\",\"sub\",\"aud\",\"iat\",\"exp\",\"auth_time\",\"nonce\",\"org\",\"role\",\"amr\",\"email\",\"email_verified\"],\"authorization_response_iss_parameter_supported\":true}"
+}

@@ -1,0 +1,54 @@
+{
+  "name": "idtoken-kid-not-pinned",
+  "description": "Signed by a key that is published in the JWKS but not pinned: ignored, so the token's kid is not pinned.",
+  "kind": "idtoken",
+  "keys": {
+    "attacker": {
+      "seed": "47f417ceebc0f9a55b9ac580cea96d7767f43852cdfaddb01264b5cd1a730903",
+      "jwk": {
+        "kty": "OKP",
+        "crv": "Ed25519",
+        "x": "ojRO3sojlC5rnxv9HCnWgj43KIBqpLDuxKtBplYfx20",
+        "kid": "517o1mdyt9i6BK2rKxEEkEoRAv8KQazxvtYGHQC0EfU",
+        "use": "sig",
+        "alg": "EdDSA"
+      }
+    }
+  },
+  "jwks": {
+    "keys": [
+      {
+        "kty": "OKP",
+        "crv": "Ed25519",
+        "x": "-lHW-V3IAnMSEM_HWC1FI7-Y9WpczrbS2vypp5PGGJA",
+        "kid": "DZgWU2dqfo6E9dQGjojGQI_0Zqqpp_3V5WtcOd-ybJ8",
+        "use": "sig",
+        "alg": "EdDSA"
+      },
+      {
+        "kty": "OKP",
+        "crv": "Ed25519",
+        "x": "ojRO3sojlC5rnxv9HCnWgj43KIBqpLDuxKtBplYfx20",
+        "kid": "517o1mdyt9i6BK2rKxEEkEoRAv8KQazxvtYGHQC0EfU",
+        "use": "sig",
+        "alg": "EdDSA"
+      }
+    ]
+  },
+  "pins": [
+    "DZgWU2dqfo6E9dQGjojGQI_0Zqqpp_3V5WtcOd-ybJ8"
+  ],
+  "expect": {
+    "issuer": "https://moneta.example",
+    "client_id": "nutripod-web",
+    "org": "ed25519:65214fc93773949e91197bf15d29c81f34538cfc0d479da9560d8bd12f2bc582",
+    "nonce": "n-0S6_WzA2Mj",
+    "now": 1791000300,
+    "leeway": 60
+  },
+  "signer": "attacker",
+  "header": "{\"alg\":\"EdDSA\",\"kid\":\"517o1mdyt9i6BK2rKxEEkEoRAv8KQazxvtYGHQC0EfU\",\"typ\":\"JWT\"}",
+  "payload": "{\"iss\":\"https://moneta.example\",\"sub\":\"ed25519:ceaf69b0b2f5a23ba37b90951eea5f651160cc3e6f7ba8db7fa278f886d52a86\",\"aud\":\"nutripod-web\",\"iat\":1791000300,\"exp\":1791000600,\"auth_time\":1791000280,\"nonce\":\"n-0S6_WzA2Mj\",\"org\":\"ed25519:65214fc93773949e91197bf15d29c81f34538cfc0d479da9560d8bd12f2bc582\",\"role\":\"member\",\"amr\":[\"mca\",\"pop\"]}",
+  "token": "eyJhbGciOiJFZERTQSIsImtpZCI6IjUxN28xbWR5dDlpNkJLMnJLeEVFa0VvUkF2OEtRYXp4dnRZR0hRQzBFZlUiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL21vbmV0YS5leGFtcGxlIiwic3ViIjoiZWQyNTUxOTpjZWFmNjliMGIyZjVhMjNiYTM3YjkwOTUxZWVhNWY2NTExNjBjYzNlNmY3YmE4ZGI3ZmEyNzhmODg2ZDUyYTg2IiwiYXVkIjoibnV0cmlwb2Qtd2ViIiwiaWF0IjoxNzkxMDAwMzAwLCJleHAiOjE3OTEwMDA2MDAsImF1dGhfdGltZSI6MTc5MTAwMDI4MCwibm9uY2UiOiJuLTBTNl9XekEyTWoiLCJvcmciOiJlZDI1NTE5OjY1MjE0ZmM5Mzc3Mzk0OWU5MTE5N2JmMTVkMjljODFmMzQ1MzhjZmMwZDQ3OWRhOTU2MGQ4YmQxMmYyYmM1ODIiLCJyb2xlIjoibWVtYmVyIiwiYW1yIjpbIm1jYSIsInBvcCJdfQ.rh5NK9zOAg1t0Ls1K5N1CJx6S9E-KYfw3MuhcznSf99YNPhVWMD-Ndu9CmJgpulJI_LLD8hESocGD8kE0yOACw",
+  "verdict": "kid_not_pinned"
+}

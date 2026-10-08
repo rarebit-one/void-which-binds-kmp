@@ -1,0 +1,84 @@
+{
+  "name": "watermark",
+  "description": "The RP's per-subject revocation watermark (#135): every verified session-revoked SET advances it, for unknown subjects too, durably before the 202; session creation is refused when login_iat \u003c= the watermark. Steps run in order against one empty store keyed by (iss, sub).",
+  "kind": "watermark",
+  "watermark": [
+    {
+      "op": "check",
+      "iss": "https://moneta.example",
+      "sub": "mp:f5eacf5a96f9f986d13f20a4621d5f71",
+      "login_iat": 1790999900,
+      "verdict": "ok",
+      "note": "no watermark yet: any login is allowed"
+    },
+    {
+      "op": "advance",
+      "iss": "https://moneta.example",
+      "sub": "mp:f5eacf5a96f9f986d13f20a4621d5f71",
+      "toe": 1791000000,
+      "note": "a session-revoked SET for a subject the RP has never linked (unknown sub): answered 202, and the watermark is still recorded"
+    },
+    {
+      "op": "check",
+      "iss": "https://moneta.example",
+      "sub": "mp:f5eacf5a96f9f986d13f20a4621d5f71",
+      "login_iat": 1790999900,
+      "verdict": "session_revoked",
+      "note": "an ID token minted before the revocation but redeemed after it cannot create a session"
+    },
+    {
+      "op": "check",
+      "iss": "https://moneta.example",
+      "sub": "mp:f5eacf5a96f9f986d13f20a4621d5f71",
+      "login_iat": 1791000000,
+      "verdict": "session_revoked",
+      "note": "a tie is refused"
+    },
+    {
+      "op": "check",
+      "iss": "https://moneta.example",
+      "sub": "mp:f5eacf5a96f9f986d13f20a4621d5f71",
+      "login_iat": 1791000001,
+      "verdict": "ok",
+      "note": "a login after the revocation is allowed"
+    },
+    {
+      "op": "advance",
+      "iss": "https://moneta.example",
+      "sub": "mp:f5eacf5a96f9f986d13f20a4621d5f71",
+      "toe": 1790999500,
+      "note": "a stale (redriven, reordered) SET never lowers the watermark"
+    },
+    {
+      "op": "check",
+      "iss": "https://moneta.example",
+      "sub": "mp:f5eacf5a96f9f986d13f20a4621d5f71",
+      "login_iat": 1790999900,
+      "verdict": "session_revoked",
+      "note": "still refused after the stale SET"
+    },
+    {
+      "op": "check",
+      "iss": "https://other.example",
+      "sub": "mp:f5eacf5a96f9f986d13f20a4621d5f71",
+      "login_iat": 1790999900,
+      "verdict": "ok",
+      "note": "another issuer's subject is a different key: its clock does not order against this one"
+    },
+    {
+      "op": "advance",
+      "iss": "https://moneta.example",
+      "sub": "mp:f5eacf5a96f9f986d13f20a4621d5f71",
+      "toe": 1791000200,
+      "note": "a newer cause raises the watermark"
+    },
+    {
+      "op": "check",
+      "iss": "https://moneta.example",
+      "sub": "mp:f5eacf5a96f9f986d13f20a4621d5f71",
+      "login_iat": 1791000001,
+      "verdict": "session_revoked",
+      "note": "the login that was allowed before is now refused"
+    }
+  ]
+}

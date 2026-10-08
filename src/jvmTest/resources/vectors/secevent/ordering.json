@@ -1,0 +1,71 @@
+{
+  "name": "ordering",
+  "description": "ADR-0023's watermark rules over moneta's monotonic stamps: revokes_session is login_iat \u003c= toe; disables_link is toe \u003e= last_login_iat (otherwise acknowledged without being applied); reenables_link is login_iat \u003e disabled toe. set_iat is informational: no rule reads it.",
+  "kind": "ordering",
+  "ordering": [
+    {
+      "rule": "revokes_session",
+      "toe": 1791000000,
+      "login_iat": 1790999999,
+      "expect": true,
+      "note": "a session from before the cause is revoked"
+    },
+    {
+      "rule": "revokes_session",
+      "toe": 1791000000,
+      "login_iat": 1791000100,
+      "expect": false,
+      "note": "a stale session-revoked spares a newer session"
+    },
+    {
+      "rule": "revokes_session",
+      "toe": 1791000000,
+      "login_iat": 1791000000,
+      "expect": true,
+      "note": "a tie revokes"
+    },
+    {
+      "rule": "disables_link",
+      "toe": 1791000000,
+      "last_login_iat": 1790999999,
+      "expect": true,
+      "note": "account-disabled applies when no newer login exists"
+    },
+    {
+      "rule": "disables_link",
+      "toe": 1791000000,
+      "last_login_iat": 1791000000,
+      "expect": true,
+      "note": "a tie disables"
+    },
+    {
+      "rule": "disables_link",
+      "toe": 1791000000,
+      "last_login_iat": 1791000100,
+      "expect": false,
+      "note": "a stale account-disabled after a re-add is acknowledged without being applied"
+    },
+    {
+      "rule": "reenables_link",
+      "toe": 1791000000,
+      "login_iat": 1791000000,
+      "expect": false,
+      "note": "a login at the disabled toe does not re-enable"
+    },
+    {
+      "rule": "reenables_link",
+      "toe": 1791000000,
+      "login_iat": 1791000001,
+      "expect": true,
+      "note": "re-enabling needs iat \u003e toe"
+    },
+    {
+      "rule": "revokes_session",
+      "toe": 1791000000,
+      "login_iat": 1791000100,
+      "set_iat": 1791086700,
+      "expect": false,
+      "note": "a redriven SET (fresh iat, old toe) is still stale to the newer session"
+    }
+  ]
+}

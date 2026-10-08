@@ -64,6 +64,7 @@ refused, never read.
 | User fingerprint label | `void-which-binds/user-fingerprint/v1` (`UserFingerprint`) | domain tag of the printable user fingerprint (void-which-binds-go ADR-0010); pinned by `vectors/recovery/` |
 | Pairing domains | `void-which-binds/pairing/{commit,sas}/v2` (`Pairing`) | pairing transcript domain separation |
 | Space-key wrap label | `void-which-binds/space-key-wrap/v1` (`VoidbindEncryption`) | HKDF info of the sealed space key (cert delivery, offload unwrap) |
+| Space-key chain label | `void-which-binds/space-key-chain/v1` (`VoidbindEncryption`) | AEAD associated data of a sealed space key (key history, heyarr ADR-0103); pinned by `vectors/key-chain/` |
 | Cosig domain | `void-which-binds-cosig-v1\u0000` (`MembershipOp.cosigDomain`) | prefix of a co-signature preimage (ADR-0008) |
 | Web-login domains | `void-which-binds/weblogin/challenge/{v1,v2}` (`WebLogin`) | login-assertion preimage |
 | Approval domains | `void-which-binds/approval/{challenge,action,fetch}/v1` (`Approval`) | action-approval preimage, action digest, fetch proof (ADR-0019) |

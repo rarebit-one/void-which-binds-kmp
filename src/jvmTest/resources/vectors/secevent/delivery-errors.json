@@ -1,0 +1,97 @@
+{
+  "name": "delivery-errors",
+  "description": "RFC 8935 responses classified as ADR-0023's outbox handles them: 202 delivered; 5xx, 429 and a 400 with invalid_key, invalid_issuer, invalid_audience, authentication_failed or access_denied retried; a 400 with invalid_request, no code or an unknown code dead-lettered. A network failure (no status) is retried by the caller. Statuses outside RFC 8935's 202/400 are retried (an endpoint fault).",
+  "kind": "delivery",
+  "delivery": [
+    {
+      "status": 202,
+      "body": "",
+      "outcome": "delivered"
+    },
+    {
+      "status": 400,
+      "body": "{\"err\":\"invalid_request\",\"description\":\"x\"}",
+      "outcome": "dead_letter"
+    },
+    {
+      "status": 400,
+      "body": "{\"err\":\"invalid_key\",\"description\":\"x\"}",
+      "outcome": "retry"
+    },
+    {
+      "status": 400,
+      "body": "{\"err\":\"invalid_issuer\",\"description\":\"x\"}",
+      "outcome": "retry"
+    },
+    {
+      "status": 400,
+      "body": "{\"err\":\"invalid_audience\",\"description\":\"x\"}",
+      "outcome": "retry"
+    },
+    {
+      "status": 400,
+      "body": "{\"err\":\"authentication_failed\",\"description\":\"x\"}",
+      "outcome": "retry"
+    },
+    {
+      "status": 400,
+      "body": "{\"err\":\"access_denied\",\"description\":\"x\"}",
+      "outcome": "retry"
+    },
+    {
+      "status": 400,
+      "body": "",
+      "outcome": "dead_letter"
+    },
+    {
+      "status": 400,
+      "body": "{}",
+      "outcome": "dead_letter"
+    },
+    {
+      "status": 400,
+      "body": "{\"err\":\"no_such_code\",\"description\":\"x\"}",
+      "outcome": "dead_letter"
+    },
+    {
+      "status": 400,
+      "body": "not json",
+      "outcome": "dead_letter"
+    },
+    {
+      "status": 429,
+      "body": "",
+      "outcome": "retry"
+    },
+    {
+      "status": 500,
+      "body": "",
+      "outcome": "retry"
+    },
+    {
+      "status": 503,
+      "body": "",
+      "outcome": "retry"
+    },
+    {
+      "status": 200,
+      "body": "",
+      "outcome": "retry"
+    },
+    {
+      "status": 404,
+      "body": "",
+      "outcome": "retry"
+    }
+  ],
+  "retryable": {
+    "": false,
+    "access_denied": true,
+    "authentication_failed": true,
+    "invalid_audience": true,
+    "invalid_issuer": true,
+    "invalid_key": true,
+    "invalid_request": false,
+    "no_such_code": false
+  }
+}

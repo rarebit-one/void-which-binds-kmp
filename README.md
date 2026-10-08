@@ -115,6 +115,12 @@ the JVM and the tests, and the apps bring their own (OkHttp on Android,
   ChaCha20-Poly1305 and HKDF. Pinned by RFC vectors and a **live void-which-binds-go
   KAT** (`CertSealerCryptoTest.goSealKat`: Kotlin unwraps + decrypts a blob that
   Go sealed, to the exact bytes).
+  `sealSpaceKey`/`openSpaceKey` (void-which-binds-go v0.26.0 `SealSpaceKey`/`OpenSpaceKey`)
+  seal one space key under another: a link of a rotated space's key history (heyarr
+  ADR-0103), `nonce(24) ‖ XChaCha20-Poly1305` with the associated data
+  `void-which-binds/space-key-chain/v1`, exactly 72 bytes; every bad blob is the one
+  opaque `VoidbindEncryption.UnwrapException`. Pinned by `vectors/key-chain/`
+  (`KeyChainVectorTest`).
 - **`WebLoginClient`** — the QR web-login: device side (`fetchChallenge`,
   `approve` with a `WebLogin.signAssertion` assertion) and browser side
   (`createLogin`, `poll`).

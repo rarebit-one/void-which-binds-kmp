@@ -1,0 +1,44 @@
+{
+  "name": "three-epochs",
+  "description": "keys[i] is the space key of epoch i. links[n] is history row epoch n: keys[n-1] sealed under keys[n] with the given nonce (nonce ‖ XChaCha20-Poly1305, associated data = label). Opening each link with keys[n] yields keys[n-1]; every refuse blob must fail to open with keys[sealing_key_index].",
+  "label": "void-which-binds/space-key-chain/v1",
+  "keys": [
+    "1111111111111111111111111111111111111111111111111111111111111111",
+    "2222222222222222222222222222222222222222222222222222222222222222",
+    "3333333333333333333333333333333333333333333333333333333333333333"
+  ],
+  "links": [
+    {
+      "epoch": 1,
+      "nonce": "a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1",
+      "sealed_prev": "a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a16e2ae63e3a966c129d28e49b9740379ed77554a16fbf4fce3e6a28986e67f94df7ccc4e3bf4ba5efc24b2d0ce118c9d8"
+    },
+    {
+      "epoch": 2,
+      "nonce": "a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2",
+      "sealed_prev": "a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2b37807ea4ffbf1bb096d3e808ceb73f850f0d71b6a3342cdc9b57a2e7891f4fb2f570b9996ab0d5535fe29d433dda292"
+    }
+  ],
+  "refuse": [
+    {
+      "name": "link 1 opened with the wrong key",
+      "sealing_key_index": 2,
+      "blob": "a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a16e2ae63e3a966c129d28e49b9740379ed77554a16fbf4fce3e6a28986e67f94df7ccc4e3bf4ba5efc24b2d0ce118c9d8"
+    },
+    {
+      "name": "link 1 with its last tag byte flipped",
+      "sealing_key_index": 1,
+      "blob": "a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a16e2ae63e3a966c129d28e49b9740379ed77554a16fbf4fce3e6a28986e67f94df7ccc4e3bf4ba5efc24b2d0ce118c9d9"
+    },
+    {
+      "name": "link 1 truncated by one byte",
+      "sealing_key_index": 1,
+      "blob": "a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a16e2ae63e3a966c129d28e49b9740379ed77554a16fbf4fce3e6a28986e67f94df7ccc4e3bf4ba5efc24b2d0ce118c9"
+    },
+    {
+      "name": "the same bytes encrypted as a change (no label)",
+      "sealing_key_index": 1,
+      "blob": "a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a16e2ae63e3a966c129d28e49b9740379ed77554a16fbf4fce3e6a28986e67f94de09c6334d0be0de8c6bf422a255685d3"
+    }
+  ]
+}

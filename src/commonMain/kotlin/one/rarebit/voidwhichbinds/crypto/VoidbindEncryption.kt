@@ -20,6 +20,9 @@ import dev.whyoleg.cryptography.random.CryptographyRandom
  *  - wrapped = ephPub(32) ‖ nonce(24) ‖ XChaCha20Poly1305.seal(wrapKey, nonce,
  *              aad=ephPub‖recipientPub, plaintext=spaceKey)   → 104 bytes
  *  - content = nonce(24) ‖ XChaCha20Poly1305.seal(spaceKey, nonce, aad=∅, plaintext)
+ *  - chain   = nonce(24) ‖ XChaCha20Poly1305.seal(sealingKey, nonce,
+ *              aad="void-which-binds/space-key-chain/v1", plaintext=spaceKey) → 72 bytes
+ *              (`chain.go`, heyarr ADR-0103: one link of a space-key history)
  *
  * X25519 is pure Kotlin ([X25519]) so `unwrap` can derive the recipient's public
  * key from its private seed (which the JDK X25519 provider will not do); HKDF and
@@ -31,7 +34,8 @@ import dev.whyoleg.cryptography.random.CryptographyRandom
  * raw-byte operations `void-which-binds-go/encryption` exposes — `seal`/`unwrap` a space
  * key and `encryptChange`/`decryptChange` a change — to fold and MINT M9 CRDT
  * changes on the device, without re-deriving the wrap/AEAD wire format (the
- * one-copy rule the consuming apps are told to keep). Only these ByteArray-in,
+ * one-copy rule the consuming apps are told to keep), and `sealSpaceKey`/`openSpaceKey`
+ * a link of a rotated space's key history. Only these ByteArray-in,
  * ByteArray-out entry points are the surface; the primitives it builds on
  * ([X25519], [XChaCha20Poly1305]) stay internal.
  */
@@ -41,6 +45,23 @@ public object VoidbindEncryption {
     private const val EPH_PUB_LEN = 32
     private const val WRAP_NONCE_LEN = 24
     private const val WRAP_OVERHEAD = EPH_PUB_LEN + WRAP_NONCE_LEN + SPACE_KEY_SIZE + XChaCha20Poly1305.TAG_SIZE // 104
+
+    // The associated data of a sealed space key (void-which-binds-go `chainLabel`). An
+    // identity-defining constant: changing it is a total break, not a tidy-up. It is
+    // what keeps a sealed key and an encrypted change (aad = ∅) from ever opening as
+    // each other, even under the same space key.
+    private const val CHAIN_LABEL = "void-which-binds/space-key-chain/v1"
+
+    /** The length of a [sealSpaceKey] output: nonce(24) ‖ key(32) ‖ tag(16) (Go `SealedSpaceKeySize`). */
+    const val SEALED_SPACE_KEY_SIZE = WRAP_NONCE_LEN + SPACE_KEY_SIZE + XChaCha20Poly1305.TAG_SIZE // 72
+
+    /**
+     * A sealed space key that did not open (void-which-binds-go `ErrUnwrap`): the wrong
+     * sealing key, a corrupt or truncated blob, or bytes that were not sealed as a space
+     * key (an encrypted change, for one). Deliberately one opaque error with no cause, so
+     * a caller cannot tell which; a holder of several keys just tries the next one.
+     */
+    public class UnwrapException : Exception("encryption: could not unwrap the space key")
 
     private val hkdf = CryptographyProvider.Default.get(HKDF)
 
@@ -93,6 +114,48 @@ public object VoidbindEncryption {
         val ct = blob.copyOfRange(WRAP_NONCE_LEN, blob.size)
         return XChaCha20Poly1305.decrypt(spaceKey, nonce, EMPTY, ct)
     }
+
+    /**
+     * Seal [spaceKey] under [sealingKey] (void-which-binds-go `encryption.SealSpaceKey`):
+     * in a key history (heyarr ADR-0103), the previous epoch's key under the next one.
+     * A fresh random nonce each call, so sealing the same pair twice yields two blobs.
+     * Throws [IllegalArgumentException] for a key that is not 32 bytes (Go `ErrWrongLength`).
+     */
+    @Throws(Exception::class)
+    fun sealSpaceKey(sealingKey: ByteArray, spaceKey: ByteArray): ByteArray =
+        sealSpaceKeyWithNonce(sealingKey, spaceKey, CryptographyRandom.Default.nextBytes(WRAP_NONCE_LEN))
+
+    /** [sealSpaceKey] with a caller-chosen nonce: the golden-vector seam (Go `sealSpaceKeyWithNonce`). */
+    internal fun sealSpaceKeyWithNonce(sealingKey: ByteArray, spaceKey: ByteArray, nonce: ByteArray): ByteArray {
+        require(sealingKey.size == SPACE_KEY_SIZE) { "sealSpaceKey: sealing key must be 32 bytes" }
+        require(spaceKey.size == SPACE_KEY_SIZE) { "sealSpaceKey: space key must be 32 bytes" }
+        require(nonce.size == WRAP_NONCE_LEN) { "sealSpaceKey: nonce must be $WRAP_NONCE_LEN bytes" }
+        return nonce + XChaCha20Poly1305.encrypt(sealingKey, nonce, CHAIN_LABEL.encodeToByteArray(), spaceKey)
+    }
+
+    /**
+     * Reverse [sealSpaceKey] with the sealing key (void-which-binds-go
+     * `encryption.OpenSpaceKey`), returning the 32-byte sealed key. Every failure of
+     * the blob (wrong key, corrupt, truncated, not exactly [SEALED_SPACE_KEY_SIZE]
+     * bytes, an encrypted change) is the one opaque [UnwrapException]; only a
+     * [sealingKey] that is not 32 bytes is an [IllegalArgumentException] (Go
+     * `ErrWrongLength`), a caller bug rather than bad data.
+     */
+    @Throws(Exception::class)
+    fun openSpaceKey(sealingKey: ByteArray, sealed: ByteArray): ByteArray {
+        require(sealingKey.size == SPACE_KEY_SIZE) { "openSpaceKey: sealing key must be 32 bytes" }
+        val key = if (sealed.size == SEALED_SPACE_KEY_SIZE) openChainOrNull(sealingKey, sealed) else null
+        // No cause attached: Go's ErrUnwrap carries none either, and a holder of several keys
+        // must not learn which part of the blob failed.
+        return key ?: throw UnwrapException()
+    }
+
+    /** The AEAD open of a 72-byte sealed key, or null on any failure (collapsed by [openSpaceKey]). */
+    private fun openChainOrNull(sealingKey: ByteArray, sealed: ByteArray): ByteArray? = runCatching {
+        val nonce = sealed.copyOfRange(0, WRAP_NONCE_LEN)
+        val ct = sealed.copyOfRange(WRAP_NONCE_LEN, sealed.size)
+        XChaCha20Poly1305.decrypt(sealingKey, nonce, CHAIN_LABEL.encodeToByteArray(), ct)
+    }.getOrNull()?.takeIf { it.size == SPACE_KEY_SIZE }
 
     private val EMPTY = ByteArray(0)
 

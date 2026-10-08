@@ -1,0 +1,46 @@
+{
+  "name": "idtoken-wrong-org",
+  "description": "org is another org's id.",
+  "kind": "idtoken",
+  "keys": {
+    "current": {
+      "seed": "a3e49d83a62f325288d1edd8a3f04edc7aa5c999da74fc23a248049996962962",
+      "jwk": {
+        "kty": "OKP",
+        "crv": "Ed25519",
+        "x": "-lHW-V3IAnMSEM_HWC1FI7-Y9WpczrbS2vypp5PGGJA",
+        "kid": "DZgWU2dqfo6E9dQGjojGQI_0Zqqpp_3V5WtcOd-ybJ8",
+        "use": "sig",
+        "alg": "EdDSA"
+      }
+    }
+  },
+  "jwks": {
+    "keys": [
+      {
+        "kty": "OKP",
+        "crv": "Ed25519",
+        "x": "-lHW-V3IAnMSEM_HWC1FI7-Y9WpczrbS2vypp5PGGJA",
+        "kid": "DZgWU2dqfo6E9dQGjojGQI_0Zqqpp_3V5WtcOd-ybJ8",
+        "use": "sig",
+        "alg": "EdDSA"
+      }
+    ]
+  },
+  "pins": [
+    "DZgWU2dqfo6E9dQGjojGQI_0Zqqpp_3V5WtcOd-ybJ8"
+  ],
+  "expect": {
+    "issuer": "https://moneta.example",
+    "client_id": "nutripod-web",
+    "org": "ed25519:65214fc93773949e91197bf15d29c81f34538cfc0d479da9560d8bd12f2bc582",
+    "nonce": "n-0S6_WzA2Mj",
+    "now": 1791000300,
+    "leeway": 60
+  },
+  "signer": "current",
+  "header": "{\"alg\":\"EdDSA\",\"kid\":\"DZgWU2dqfo6E9dQGjojGQI_0Zqqpp_3V5WtcOd-ybJ8\",\"typ\":\"JWT\"}",
+  "payload": "{\"iss\":\"https://moneta.example\",\"sub\":\"ed25519:ceaf69b0b2f5a23ba37b90951eea5f651160cc3e6f7ba8db7fa278f886d52a86\",\"aud\":\"nutripod-web\",\"iat\":1791000300,\"exp\":1791000600,\"auth_time\":1791000280,\"nonce\":\"n-0S6_WzA2Mj\",\"org\":\"ed25519:5c3d6c9742f1f722c8823f876de25b702ddfeca10954bf1edb517f2536be5e57\",\"role\":\"member\",\"amr\":[\"mca\",\"pop\"]}",
+  "token": "eyJhbGciOiJFZERTQSIsImtpZCI6IkRaZ1dVMmRxZm82RTlkUUdqb2pHUUlfMFpxcXBwXzNWNVd0Y09kLXliSjgiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL21vbmV0YS5leGFtcGxlIiwic3ViIjoiZWQyNTUxOTpjZWFmNjliMGIyZjVhMjNiYTM3YjkwOTUxZWVhNWY2NTExNjBjYzNlNmY3YmE4ZGI3ZmEyNzhmODg2ZDUyYTg2IiwiYXVkIjoibnV0cmlwb2Qtd2ViIiwiaWF0IjoxNzkxMDAwMzAwLCJleHAiOjE3OTEwMDA2MDAsImF1dGhfdGltZSI6MTc5MTAwMDI4MCwibm9uY2UiOiJuLTBTNl9XekEyTWoiLCJvcmciOiJlZDI1NTE5OjVjM2Q2Yzk3NDJmMWY3MjJjODgyM2Y4NzZkZTI1YjcwMmRkZmVjYTEwOTU0YmYxZWRiNTE3ZjI1MzZiZTVlNTciLCJyb2xlIjoibWVtYmVyIiwiYW1yIjpbIm1jYSIsInBvcCJdfQ.MuGbjHPWAGmcHV-MKj2qBL-o3rJPV_bZ4CV2H9U2DxosvA-N4zXHErc5fcX-fCNUtmZE7ujAs8cx5Q4j4m8PAg",
+  "verdict": "wrong_org"
+}

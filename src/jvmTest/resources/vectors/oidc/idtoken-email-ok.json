@@ -1,0 +1,46 @@
+{
+  "name": "idtoken-email-ok",
+  "description": "The managed person with the email scope and a verified directory address; email and email_verified come together.",
+  "kind": "idtoken",
+  "keys": {
+    "current": {
+      "seed": "a3e49d83a62f325288d1edd8a3f04edc7aa5c999da74fc23a248049996962962",
+      "jwk": {
+        "kty": "OKP",
+        "crv": "Ed25519",
+        "x": "-lHW-V3IAnMSEM_HWC1FI7-Y9WpczrbS2vypp5PGGJA",
+        "kid": "DZgWU2dqfo6E9dQGjojGQI_0Zqqpp_3V5WtcOd-ybJ8",
+        "use": "sig",
+        "alg": "EdDSA"
+      }
+    }
+  },
+  "jwks": {
+    "keys": [
+      {
+        "kty": "OKP",
+        "crv": "Ed25519",
+        "x": "-lHW-V3IAnMSEM_HWC1FI7-Y9WpczrbS2vypp5PGGJA",
+        "kid": "DZgWU2dqfo6E9dQGjojGQI_0Zqqpp_3V5WtcOd-ybJ8",
+        "use": "sig",
+        "alg": "EdDSA"
+      }
+    ]
+  },
+  "pins": [
+    "DZgWU2dqfo6E9dQGjojGQI_0Zqqpp_3V5WtcOd-ybJ8"
+  ],
+  "expect": {
+    "issuer": "https://moneta.example",
+    "client_id": "nutripod-web",
+    "org": "ed25519:65214fc93773949e91197bf15d29c81f34538cfc0d479da9560d8bd12f2bc582",
+    "nonce": "n-0S6_WzA2Mj",
+    "now": 1791000300,
+    "leeway": 60
+  },
+  "signer": "current",
+  "header": "{\"alg\":\"EdDSA\",\"kid\":\"DZgWU2dqfo6E9dQGjojGQI_0Zqqpp_3V5WtcOd-ybJ8\",\"typ\":\"JWT\"}",
+  "payload": "{\"iss\":\"https://moneta.example\",\"sub\":\"mp:f5eacf5a96f9f986d13f20a4621d5f71\",\"aud\":\"nutripod-web\",\"iat\":1791000300,\"exp\":1791000600,\"auth_time\":1791000280,\"nonce\":\"n-0S6_WzA2Mj\",\"org\":\"ed25519:65214fc93773949e91197bf15d29c81f34538cfc0d479da9560d8bd12f2bc582\",\"role\":\"admin\",\"amr\":[\"mfa\",\"pop\",\"user\"],\"email\":\"ada@rarebit.one\",\"email_verified\":true}",
+  "token": "eyJhbGciOiJFZERTQSIsImtpZCI6IkRaZ1dVMmRxZm82RTlkUUdqb2pHUUlfMFpxcXBwXzNWNVd0Y09kLXliSjgiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL21vbmV0YS5leGFtcGxlIiwic3ViIjoibXA6ZjVlYWNmNWE5NmY5Zjk4NmQxM2YyMGE0NjIxZDVmNzEiLCJhdWQiOiJudXRyaXBvZC13ZWIiLCJpYXQiOjE3OTEwMDAzMDAsImV4cCI6MTc5MTAwMDYwMCwiYXV0aF90aW1lIjoxNzkxMDAwMjgwLCJub25jZSI6Im4tMFM2X1d6QTJNaiIsIm9yZyI6ImVkMjU1MTk6NjUyMTRmYzkzNzczOTQ5ZTkxMTk3YmYxNWQyOWM4MWYzNDUzOGNmYzBkNDc5ZGE5NTYwZDhiZDEyZjJiYzU4MiIsInJvbGUiOiJhZG1pbiIsImFtciI6WyJtZmEiLCJwb3AiLCJ1c2VyIl0sImVtYWlsIjoiYWRhQHJhcmViaXQub25lIiwiZW1haWxfdmVyaWZpZWQiOnRydWV9.mciU9K71tQG5d50D6j9Q9OZNlx2qGksgHSV-oPwRGbgNRzV6iQElGGk5rzJxxWcOgFAG5eDhH5LNPCjgHM_PAA",
+  "verdict": "ok"
+}

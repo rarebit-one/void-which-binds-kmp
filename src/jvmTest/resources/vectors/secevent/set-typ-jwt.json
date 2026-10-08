@@ -1,0 +1,46 @@
+{
+  "name": "set-typ-jwt",
+  "description": "A SET payload under typ JWT.",
+  "kind": "token",
+  "verifier": "set",
+  "keys": {
+    "current": {
+      "seed": "a3e49d83a62f325288d1edd8a3f04edc7aa5c999da74fc23a248049996962962",
+      "jwk": {
+        "kty": "OKP",
+        "crv": "Ed25519",
+        "x": "-lHW-V3IAnMSEM_HWC1FI7-Y9WpczrbS2vypp5PGGJA",
+        "kid": "DZgWU2dqfo6E9dQGjojGQI_0Zqqpp_3V5WtcOd-ybJ8",
+        "use": "sig",
+        "alg": "EdDSA"
+      }
+    }
+  },
+  "jwks": {
+    "keys": [
+      {
+        "kty": "OKP",
+        "crv": "Ed25519",
+        "x": "-lHW-V3IAnMSEM_HWC1FI7-Y9WpczrbS2vypp5PGGJA",
+        "kid": "DZgWU2dqfo6E9dQGjojGQI_0Zqqpp_3V5WtcOd-ybJ8",
+        "use": "sig",
+        "alg": "EdDSA"
+      }
+    ]
+  },
+  "pins": [
+    "DZgWU2dqfo6E9dQGjojGQI_0Zqqpp_3V5WtcOd-ybJ8"
+  ],
+  "expect_set": {
+    "issuer": "https://moneta.example",
+    "audience": "nutripod-web",
+    "now": 1791000300,
+    "max_age": 604800
+  },
+  "signer": "current",
+  "header": "{\"alg\":\"EdDSA\",\"kid\":\"DZgWU2dqfo6E9dQGjojGQI_0Zqqpp_3V5WtcOd-ybJ8\",\"typ\":\"JWT\"}",
+  "payload": "{\"iss\":\"https://moneta.example\",\"aud\":\"nutripod-web\",\"jti\":\"_y8Iq1ORu9A3klHTt4mPbw\",\"iat\":1791000300,\"toe\":1791000000,\"txn\":\"sha256:df21853a765aaaa1a21201c781d133d3c6a5793b67a7692eef7f724cb2bb495a\",\"sub_id\":{\"format\":\"iss_sub\",\"iss\":\"https://moneta.example\",\"sub\":\"mp:f5eacf5a96f9f986d13f20a4621d5f71\"},\"events\":{\"https://schemas.openid.net/secevent/caep/event-type/session-revoked\":{\"event_timestamp\":1791000000,\"initiating_entity\":\"admin\",\"reason_admin\":{\"en\":\"roster_remove\"}}}}",
+  "token": "eyJhbGciOiJFZERTQSIsImtpZCI6IkRaZ1dVMmRxZm82RTlkUUdqb2pHUUlfMFpxcXBwXzNWNVd0Y09kLXliSjgiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL21vbmV0YS5leGFtcGxlIiwiYXVkIjoibnV0cmlwb2Qtd2ViIiwianRpIjoiX3k4SXExT1J1OUEza2xIVHQ0bVBidyIsImlhdCI6MTc5MTAwMDMwMCwidG9lIjoxNzkxMDAwMDAwLCJ0eG4iOiJzaGEyNTY6ZGYyMTg1M2E3NjVhYWFhMWEyMTIwMWM3ODFkMTMzZDNjNmE1NzkzYjY3YTc2OTJlZWY3ZjcyNGNiMmJiNDk1YSIsInN1Yl9pZCI6eyJmb3JtYXQiOiJpc3Nfc3ViIiwiaXNzIjoiaHR0cHM6Ly9tb25ldGEuZXhhbXBsZSIsInN1YiI6Im1wOmY1ZWFjZjVhOTZmOWY5ODZkMTNmMjBhNDYyMWQ1ZjcxIn0sImV2ZW50cyI6eyJodHRwczovL3NjaGVtYXMub3BlbmlkLm5ldC9zZWNldmVudC9jYWVwL2V2ZW50LXR5cGUvc2Vzc2lvbi1yZXZva2VkIjp7ImV2ZW50X3RpbWVzdGFtcCI6MTc5MTAwMDAwMCwiaW5pdGlhdGluZ19lbnRpdHkiOiJhZG1pbiIsInJlYXNvbl9hZG1pbiI6eyJlbiI6InJvc3Rlcl9yZW1vdmUifX19fQ.B2MrmqEFo3WAk0N_z4RSgCDpDn9lR1pwL2sGCZ8kpP0tbt8Frc85vP6mTVS3J9Dm6gVgWQh7yofv4JOxqQoqDQ",
+  "verdict": "wrong_type",
+  "rfc8935_err": "invalid_request"
+}
