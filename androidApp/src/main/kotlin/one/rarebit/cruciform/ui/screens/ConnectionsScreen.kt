@@ -56,6 +56,24 @@ import one.rarebit.cruciform.ui.components.VbCard
 import one.rarebit.cruciform.ui.theme.VbColors
 
 /**
+ * The Connections row's one line in Manage. A blank URL is a server this phone does not
+ * dial at all (a build with no default and no override): that is said first, because
+ * Add a device or push then cannot work, whatever else is set.
+ */
+internal fun connectionsSummary(
+    relayUrl: String,
+    relayIsDefault: Boolean,
+    notifyUrl: String,
+    notifyIsDefault: Boolean,
+): String = when {
+    relayUrl.isBlank() && notifyUrl.isBlank() -> "Not set · no pairing relay or push plane"
+    relayUrl.isBlank() -> "Pairing relay not set"
+    notifyUrl.isBlank() -> "Push plane not set"
+    relayIsDefault && notifyIsDefault -> "Using this build's servers"
+    else -> "Custom servers set"
+}
+
+/**
  * Manage → **Connections**: the two servers this phone dials, for a self-hosted setup.
  *
  * The **Pairing relay** field edits where THIS phone mints "Add a device" invites

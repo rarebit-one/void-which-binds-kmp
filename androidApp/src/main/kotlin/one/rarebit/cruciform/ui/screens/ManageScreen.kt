@@ -86,13 +86,14 @@ private const val SITES_SHOWN = 2
  * membership, the device set, trusted sites and their policies, the recovery secret,
  * and (one level further down, in [ConnectionsScreen]) the servers this phone dials.
  *
- * Every action is the one Settings offered; only where it lives changed. [relayIsDefault]
- * and [notifyIsDefault] only label the Connections row.
+ * Every action is the one Settings offered; only where it lives changed. [connections]
+ * labels the Connections row (see [connectionsSummary]).
  */
 @Composable
 @Suppress("LongParameterList") // A screen's callbacks are hoisted to the nav graph, one per action.
 fun ManageScreen(
     state: IdentityState.Active,
+    connections: String,
     onCopyIdentity: () -> Unit,
     onRename: () -> Unit,
     onToggleBiometric: (Boolean) -> Unit,
@@ -111,8 +112,6 @@ fun ManageScreen(
     onSecurity: () -> Unit,
     onLicenses: () -> Unit,
     modifier: Modifier = Modifier,
-    relayIsDefault: Boolean = true,
-    notifyIsDefault: Boolean = true,
 ) {
     var confirmForget by remember { mutableStateOf(false) }
     if (confirmForget) {
@@ -190,7 +189,7 @@ fun ManageScreen(
             NavRow(
                 Icons.Rounded.Hub,
                 "Pairing relay and push",
-                if (relayIsDefault && notifyIsDefault) "Using this build's servers" else "Custom servers set",
+                connections,
                 onConnections,
             )
         }

@@ -49,8 +49,8 @@
         <error line="22" column="5" source="standard:function-naming" />
     </file>
     <file name="src/main/kotlin/one/rarebit/cruciform/ui/nav/CruciformNavHost.kt">
-        <error line="110" column="5" source="standard:function-naming" />
-        <error line="780" column="121" source="standard:max-line-length" />
+        <error line="116" column="5" source="standard:function-naming" />
+        <error line="785" column="121" source="standard:max-line-length" />
     </file>
     <file name="src/main/kotlin/one/rarebit/cruciform/ui/nav/FlowDialogs.kt">
         <error line="24" column="14" source="standard:function-naming" />

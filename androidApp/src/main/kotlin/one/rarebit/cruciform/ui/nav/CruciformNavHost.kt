@@ -59,6 +59,7 @@ import one.rarebit.cruciform.ui.screens.RecoverySharesScreen
 import one.rarebit.cruciform.ui.screens.RestoreScreen
 import one.rarebit.cruciform.ui.screens.RestoreSharesScreen
 import one.rarebit.cruciform.ui.screens.ScanScreen
+import one.rarebit.cruciform.ui.screens.connectionsSummary
 import one.rarebit.cruciform.ui.theme.VbColors
 
 /** Navigation routes. */
@@ -71,8 +72,13 @@ object Routes {
     const val RESTORE_SHARES = "restore_shares"
     const val HOME = "home"
 
-    /** The identity, devices, sites, recovery and connections Home keeps out of the way. */
-    const val MANAGE = "manage"
+    /**
+     * The identity, devices, sites, recovery and connections Home keeps out of the way.
+     * The id stays `settings`, what this destination was called before: a back stack the
+     * system saved before an upgrade names it, and restoring an id the graph no longer
+     * has fails.
+     */
+    const val MANAGE = "settings"
 
     /** Manage → the pairing relay and push plane this phone dials. */
     const val CONNECTIONS = "connections"
@@ -611,8 +617,7 @@ fun CruciformNavHost(
                     val notify by settingsVm.notify.state.collectAsStateWithLifecycle()
                     ManageScreen(
                         state = active,
-                        relayIsDefault = relay.isDefault,
-                        notifyIsDefault = notify.isDefault,
+                        connections = connectionsSummary(relay.url, relay.isDefault, notify.url, notify.isDefault),
                         onCopyIdentity = { clipboard.setText(AnnotatedString(active.identity.fullKey)) },
                         onRename = { /* rename dialog — later */ },
                         onToggleBiometric = settingsVm::setBiometricApproval,
