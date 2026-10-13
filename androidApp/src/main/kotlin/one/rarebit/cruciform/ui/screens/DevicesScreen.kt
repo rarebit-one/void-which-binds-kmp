@@ -41,7 +41,7 @@ import one.rarebit.cruciform.ui.theme.VbColors
 import one.rarebit.cruciform.ui.theme.VbType
 
 /**
- * Settings → **Devices**: the identity's device set as THIS device evaluates it from
+ * Manage → **Devices**: the identity's device set as THIS device evaluates it from
  * the membership ops it holds (ADR-0005). Every row is a member; any member can add
  * the next ("Add a device") and remove another — a remove is signed by this device's
  * hardware key behind a biometric prompt and pushed to the relying parties. This

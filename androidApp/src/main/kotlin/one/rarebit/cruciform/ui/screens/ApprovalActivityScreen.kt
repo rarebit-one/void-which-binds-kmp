@@ -1,3 +1,6 @@
+// Compose components are PascalCase by convention; layout spacing is literal dp.
+@file:Suppress("FunctionNaming", "MagicNumber", "ktlint:standard:function-naming")
+
 package one.rarebit.cruciform.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
@@ -69,8 +72,9 @@ fun ApprovalActivityScreen(activity: List<ApprovalActivity>, onBack: () -> Unit,
     }
 }
 
+/** One approve/deny decision; Home shows the latest few with the same row. */
 @Composable
-private fun ActivityRow(entry: ApprovalActivity) {
+internal fun ActivityRow(entry: ApprovalActivity) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(16.dp),
         verticalAlignment = Alignment.CenterVertically,

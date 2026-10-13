@@ -3,7 +3,7 @@ package one.rarebit.cruciform.platform
 import android.content.Context
 
 /**
- * Persisted push-plane choice (Settings → "Push plane"), the notify twin of
+ * Persisted push-plane choice (Manage → Connections → "Push plane"), the notify twin of
  * [RelaySettings]. Plain SharedPreferences: the plane's URL is public
  * configuration, not a secret.
  *

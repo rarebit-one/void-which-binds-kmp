@@ -31,7 +31,7 @@ import one.rarebit.cruciform.handoff.SamePhonePairCallback
 class InviteCoordinator(
     private val engine: VoidbindEngine,
     private val scope: CoroutineScope,
-    /** The configured relay, read at mint time (Settings → "Pairing relay"). Named in a failure. */
+    /** The configured relay, read at mint time (Manage → Connections → "Pairing relay"). Named in a failure. */
     private val relayUrl: () -> String,
     private val clock: () -> Long = System::currentTimeMillis,
     private val keepAlive: ProcessKeepAlive = ProcessKeepAlive.None,

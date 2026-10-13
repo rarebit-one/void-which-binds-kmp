@@ -147,9 +147,9 @@ class OnboardingViewModel(private val engine: VoidbindEngine, private val saved:
 
         /** The first 1-based group with no prefix character in it: group 6 (the 5th holds the `1`). */
         const val FIRST_CHECKED_GROUP = (FIXED_PREFIX.length + GROUP_SIZE - 1) / GROUP_SIZE + 1
-        const val NO_BACKUP = "The secret is no longer on screen. Check it later from Settings → Test recovery secret."
+        const val NO_BACKUP = "The secret is no longer on screen. Check it later from Manage → Test recovery secret."
         const val INTERRUPTED =
             "Cruciform was closed while your identity was being created. If it was created, " +
-                "back up its recovery secret now from Settings → Recovery backup; otherwise, start again."
+                "back up its recovery secret now from Manage → Recovery backup; otherwise, start again."
     }
 }

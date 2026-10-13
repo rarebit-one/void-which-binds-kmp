@@ -93,11 +93,11 @@ class MainActivity : FragmentActivity() {
                                 policyStore = ApprovalPolicyStore(applicationContext),
                                 transport = OkHttpTransport(),
                                 biometric = AndroidBiometricAuthenticator(this@MainActivity),
-                                // Read at invite time, not captured here: Settings → "Pairing
-                                // relay" applies to the next "Add a device" without a restart.
+                                // Read at invite time, not captured here: Manage → Connections →
+                                // "Pairing relay" applies to the next "Add a device" without a restart.
                                 relay = RelaySettings(applicationContext)::current,
                                 // Same discipline for the push plane: read at
-                                // registration time, so Settings -> "Push plane"
+                                // registration time, so Manage → Connections → "Push plane"
                                 // applies on the next app open without a restart.
                                 notify = NotifySettings(applicationContext)::current,
                             )

@@ -15,13 +15,14 @@ The screens follow the product mockups one-to-one:
 | Screen | Purpose |
 |---|---|
 | Onboarding | Create a new identity · Restore from a recovery secret · Add this device (pair) |
-| Home | Identity fingerprint, StrongBox status, this device, trusted sites, Scan FAB |
+| Home | The everyday view: can this phone sign in (in plain words), Scan, anything that needs you (check the backup, renew, a software-only key), recent sign-ins, the sites you use |
 | Scan | CameraX + ML Kit QR scanner → dispatches web-login vs pair invites |
 | Login approval | Sovereign consent sheet for a web login, biometric-gated |
 | Pair · Connect | Show the one-time encrypted invite QR (existing device) |
 | Pair · Verify | Compare the 7-digit SAS out of band, then confirm |
 | Recovery backup | Display + acknowledge the bech32m recovery secret (screenshots blocked) |
-| Settings | Device name, biometric approval, trusted sites (revoke), recovery, about |
+| Manage | Everything Home keeps out of the way: the identity fingerprint (copy), this phone's key backing, biometric approval and membership, devices (add/remove), trusted sites (policy, revoke), approval activity, recovery, about |
+| Manage · Connections | The pairing relay and push plane this phone dials, for a self-hosted setup |
 
 Two ways the app is opened *into* a login from outside its own UI, both running the
 identical approval flow a scan does: a **push wake** (`UnifiedPushReceiver`, self-hosted

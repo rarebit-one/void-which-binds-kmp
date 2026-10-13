@@ -90,7 +90,7 @@ fun PairAllowScreen(
             )
             VSpace(8)
             Text(
-                "It becomes one of your devices: it can sign in as you and hold your data, until you remove it in Settings → Devices.",
+                "It becomes one of your devices: it can sign in as you and hold your data, until you remove it in Manage → Devices.",
                 style = MaterialTheme.typography.bodyLarge,
                 color = VbColors.TextSecondary,
             )

@@ -91,7 +91,7 @@ iOS; the Android onboarding screens).
    `userId` **equals** the original (recovery restores the SAME pinned identity,
    offline), and that a single mistyped character is rejected loudly (the bech32m
    checksum) rather than yielding a different identity.
-3. **The kept copy is behind a strong biometric, not the PIN.** Settings → Recovery
+3. **The kept copy is behind a strong biometric, not the PIN.** Manage → Recovery
    backup must prompt for a fingerprint/face with **no "Use PIN" option**. On a phone
    with no fingerprint enrolled, it must refuse with the "PIN can't authorise it"
    message. Then enrol a **new** fingerprint in system settings and open Recovery
@@ -111,14 +111,14 @@ iOS; the Android onboarding screens).
    recorded. The right groups, in any case, finish onboarding. "Not now" also
    finishes, but Home then shows an amber **Check your recovery secret** card until
    a check passes.
-2. **Drill.** Settings → **Test recovery secret**: type the whole written secret,
+2. **Drill.** Manage → **Test recovery secret**: type the whole written secret,
    spaces and all. On a match it shows the identity's fingerprint (`XXXX XXXX XXXX
-   XXXX`), the same one the Home identity card shows, and the row then reads
+   XXXX`), the same one the Manage identity card shows, and the row then reads
    "Checked <date>". Another identity's secret is refused, naming both fingerprints.
-   No biometric prompt appears and no op is signed (Settings → Devices is unchanged).
+   No biometric prompt appears and no op is signed (Manage → Devices is unchanged).
 3. **Restore counts as a check.** A Restore-provisioned phone shows no card, and
-   Settings reads "Checked <date>".
-4. **Remove the copy.** Settings → Recovery → **Remove the copy on this phone**:
+   Manage reads "Checked <date>".
+4. **Remove the copy.** Manage → Recovery → **Remove the copy on this phone**:
    - before any drill, it refuses and points at the drill;
    - before any drill, the refusal dialog is titled **Not yet** (not "Something went
      wrong");
@@ -138,7 +138,7 @@ as a one-page PDF and hands it straight to the print framework; nothing of
 Cruciform's is written to disk. The layout is unit-tested (`RecoverySheetTest`); the
 print, the paper and the camera are what this test proves.
 
-1. **Print.** On the recovery backup screen (during Create, and from Settings →
+1. **Print.** On the recovery backup screen (during Create, and from Manage →
    Recovery backup) tap **Print recovery sheet**. The system print dialog opens with
    A4 and black-and-white preselected. Choose a real printer (not "Save as PDF", which
    writes the secret to storage) and print at **100% / actual size**, with any "fit
@@ -156,7 +156,7 @@ print, the paper and the camera are what this test proves.
    identity**; the restored identity's fingerprint must equal the sheet's. The general
    scanner (Onboarding → **Add this device**) on the sheet also lands in Restore with
    the field filled.
-4. **Scan into the drill.** On an enrolled phone: Settings → **Test recovery secret** →
+4. **Scan into the drill.** On an enrolled phone: Manage → **Test recovery secret** →
    **Scan recovery sheet**. The field fills; **Check** shows "It matches this identity:
    <fingerprint>" and the row then reads "Checked <date>". The bottom-bar scanner on
    the sheet opens the same drill, filled. Another identity's sheet is refused, naming
@@ -202,7 +202,7 @@ identity's own secret on a wiped phone.
 4. **Restore.** Enter any two different shares, in either order: the screen reads "2
    of 2 shares entered: ready to restore". Tap **Restore identity** and approve the
    device-key biometric. Assert Home shows the SAME identity: the fingerprint and
-   user ID from step 1 (Settings / the Home identity card), and no "Check your
+   user ID from step 1 (the Manage identity card), and no "Check your
    recovery secret" card (a restore from shares counts as a check, as in 2c.3).
    Declining the biometric leaves the shares in place with the reason shown; tapping
    **Restore identity** again retries.
@@ -217,12 +217,12 @@ The phone splits its kept copy of the recovery secret with the same SLIP-39 prof
 as `void-which-binds recovery split` (any 2 of 3, no passphrase), so this proves the split
 half on real hardware; Test 2e proved the restore half.
 
-1. **Split.** On a phone that keeps the recovery copy: Settings → Recovery → **Split
+1. **Split.** On a phone that keeps the recovery copy: Manage → Recovery → **Split
    into shares**. It asks for a strong biometric (no PIN option; declining shows
    "Cancelled" and nothing opens). Then "Share 1 of 3 · any 2 restore your identity"
    shows 33 numbered words in two columns. There is no copy button, and a screenshot
    is blocked. Write it down, tap **Next** for shares 2 and 3, then **Done** returns to
-   Settings. Back, or leaving mid-way, forgets the shares; splitting again gives a new
+   Manage. Back, or leaving mid-way, forgets the shares; splitting again gives a new
    set (shares from different splits don't combine).
 2. **Refusals.** On a phone that keeps no copy (removed in 2c.4, or created with the
    biometric prompt declined), the row is absent. If the strong biometric can't be
@@ -232,8 +232,8 @@ half on real hardware; Test 2e proved the restore half.
    data), follow Test 2e.2–2e.4 with any 2 of the 3 shares from step 1. Home must show
    the first phone's fingerprint (`XXXX XXXX XXXX XXXX`) and user ID. Try a second pair
    too (e.g. shares 1 and 3) after clearing data again.
-4. **Nothing revoked.** The written recovery secret still passes Settings → **Test
-   recovery secret** on the first phone, and Settings → Devices there is unchanged
+4. **Nothing revoked.** The written recovery secret still passes Manage → **Test
+   recovery secret** on the first phone, and Manage → Devices there is unchanged
    (splitting signs nothing).
 
 ## Test 2b — membership renewal (a device renews itself before its add lapses)
@@ -243,7 +243,7 @@ after it signs (a login, authorising a device), or via Home → "Renew now".
 Use a build with a shortened `Enrolment.DEFAULT_LIFETIME_SECONDS`, or set the phone's
 clock forward (auto-time off) past day 60.
 1. Home shows the amber "Renew this device" card; tap **Renew now**. Assert the card
-   goes away, and Settings → Devices shows a later "renews by" date for this device.
+   goes away, and Manage → Devices shows a later "renews by" date for this device.
 2. Sign in to an RP after the ORIGINAL add's expiry: the login succeeds, because the
    device now presents its renewal as its credential.
 3. Set the clock past day 90 **without** renewing: Home shows "This device has lapsed"
@@ -275,15 +275,15 @@ Two devices (or one device + the `void-which-binds pair-*` CLI as the counterpar
    mismatched/rushed SAS yields no enrolment; the delivered cert verifies against
    the user key and binds the new device.
 
-## Test 4b — any member adds the next device; Settings → Devices; Remove (ADR-0005)
+## Test 4b — any member adds the next device; Manage → Devices; Remove (ADR-0005)
 
 From 0.5.0 the device that taps "Add a device" does NOT need the recovery secret:
 it signs the new device's add op with its own hardware key, citing the heads of the
 membership replica in `IdentityStore` (`ops`). A pre-0.5.0 install migrates on first
 launch — its v2 cert IS a genesis add, so the replica starts as `[cert]`; nothing is
 re-enrolled and nothing is lost.
-1. Upgrade in place (`adb install -r`, never uninstall). Open the app: Home still
-   shows the same identity fingerprint and this device; Settings → **Devices** lists
+1. Upgrade in place (`adb install -r`, never uninstall). Open the app: Manage still
+   shows the same identity fingerprint and this device; its **All devices** lists
    this device, "admitted <date> by genesis (recovery key)".
 2. On a PAIRED (non-owner) install, tap **Add a device**: the invite renders without
    any secret; a third device that scans it receives an add signed **by the phone**
@@ -350,7 +350,7 @@ needs THIS authenticator to admit it; it cannot scan the screen it shares.
 adb install -r androidApp/build/outputs/apk/debug/androidApp-debug.apk     # never uninstall — upgrade in place
 ```
 
-1. Settings → **Devices** → **Add a device**. The Connect screen shows the invite QR and,
+1. Manage → **Devices** → **Add a device**. The Connect screen shows the invite QR and,
    below it, **"Send to heyarr on this phone"** — one button per registered RP that is
    installed (`RpPairLauncher.resolvable`), plus **"Share invite…"** (Sharesheet). With no
    such app installed, only "Share invite…" shows.
@@ -362,7 +362,7 @@ adb install -r androidApp/build/outputs/apk/debug/androidApp-debug.apk     # nev
    with its own 7-digit code — the handshake completed when heyarr joined.
 4. Compare the two codes. **Yes, they match** → biometric → the admission is sealed to
    heyarr's device key and delivered; heyarr's screen moves to *Enrolled* and registers
-   at the node (`POST /enrol` with `ops`). Settings → Devices on Cruciform now lists the
+   at the node (`POST /enrol` with `ops`). Manage → Devices on Cruciform now lists the
    phone twice: this device, and "heyarr-mobile on <model>" admitted by this device.
 5. Negative: **Share invite…** to any text target shows the raw `void-which-binds:pair?…` tuple
    and nothing else; a login tuple can never be sent through this door (`uriFor`
