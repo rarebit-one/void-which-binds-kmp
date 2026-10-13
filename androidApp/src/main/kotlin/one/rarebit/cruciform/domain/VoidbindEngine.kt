@@ -46,13 +46,13 @@ interface VoidbindEngine {
     suspend fun restoreIdentity(recoverySecret: String): EngineResult<Unit>
 
     /**
-     * Re-display the recovery secret (Settings → Recovery backup). Biometric-gated: a
+     * Re-display the recovery secret (Manage → Recovery backup). Biometric-gated: a
      * dismissed prompt is a `Failed` of kind CANCELLED.
      */
     suspend fun revealRecoverySecret(): EngineResult<RecoveryBackup>
 
     /**
-     * Split the kept recovery secret into SLIP-39 shares (Settings → Split into shares):
+     * Split the kept recovery secret into SLIP-39 shares (Manage → Split into shares):
      * the Void-Which-Binds profile, any 2 of 3, no passphrase (void-which-binds-go ADR-0011). Behind a
      * strong biometric, never the PIN, like [revealRecoverySecret]. The shares are for
      * one showing: the caller holds them in memory only. Splitting revokes nothing (the

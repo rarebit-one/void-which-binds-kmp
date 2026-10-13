@@ -1,3 +1,6 @@
+// Compose components are PascalCase by convention; layout spacing is literal dp.
+@file:Suppress("FunctionNaming", "MagicNumber", "ktlint:standard:function-naming")
+
 package one.rarebit.cruciform.ui.nav
 
 import androidx.compose.foundation.BorderStroke
@@ -15,7 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.QrCodeScanner
-import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -28,9 +31,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import one.rarebit.cruciform.ui.theme.VbColors
 
-/** The three-slot bottom bar: Home, a centered Scan action, Settings. */
+/**
+ * The three-slot bottom bar: Home (the everyday view), a centered Scan action, and Manage
+ * (the identity, devices, sites, recovery and connections Home keeps out of the way).
+ */
 @Composable
-fun CruciformBottomBar(currentRoute: String?, onHome: () -> Unit, onScan: () -> Unit, onSettings: () -> Unit) {
+fun CruciformBottomBar(currentRoute: String?, onHome: () -> Unit, onScan: () -> Unit, onManage: () -> Unit) {
     Surface(color = VbColors.Background) {
         Row(
             modifier = Modifier
@@ -41,12 +47,7 @@ fun CruciformBottomBar(currentRoute: String?, onHome: () -> Unit, onScan: () -> 
         ) {
             BarItem(Icons.Rounded.Home, "Home", selected = currentRoute == Routes.HOME, onClick = onHome)
             ScanButton(onScan)
-            BarItem(
-                Icons.Rounded.Settings,
-                "Settings",
-                selected = currentRoute == Routes.SETTINGS,
-                onClick = onSettings,
-            )
+            BarItem(Icons.Rounded.Tune, "Manage", selected = currentRoute == Routes.MANAGE, onClick = onManage)
         }
     }
 }

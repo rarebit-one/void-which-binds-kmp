@@ -43,9 +43,11 @@ import one.rarebit.cruciform.ui.flow.ScannedSecretViewModel
 import one.rarebit.cruciform.ui.flow.SettingsViewModel
 import one.rarebit.cruciform.ui.flow.ShareRestoreViewModel
 import one.rarebit.cruciform.ui.screens.ApprovalActivityScreen
+import one.rarebit.cruciform.ui.screens.ConnectionsScreen
 import one.rarebit.cruciform.ui.screens.DevicesScreen
 import one.rarebit.cruciform.ui.screens.HomeScreen
 import one.rarebit.cruciform.ui.screens.LoginApprovalScreen
+import one.rarebit.cruciform.ui.screens.ManageScreen
 import one.rarebit.cruciform.ui.screens.NumberMatchApprovalScreen
 import one.rarebit.cruciform.ui.screens.OnboardingScreen
 import one.rarebit.cruciform.ui.screens.PairAllowScreen
@@ -57,7 +59,6 @@ import one.rarebit.cruciform.ui.screens.RecoverySharesScreen
 import one.rarebit.cruciform.ui.screens.RestoreScreen
 import one.rarebit.cruciform.ui.screens.RestoreSharesScreen
 import one.rarebit.cruciform.ui.screens.ScanScreen
-import one.rarebit.cruciform.ui.screens.SettingsScreen
 import one.rarebit.cruciform.ui.theme.VbColors
 
 /** Navigation routes. */
@@ -69,7 +70,12 @@ object Routes {
     /** Restore from SLIP-39 recovery shares, typed one at a time (void-which-binds-go ADR-0011). */
     const val RESTORE_SHARES = "restore_shares"
     const val HOME = "home"
-    const val SETTINGS = "settings"
+
+    /** The identity, devices, sites, recovery and connections Home keeps out of the way. */
+    const val MANAGE = "manage"
+
+    /** Manage → the pairing relay and push plane this phone dials. */
+    const val CONNECTIONS = "connections"
     const val SCAN = "scan"
 
     /** The scanner the Restore / drill fields open: reads a recovery sheet, hands the secret back. */
@@ -165,7 +171,7 @@ fun CruciformNavHost(
 
     val backStack by nav.currentBackStackEntryAsState()
     val route = backStack?.destination?.route
-    val showBottomBar = route == Routes.HOME || route == Routes.SETTINGS
+    val showBottomBar = route == Routes.HOME || route == Routes.MANAGE
 
     // The start destination MUST be stable for the NavHost's lifetime. Compose keys the
     // nav graph on `startDestination`, so recomputing it from live identity state — which
@@ -435,11 +441,15 @@ fun CruciformNavHost(
         EngineErrorDialog(
             error = error,
             onClosed = ::errorClosed,
-            // "Change relay" → Settings with the relay field focused; the failed invite is
-            // simply dropped (nothing was minted), and "Add a device" can be tried again.
+            // "Change relay" → Manage → Connections with the relay field focused (Back lands
+            // in Manage); the failed invite is simply dropped (nothing was minted), and "Add
+            // a device" can be tried again.
             onChangeRelay = {
                 settingsVm.setRelayFocus(true)
-                if (route != Routes.SETTINGS) nav.navigate(Routes.SETTINGS) { launchSingleTop = true }
+                if (route != Routes.CONNECTIONS) {
+                    if (route != Routes.MANAGE) nav.navigate(Routes.MANAGE) { launchSingleTop = true }
+                    nav.navigate(Routes.CONNECTIONS) { launchSingleTop = true }
+                }
             },
         )
     }
@@ -452,13 +462,7 @@ fun CruciformNavHost(
                     currentRoute = route,
                     onHome = { if (route != Routes.HOME) nav.navigate(Routes.HOME) { launchSingleTop = true } },
                     onScan = { nav.navigate(Routes.SCAN) },
-                    onSettings = {
-                        if (route !=
-                            Routes.SETTINGS
-                        ) {
-                            nav.navigate(Routes.SETTINGS) { launchSingleTop = true }
-                        }
-                    },
+                    onManage = { if (route != Routes.MANAGE) nav.navigate(Routes.MANAGE) { launchSingleTop = true } },
                 )
             }
         },
@@ -584,63 +588,76 @@ fun CruciformNavHost(
                     }
                     Loading()
                 } else {
+                    // Re-read on every visit, so a sign-in just decided is already listed.
+                    LaunchedEffect(Unit) { settingsVm.loadActivity(open = false) }
+                    val activity by settingsVm.activity.collectAsStateWithLifecycle()
                     HomeScreen(
-                        identity = active.identity,
-                        device = active.device,
-                        trustedSites = active.trustedSites,
-                        membership = active.membership,
+                        state = active,
+                        recent = activity,
+                        onScan = { nav.navigate(Routes.SCAN) },
                         onRenew = { settingsVm.renewMembership() },
-                        backupPending = active.backup.confirmPending,
                         onCheckBackup = { nav.navigate(Routes.RECOVERY_DRILL) },
-                        onSettings = { nav.navigate(Routes.SETTINGS) },
-                        onCopyIdentity = { clipboard.setText(AnnotatedString(active.identity.fullKey)) },
-                        onDevice = { startInvite() },
-                        onDevices = { settingsVm.loadDevices(open = true) },
-                        onSite = { /* site detail — later */ },
+                        onActivity = { settingsVm.loadActivity(open = true) },
+                        onManage = { nav.navigate(Routes.MANAGE) { launchSingleTop = true } },
                     )
                 }
             }
 
-            composable(Routes.SETTINGS) {
+            composable(Routes.MANAGE) {
                 val active = identityState as? IdentityState.Active
                 if (active != null) {
-                    // The persisted endpoints (re-read after every Save/Reset so the field
-                    // and the Default/Custom pill track the store; the engine reads the
-                    // store itself, at invite / registration time) and their drafts.
+                    // Only to label the Connections row; the fields live on that screen.
                     val relay by settingsVm.relay.state.collectAsStateWithLifecycle()
                     val notify by settingsVm.notify.state.collectAsStateWithLifecycle()
-                    val focusRelay by settingsVm.focusRelay.collectAsStateWithLifecycle()
-                    SettingsScreen(
+                    ManageScreen(
                         state = active,
-                        notifyUrl = notify.url,
-                        notifyIsDefault = notify.isDefault,
-                        onSaveNotify = settingsVm.notify::save,
-                        onResetNotify = settingsVm.notify::reset,
-                        notifyDraft = notify.draft,
-                        onNotifyDraftChange = settingsVm.notify::onDraftChange,
-                        relayUrl = relay.url,
                         relayIsDefault = relay.isDefault,
-                        onSaveRelay = settingsVm.relay::save,
-                        onResetRelay = settingsVm.relay::reset,
-                        relayDraft = relay.draft,
-                        onRelayDraftChange = settingsVm.relay::onDraftChange,
-                        focusRelay = focusRelay,
-                        onRelayFocused = { settingsVm.setRelayFocus(false) },
+                        notifyIsDefault = notify.isDefault,
+                        onCopyIdentity = { clipboard.setText(AnnotatedString(active.identity.fullKey)) },
                         onRename = { /* rename dialog — later */ },
                         onToggleBiometric = settingsVm::setBiometricApproval,
+                        onRenew = { settingsVm.renewMembership() },
+                        onAddDevice = { startInvite() },
+                        onDevices = { settingsVm.loadDevices(open = true) },
                         onRevoke = settingsVm::revoke,
                         onManageSites = { /* full list — later */ },
+                        onApprovalActivity = { settingsVm.loadActivity(open = true) },
                         onRecoveryBackup = settingsVm::revealRecovery,
                         onTestRecovery = { nav.navigate(Routes.RECOVERY_DRILL) },
                         onForgetRecovery = settingsVm::forgetRecoverySecret,
                         onSplitShares = settingsVm::splitIntoShares,
-                        onApprovalActivity = { settingsVm.loadActivity(open = true) },
-                        onDevices = { settingsVm.loadDevices(open = true) },
+                        onConnections = { nav.navigate(Routes.CONNECTIONS) { launchSingleTop = true } },
                         onAbout = { },
                         onSecurity = { },
                         onLicenses = { },
                     )
                 }
+            }
+
+            composable(Routes.CONNECTIONS) {
+                // The persisted endpoints (re-read after every Save/Reset so the field and
+                // the Default/Custom pill track the store; the engine reads the store
+                // itself, at invite / registration time) and their drafts.
+                val relay by settingsVm.relay.state.collectAsStateWithLifecycle()
+                val notify by settingsVm.notify.state.collectAsStateWithLifecycle()
+                val focusRelay by settingsVm.focusRelay.collectAsStateWithLifecycle()
+                ConnectionsScreen(
+                    onBack = { nav.popBackStack() },
+                    notifyUrl = notify.url,
+                    notifyIsDefault = notify.isDefault,
+                    onSaveNotify = settingsVm.notify::save,
+                    onResetNotify = settingsVm.notify::reset,
+                    notifyDraft = notify.draft,
+                    onNotifyDraftChange = settingsVm.notify::onDraftChange,
+                    relayUrl = relay.url,
+                    relayIsDefault = relay.isDefault,
+                    onSaveRelay = settingsVm.relay::save,
+                    onResetRelay = settingsVm.relay::reset,
+                    relayDraft = relay.draft,
+                    onRelayDraftChange = settingsVm.relay::onDraftChange,
+                    focusRelay = focusRelay,
+                    onRelayFocused = { settingsVm.setRelayFocus(false) },
+                )
             }
 
             composable(Routes.SCAN) {

@@ -104,7 +104,7 @@ internal class RecoveryCopy(
             !store.hasUserKey() -> NO_COPY
 
             store.backupCheckedAt() == null ->
-                "Check your written recovery secret first (Settings → Test recovery secret): " +
+                "Check your written recovery secret first (Manage → Test recovery secret): " +
                     "after this, it is the only copy."
 
             lapsed -> "This device must be a current member first, so it can renew itself without the recovery key."

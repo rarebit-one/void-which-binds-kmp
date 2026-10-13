@@ -3,7 +3,7 @@ package one.rarebit.cruciform.platform
 import android.content.Context
 
 /**
- * Persisted pairing-relay choice (Settings → "Pairing relay"). Plain SharedPreferences:
+ * Persisted pairing-relay choice (Manage → Connections → "Pairing relay"). Plain SharedPreferences:
  * the relay URL is public configuration, not a secret. [current] is read by the
  * engine AT INVITE TIME (a provider lambda, not a value captured at app start), so a
  * change in Settings takes effect on the next "Add a device" without a restart.

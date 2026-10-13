@@ -66,7 +66,7 @@ import java.util.Locale
  * add op with its own hardware key, citing the heads of the replica in
  * [IdentityStore]; the recovery secret is only the genesis fallback for a device
  * whose own admission has lapsed. Login assertions present the replica (`ops`);
- * Settings → Devices evaluates it and can sign a `remove` (biometric-gated) that is
+ * Manage → Devices evaluates it and can sign a `remove` (biometric-gated) that is
  * pushed to the relying parties in [membershipRps].
  */
 class DeviceVoidbindEngine(
@@ -76,13 +76,13 @@ class DeviceVoidbindEngine(
     private val biometric: BiometricAuthenticator,
     /**
      * The pairing-relay base this device MINTS invites through, read on every call —
-     * a provider, not a value, so Settings → "Pairing relay" takes effect on the next
+     * a provider, not a value, so Manage → Connections → "Pairing relay" takes effect on the next
      * "Add a device" without recreating the engine (`RelaySettings.current`).
      */
     private val relay: () -> String,
     /**
      * The push/wake plane base this device REGISTERS its wake endpoint with, read on
-     * every call — a provider, not a value, so Settings → "Push plane" takes effect on
+     * every call — a provider, not a value, so Manage → Connections → "Push plane" takes effect on
      * the next registration (the next app open) without recreating the engine
      * (`NotifySettings.current`).
      */
@@ -373,7 +373,7 @@ class DeviceVoidbindEngine(
     // handler as a main-thread FATAL. Nothing may throw out of these blocks.
 
     override suspend fun startPairInvite(): EngineResult<PairInviteDisplay> = withContext(Dispatchers.IO) {
-        // Read the relay ONCE per invite: Settings → "Pairing relay" is consulted here, at
+        // Read the relay ONCE per invite: Manage → Connections → "Pairing relay" is consulted here, at
         // invite time, so a change applies to the next invite with no restart.
         val relayBase = relayBase
         inviteRelay = relayBase
@@ -382,7 +382,7 @@ class DeviceVoidbindEngine(
             // dialog offers "Change relay") rather than dialling an empty URL.
             return@withContext EngineResult.Failed(
                 EngineFailure(
-                    "No pairing relay is set up. Add one in Settings → Pairing relay.",
+                    "No pairing relay is set up. Add one in Manage → Connections.",
                     EngineFailure.Kind.REJECTED,
                     retryable = false,
                 ),

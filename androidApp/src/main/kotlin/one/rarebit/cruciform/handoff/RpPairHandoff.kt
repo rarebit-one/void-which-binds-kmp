@@ -2,7 +2,7 @@ package one.rarebit.cruciform.handoff
 
 /**
  * The **reverse** same-device handoff (ADR-0006, discovery per ADR-0009): this
- * authenticator holds a pairing invite it just minted (Settings → Devices → "Add a
+ * authenticator holds a pairing invite it just minted (Manage → Devices → "Add a
  * device") and the NEW device is a relying-party app on the SAME phone — heyarr-mobile,
  * All Thing — which cannot scan our screen. ADR-0003 already lets an RP open us with a
  * `void-which-binds:` link; this is the mirror: we open the RP with its own **pair-callback**

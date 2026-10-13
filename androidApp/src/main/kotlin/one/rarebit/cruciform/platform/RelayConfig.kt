@@ -19,7 +19,7 @@ object RelayConfig {
      * `CRUCIFORM_DEFAULT_RELAY` / `cruciformDefaultRelay` setting — see
      * `androidApp/build.gradle.kts`), never a committed constant: a private LAN
      * endpoint must not ship baked into the APK. With no default the user sets one in
-     * Settings → "Pairing relay", and "Add a device" says so instead of dialling `""`.
+     * Manage → Connections → "Pairing relay", and "Add a device" says so instead of dialling `""`.
      * The relay only ever carries the encrypted pairing transcript, so it leaks
      * nothing either way (the SAS compare is what authenticates the pairing).
      */

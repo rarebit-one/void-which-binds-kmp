@@ -98,7 +98,7 @@ internal object RecoverySheet {
             notes = listOf(
                 "This secret IS your identity. Anyone who holds it can become you, so keep it offline: " +
                     "no photos, no cloud, no email.",
-                "Check it now and once a year, without using it: Cruciform → Settings → Test recovery secret, " +
+                "Check it now and once a year, without using it: Cruciform → Manage → Test recovery secret, " +
                     "or 'void-which-binds recovery verify --secret-file -'. The fingerprint shown must read $fp.",
                 "To restore after losing every device: Cruciform → Restore (scan the code, or type the groups " +
                     "above, spaces allowed), or 'void-which-binds identity recover --secret-file -'.",
