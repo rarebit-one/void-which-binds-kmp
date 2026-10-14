@@ -14,7 +14,7 @@ import org.junit.Test
 class HandoffRouterTest {
 
     private val tuple =
-        "void-which-binds:login?id=d0865b8fd4dd6174b0c35e514a0a5e37&rp=http%3A%2F%2F192.168.16.224%3A7777"
+        "void-which-binds:login?id=d0865b8fd4dd6174b0c35e514a0a5e37&rp=http%3A%2F%2F192.0.2.10%3A7777"
 
     @Test
     fun viewOfALoginUriRoutesToLoginAndReturnsToCaller() {
@@ -29,7 +29,7 @@ class HandoffRouterTest {
 
     @Test
     fun callbackIsCarriedButStrippedFromTheTuple() {
-        val uri = "void-which-binds:login?rp=http%3A%2F%2F192.168.16.224%3A7777" +
+        val uri = "void-which-binds:login?rp=http%3A%2F%2F192.0.2.10%3A7777" +
             "&id=d0865b8fd4dd6174b0c35e514a0a5e37&callback=heyarr%3A%2F%2Fdone"
         val h = HandoffRouter.fromDeepLink(HandoffRouter.ACTION_VIEW, uri, seq = 1)!!
         assertEquals("heyarr://done", h.callback)

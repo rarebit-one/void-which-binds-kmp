@@ -27,7 +27,7 @@ import kotlin.test.assertTrue
  */
 class PairingErrorTest {
 
-    private val relay = "http://192.168.16.224:7777/pair"
+    private val relay = "http://192.0.2.10:7777/pair"
     private val invite = Invite.Parsed(
         relay,
         "deadbeef",
@@ -82,11 +82,11 @@ class PairingErrorTest {
 
     @Test
     fun joinWithNoRouteToTheRelayIsUnreachableNotACrash() {
-        // Mirrors the captured SocketTimeoutException("failed to connect to /192.168.16.224 (port 7777)").
+        // Mirrors the captured SocketTimeoutException("failed to connect to /192.0.2.10 (port 7777)").
         val pairing =
             DevicePairing(
                 ThrowingTransport {
-                    RuntimeException("failed to connect to /192.168.16.224 (port 7777)")
+                    RuntimeException("failed to connect to /192.0.2.10 (port 7777)")
                 },
                 device(),
                 { 1L },
@@ -94,9 +94,9 @@ class PairingErrorTest {
         val outcome = pairing.beginCatching(invite) // must NOT throw
         val failed = assertIs<PairingOutcome.Failed>(outcome)
         assertEquals(PairingFailureKind.UNREACHABLE, failed.kind)
-        assertEquals("192.168.16.224:7777", failed.relayHost)
+        assertEquals("192.0.2.10:7777", failed.relayHost)
         assertEquals(
-            "Can't reach the relay at 192.168.16.224:7777. Check Wi-Fi or your VPN and try again.",
+            "Can't reach the relay at 192.0.2.10:7777. Check Wi-Fi or your VPN and try again.",
             failed.message,
         )
         assertTrue(
@@ -174,7 +174,7 @@ class PairingErrorTest {
         ).value
         val failed = assertIs<PairingOutcome.Failed>(auth.handshakeCatching(invitation))
         assertEquals(PairingFailureKind.UNREACHABLE, failed.kind)
-        assertEquals("192.168.16.224:7777", failed.relayHost)
+        assertEquals("192.0.2.10:7777", failed.relayHost)
     }
 
     @Test
@@ -199,7 +199,7 @@ class PairingErrorTest {
 
     @Test
     fun hostOfRendersHostAndPortWithoutPathOrScheme() {
-        assertEquals("192.168.16.224:7777", PairingFailures.hostOf("http://192.168.16.224:7777/pair"))
+        assertEquals("192.0.2.10:7777", PairingFailures.hostOf("http://192.0.2.10:7777/pair"))
         assertEquals("relay.example.org", PairingFailures.hostOf("https://relay.example.org"))
         assertEquals("relay.example.org", PairingFailures.hostOf("https://relay.example.org/"))
         assertEquals("host:1", PairingFailures.hostOf("http://user@host:1/x?y#z"))

@@ -323,13 +323,13 @@ adb install -r androidApp/build/outputs/apk/debug/androidApp-debug.apk
 # adb uninstall one.rarebit.voidbind   # old package, only once Cruciform is enrolled
 
 # mint a login on the RP (a heyarr dev node on the LAN), then hand it to the authenticator
-ID=$(curl -s -X POST http://192.168.16.224:7777/login | sed -E 's/.*"id":"([^"]+)".*/\1/')
+ID=$(curl -s -X POST http://192.0.2.10:7777/login | sed -E 's/.*"id":"([^"]+)".*/\1/')
 adb shell am start -a android.intent.action.VIEW \
-  -d "void-which-binds:login?rp=http%3A%2F%2F192.168.16.224%3A7777&id=$ID&callback=heyarr%3A%2F%2Flogin%2Fdone"
+  -d "void-which-binds:login?rp=http%3A%2F%2F192.0.2.10%3A7777&id=$ID&callback=heyarr%3A%2F%2Flogin%2Fdone"
 ```
 
 1. The approval sheet opens (cold start AND with the app already open — `singleTask`
-   + `onNewIntent`) showing the **rp origin** `192.168.16.224:7777` and a live expiry;
+   + `onNewIntent`) showing the **rp origin** `192.0.2.10:7777` and a live expiry;
    nothing was approved by the link itself. A v2 challenge shows the number grid.
 2. Tap **Deny**: the activity finishes; the previous app is back in front; no callback
    is launched; `GET /login/$ID` never reports approved.

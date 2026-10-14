@@ -32,7 +32,7 @@ class PairingConfirmErrorTest {
         @Volatile var instantSleep = false
 
         private fun gate() {
-            if (down) throw RuntimeException("failed to connect to /192.168.16.224 (port 7777)")
+            if (down) throw RuntimeException("failed to connect to /192.0.2.10 (port 7777)")
         }
 
         override fun post(url: String, body: ByteArray?, contentType: String?): HttpResponse {
@@ -86,7 +86,7 @@ class PairingConfirmErrorTest {
         val auth = DeviceAuthorization(http, UserIdentity.create(), { 1_724_700_000L }, pollIntervalMillis = 10)
         val pairing = DevicePairing(http, device(), { 1_724_700_000L }, pollIntervalMillis = 10)
         val invitation = assertIs<PairingOutcome.Ready<DeviceAuthorization.Invitation>>(
-            auth.inviteCatching("http://192.168.16.224:7777"),
+            auth.inviteCatching("http://192.0.2.10:7777"),
         ).value
         var initiator: PairingOutcome<String>? = null
         var responder: PairingOutcome<DevicePairing.Handshake>? = null
@@ -108,7 +108,7 @@ class PairingConfirmErrorTest {
         h.http.down = true
         val failed = assertIs<PairingOutcome.Failed>(h.auth.authoriseCatching(h.invitation))
         assertEquals(PairingFailureKind.UNREACHABLE, failed.kind)
-        assertEquals("192.168.16.224:7777", failed.relayHost)
+        assertEquals("192.0.2.10:7777", failed.relayHost)
     }
 
     @Test
@@ -125,7 +125,7 @@ class PairingConfirmErrorTest {
         h.http.down = true
         val failed = assertIs<PairingOutcome.Failed>(h.pairing.confirmCatching(h.handshake))
         assertEquals(PairingFailureKind.UNREACHABLE, failed.kind)
-        assertEquals("192.168.16.224:7777", failed.relayHost)
+        assertEquals("192.0.2.10:7777", failed.relayHost)
     }
 
     @Test

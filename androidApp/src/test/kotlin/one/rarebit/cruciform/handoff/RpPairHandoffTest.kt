@@ -14,7 +14,7 @@ import org.junit.Test
  */
 class RpPairHandoffTest {
 
-    private val invite = "void-which-binds:pair?relay=http%3A%2F%2F192.168.16.224%3A8788&salt=" +
+    private val invite = "void-which-binds:pair?relay=http%3A%2F%2F192.0.2.10%3A8788&salt=" +
         "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff&session=sess1" +
         "&usr=ed25519%3Af947b10c8089aa8fed2d435fae069d0ca1513b33691955ae963dfe8bc5b398c4&v=4"
     private val heyarr = RpPairTarget(appName = "heyarr", callbackBase = "heyarr-mobile://pair")

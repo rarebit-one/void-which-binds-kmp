@@ -35,8 +35,8 @@ class RelayConfigTest {
             RelayConfig.validate("https://relay.example.org"),
         )
         assertEquals(
-            Validation.Valid("http://192.168.16.224:8080/pair"),
-            RelayConfig.validate("http://192.168.16.224:8080/pair"),
+            Validation.Valid("http://192.0.2.10:8080/pair"),
+            RelayConfig.validate("http://192.0.2.10:8080/pair"),
         )
         assertEquals(Validation.Valid("HTTPS://relay.example"), RelayConfig.validate("HTTPS://relay.example"))
     }
@@ -44,8 +44,8 @@ class RelayConfigTest {
     @Test
     fun `normalises whitespace and trailing slashes so the client's slash-v1 join cannot double up`() {
         assertEquals(
-            Validation.Valid("http://192.168.16.224:7777/pair"),
-            RelayConfig.validate("  http://192.168.16.224:7777/pair/  "),
+            Validation.Valid("http://192.0.2.10:7777/pair"),
+            RelayConfig.validate("  http://192.0.2.10:7777/pair/  "),
         )
         assertEquals(
             Validation.Valid("https://relay.example.org"),
@@ -74,7 +74,7 @@ class RelayConfigTest {
         assertIs<Validation.Invalid>(RelayConfig.validate("wss://relay.example.org"))
         assertIs<Validation.Invalid>(RelayConfig.validate("ftp://relay.example.org"))
         assertIs<Validation.Invalid>(RelayConfig.validate("relay.example.org"))
-        assertIs<Validation.Invalid>(RelayConfig.validate("192.168.16.224:7777/pair"))
+        assertIs<Validation.Invalid>(RelayConfig.validate("192.0.2.10:7777/pair"))
         assertIs<Validation.Invalid>(RelayConfig.validate("/pair"))
     }
 
@@ -86,9 +86,9 @@ class RelayConfigTest {
 
     @Test
     fun `rejects query, fragment and userinfo - the base is a mount point, not a request`() {
-        assertIs<Validation.Invalid>(RelayConfig.validate("http://192.168.16.224:7777/pair?x=1"))
-        assertIs<Validation.Invalid>(RelayConfig.validate("http://192.168.16.224:7777/pair#frag"))
-        assertIs<Validation.Invalid>(RelayConfig.validate("http://user:pw@192.168.16.224:7777/pair"))
+        assertIs<Validation.Invalid>(RelayConfig.validate("http://192.0.2.10:7777/pair?x=1"))
+        assertIs<Validation.Invalid>(RelayConfig.validate("http://192.0.2.10:7777/pair#frag"))
+        assertIs<Validation.Invalid>(RelayConfig.validate("http://user:pw@192.0.2.10:7777/pair"))
     }
 
     @Test
