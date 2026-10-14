@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -37,10 +38,13 @@ import one.rarebit.cruciform.ui.theme.VbColors
  */
 @Composable
 fun CruciformBottomBar(currentRoute: String?, onHome: () -> Unit, onScan: () -> Unit, onManage: () -> Unit) {
+    // Android 15 draws edge to edge at targetSdk 35: without the inset, the gesture
+    // handle sits over the Scan label.
     Surface(color = VbColors.Background) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .navigationBarsPadding()
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround,

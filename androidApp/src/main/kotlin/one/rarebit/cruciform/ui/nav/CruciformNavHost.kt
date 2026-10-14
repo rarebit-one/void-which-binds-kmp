@@ -625,7 +625,6 @@ fun CruciformNavHost(
                         onAddDevice = { startInvite() },
                         onDevices = { settingsVm.loadDevices(open = true) },
                         onRevoke = settingsVm::revoke,
-                        onManageSites = { /* full list — later */ },
                         onApprovalActivity = { settingsVm.loadActivity(open = true) },
                         onRecoveryBackup = settingsVm::revealRecovery,
                         onTestRecovery = { nav.navigate(Routes.RECOVERY_DRILL) },
