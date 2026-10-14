@@ -13,7 +13,7 @@ mints a v3 invite), ADR-0007 (the invite outlives the screen), voidbind-kmp #41,
 
 ## Context
 
-The same-phone enrolment ADR-0006 built works, and Jaryl ran it live on 2026-09-03
+The same-phone enrolment ADR-0006 built works, and the maintainer ran it live on 2026-09-03
 (Cruciform 0.6.0 → heyarr-mobile). His verdict: *"it was a bit clumsy, having to switch
 between two apps to match confirmation codes, and accept."* The dance was: Cruciform mints
 → Send to heyarr → heyarr creates its key behind a fingerprint → heyarr shows its SAS →

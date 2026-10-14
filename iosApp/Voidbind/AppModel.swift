@@ -5,7 +5,7 @@ import VoidWhichBinds
 /// A relying party this identity has signed into, shown on Home.
 struct TrustedSite: Identifiable, Hashable {
     let id = UUID()
-    let origin: String        // e.g. "https://thesim.family"
+    let origin: String        // e.g. "https://family.example"
     let lastUsed: Date
     var host: String { URL(string: origin)?.host ?? origin }
 }

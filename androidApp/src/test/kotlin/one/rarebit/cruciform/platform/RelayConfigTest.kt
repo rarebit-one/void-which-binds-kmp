@@ -31,8 +31,8 @@ class RelayConfigTest {
     @Test
     fun `accepts http and https bases with a host, and a path mount`() {
         assertEquals(
-            Validation.Valid("https://relay.thesim.family"),
-            RelayConfig.validate("https://relay.thesim.family"),
+            Validation.Valid("https://relay.example.org"),
+            RelayConfig.validate("https://relay.example.org"),
         )
         assertEquals(
             Validation.Valid("http://192.168.16.224:8080/pair"),
@@ -48,10 +48,10 @@ class RelayConfigTest {
             RelayConfig.validate("  http://192.168.16.224:7777/pair/  "),
         )
         assertEquals(
-            Validation.Valid("https://relay.thesim.family"),
-            RelayConfig.validate("https://relay.thesim.family///"),
+            Validation.Valid("https://relay.example.org"),
+            RelayConfig.validate("https://relay.example.org///"),
         )
-        assertEquals("https://relay.thesim.family", RelayConfig.normalizeOrNull("https://relay.thesim.family/"))
+        assertEquals("https://relay.example.org", RelayConfig.normalizeOrNull("https://relay.example.org/"))
     }
 
     @Test
@@ -63,9 +63,9 @@ class RelayConfigTest {
 
     @Test
     fun `rejects non-http schemes and bare hosts`() {
-        assertIs<Validation.Invalid>(RelayConfig.validate("wss://relay.thesim.family"))
-        assertIs<Validation.Invalid>(RelayConfig.validate("ftp://relay.thesim.family"))
-        assertIs<Validation.Invalid>(RelayConfig.validate("relay.thesim.family"))
+        assertIs<Validation.Invalid>(RelayConfig.validate("wss://relay.example.org"))
+        assertIs<Validation.Invalid>(RelayConfig.validate("ftp://relay.example.org"))
+        assertIs<Validation.Invalid>(RelayConfig.validate("relay.example.org"))
         assertIs<Validation.Invalid>(RelayConfig.validate("192.168.16.224:7777/pair"))
         assertIs<Validation.Invalid>(RelayConfig.validate("/pair"))
     }

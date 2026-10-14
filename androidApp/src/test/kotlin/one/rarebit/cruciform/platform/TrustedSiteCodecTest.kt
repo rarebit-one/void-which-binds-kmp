@@ -9,12 +9,13 @@ import kotlin.test.assertTrue
 /** The trusted-sites list survives a round trip, and the pre-v1 blob is dropped, not misread. */
 class TrustedSiteCodecTest {
     private val heyarr =
-        TrustedSite("heyarr.br.thesim.family", "heyarr.br.thesim.family", "", "just now", SiteAccent.BLUE)
-    private val cove = TrustedSite("home.cove.lan", "home.cove.lan", "Cove Control", "yesterday", SiteAccent.PURPLE)
+        TrustedSite("heyarr.home.example", "heyarr.home.example", "", "just now", SiteAccent.BLUE)
+    private val control =
+        TrustedSite("control.home.arpa", "control.home.arpa", "Home Control", "yesterday", SiteAccent.PURPLE)
 
     @Test
     fun `round-trips every field, in order`() {
-        val sites = listOf(heyarr, cove)
+        val sites = listOf(heyarr, control)
         assertEquals(sites, TrustedSiteCodec.decode(TrustedSiteCodec.encode(sites)))
     }
 
@@ -23,7 +24,7 @@ class TrustedSiteCodecTest {
         val encoded = TrustedSiteCodec.encode(listOf(heyarr))
         val fs = TrustedSiteCodec.FIELD
         assertEquals(
-            "${TrustedSiteCodec.HEADER}\nheyarr.br.thesim.family${fs}heyarr.br.thesim.family${fs}${fs}just now${fs}BLUE",
+            "${TrustedSiteCodec.HEADER}\nheyarr.home.example${fs}heyarr.home.example${fs}${fs}just now${fs}BLUE",
             encoded,
         )
     }
@@ -38,7 +39,7 @@ class TrustedSiteCodecTest {
     @Test
     fun `the app-v0_7_2 undelimited blob is dropped rather than read one character at a time`() {
         // What the empty-string joiner wrote: one row, no separators at all.
-        val legacy = "heyarr.br.thesim.familyheyarr.br.thesim.familyjust nowBLUE"
+        val legacy = "heyarr.home.exampleheyarr.home.examplejust nowBLUE"
         assertTrue(TrustedSiteCodec.decode(legacy).isEmpty())
     }
 

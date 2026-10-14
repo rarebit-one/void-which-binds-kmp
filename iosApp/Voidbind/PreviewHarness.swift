@@ -30,7 +30,7 @@ enum PreviewHarness {
         let m = AppModel(engine: VoidbindEngine(), preview: true)
         m.enrolment = .enrolled(userId: sampleUserId, cert: "cert.sample")
         m.trustedSites = [
-            TrustedSite(origin: "https://thesim.family", lastUsed: Date().addingTimeInterval(-3600)),
+            TrustedSite(origin: "https://family.example", lastUsed: Date().addingTimeInterval(-3600)),
             TrustedSite(origin: "https://git.rarebit.one", lastUsed: Date().addingTimeInterval(-86400 * 2)),
         ]
         return m
@@ -51,8 +51,8 @@ enum PreviewHarness {
         case "login":
             NavigationStack {
                 WebLoginApprovalView(
-                    model: WebLoginModel(sampleRP: "https://thesim.family",
-                                         audience: "https://thesim.family", expiresIn: 55))
+                    model: WebLoginModel(sampleRP: "https://family.example",
+                                         audience: "https://family.example", expiresIn: 55))
             }
         case "pair-connect":
             NavigationStack { PairView(model: .sample(.invite(qr: sampleInvite), mode: .connect)) }

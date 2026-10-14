@@ -34,8 +34,8 @@ class NotifyConfigTest {
     @Test
     fun `accepts http and https bases with a host`() {
         assertEquals(
-            Validation.Valid("https://notify.thesim.family"),
-            NotifyConfig.validate("https://notify.thesim.family"),
+            Validation.Valid("https://notify.example.org"),
+            NotifyConfig.validate("https://notify.example.org"),
         )
         assertEquals(Validation.Valid("http://192.168.24.1:2587"), NotifyConfig.validate("http://192.168.24.1:2587"))
     }
@@ -46,7 +46,7 @@ class NotifyConfigTest {
             Validation.Valid("http://192.168.16.224:2587"),
             NotifyConfig.validate("  http://192.168.16.224:2587/  "),
         )
-        assertEquals("https://notify.thesim.family", NotifyConfig.normalizeOrNull("https://notify.thesim.family///"))
+        assertEquals("https://notify.example.org", NotifyConfig.normalizeOrNull("https://notify.example.org///"))
     }
 
     @Test

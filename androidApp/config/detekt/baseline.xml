@@ -262,7 +262,7 @@
     <ID>MaxLineLength:PairAllowScreen.kt$"Both apps are on this phone, so they checked each other's keys directly — there is no code for you to compare."</ID>
     <ID>MaxLineLength:PairAllowScreen.kt$"It becomes one of your devices: it can sign in as you and hold your data, until you remove it in Manage → Devices."</ID>
     <ID>MaxLineLength:RestoreScreen.kt$"This rebuilds your identity on this device offline. No server is involved. A single wrong character is refused."</ID>
-    <ID>MaxLineLength:TrustedSiteCodecTest.kt$TrustedSiteCodecTest$"${TrustedSiteCodec.HEADER}\nheyarr.br.thesim.family${fs}heyarr.br.thesim.family${fs}${fs}just now${fs}BLUE"</ID>
+    <ID>MaxLineLength:TrustedSiteCodecTest.kt$TrustedSiteCodecTest$"${TrustedSiteCodec.HEADER}\nheyarr.home.example${fs}heyarr.home.example${fs}${fs}just now${fs}BLUE"</ID>
     <ID>ReturnCount:DeviceVoidbindEngine.kt$DeviceVoidbindEngine$private fun existingEncKey(): DeviceIdentity.EncryptionKey?</ID>
     <ID>ReturnCount:Handoff.kt$HandoffRouter$fun fromDeepLink(action: String?, dataString: String?, seq: Int): Handoff?</ID>
     <ID>ReturnCount:IdentityStore.kt$IdentityStore$fun load(): Persisted?</ID>

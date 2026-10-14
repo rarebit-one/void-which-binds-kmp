@@ -31,8 +31,8 @@ class PreviewVoidbindEngine(initial: IdentityState = SampleData.activeState) : V
     init {
         // Seed a plausible activity history + one trusted site so the log/settings screens
         // have something to render under @Preview.
-        policy.trust("thesim.family")
-        policy.recordApproval("thesim.family", "https://thesim.family", "L-1001")
+        policy.trust("family.example")
+        policy.recordApproval("family.example", "https://family.example", "L-1001")
         previewClock += 3_600
         policy.recordDenial("unknown.example", "https://unknown.example", "L-1002")
     }
@@ -64,10 +64,10 @@ class PreviewVoidbindEngine(initial: IdentityState = SampleData.activeState) : V
 
     override fun parseScanned(raw: String): ScannedCode = when {
         raw.startsWith("void-which-binds:login") ->
-            ScannedCode.WebLogin("https://thesim.family", "sample-login-id", raw)
+            ScannedCode.WebLogin("https://family.example", "sample-login-id", raw)
 
         raw.startsWith("void-which-binds:pair") ->
-            ScannedCode.PairInvite("wss://relay.thesim.family", "sample-session", raw)
+            ScannedCode.PairInvite("wss://relay.example.org", "sample-session", raw)
 
         raw.lowercase().startsWith("void-which-binds1") -> ScannedCode.RecoverySecret(raw)
 
@@ -205,14 +205,14 @@ class PreviewVoidbindEngine(initial: IdentityState = SampleData.activeState) : V
 /** Sample content mirroring the product mockups. Placeholder only. */
 object SampleData {
     val identity = Identity(
-        label = "Jaryl's Nothing Phone",
+        label = "Alex's phone",
         fingerprint = "7C4A 91D2 0E8F",
         fullKey = "ed25519:7c4a91d20e8f5b3a2c1d4e6f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b",
         offlineVerifiable = true,
     )
 
     val device = DeviceInfo(
-        name = "Jaryl's Nothing Phone",
+        name = "Alex's phone",
         label = "dev · A29F 67B1",
         backing = HardwareBacking.STRONGBOX,
         biometricRequired = true,
@@ -220,25 +220,25 @@ object SampleData {
 
     val trustedSites = listOf(
         TrustedSite(
-            "thesim",
-            "thesim.family",
+            "family",
+            "family.example",
             "All Thing",
             "last used today",
             SiteAccent.BLUE,
             policy = ApprovalPolicy.TrustedTofu,
         ),
         TrustedSite(
-            "cove",
-            "home.cove.lan",
-            "Cove Control",
+            "control",
+            "control.home.arpa",
+            "Home Control",
             "yesterday",
             SiteAccent.PURPLE,
             policy = ApprovalPolicy.AlwaysAsk,
             pinnedAlwaysAsk = true,
         ),
         TrustedSite(
-            "bartley",
-            "bartley.home",
+            "assistant",
+            "assistant.home.arpa",
             "Home Assistant",
             "6 days ago",
             SiteAccent.MINT,
@@ -251,6 +251,7 @@ object SampleData {
         device = device,
         trustedSites = trustedSites,
         biometricApproval = true,
+        membership = MembershipHealth(renewsByLabel = "renews by 30 Nov 2026"),
     )
 
     val recoveryBackup = RecoveryBackup(
@@ -261,10 +262,10 @@ object SampleData {
     )
 
     val loginRequest = LoginRequest(
-        domain = "thesim.family",
+        domain = "family.example",
         appName = "All Thing",
-        origin = "https://thesim.family",
-        signInAs = "Jaryl's Nothing Phone · 7C4A…0E8F",
+        origin = "https://family.example",
+        signInAs = "Alex's phone · 7C4A…0E8F",
         expiresInSeconds = 58,
         access = "Authentication only",
         signatureValid = true,
@@ -275,7 +276,7 @@ object SampleData {
 
     val pairInvite = PairInviteDisplay(
         inviteId = "INV · 8F2C 91A7",
-        qrPayload = "void-which-binds:pair?v=4&relay=wss://relay.thesim.family&session=8f2c91a7&salt=…&usr=ed25519:…",
+        qrPayload = "void-which-binds:pair?v=4&relay=wss://relay.example.org&session=8f2c91a7&salt=…&usr=ed25519:…",
         expiresInSeconds = 278,
     )
 
@@ -299,8 +300,8 @@ object SampleData {
     )
 
     val pairSession = PairSession(
-        thisDeviceName = "Jaryl's Nothing Phone",
-        peerDeviceName = "Cove Tablet",
+        thisDeviceName = "Alex's phone",
+        peerDeviceName = "Living-room tablet",
         securityCode = "482 7316",
     )
 }

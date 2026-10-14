@@ -10,7 +10,7 @@ import one.rarebit.cruciform.domain.TrustedSite
  * Pure Kotlin so the round trip is unit-tested on the JVM. The header exists because
  * the first shipped encoding (through app-v0.7.2) joined fields with the EMPTY string,
  * which wrote every row as one undelimited blob and read it back one character at a
- * time — a site titled "h" with the subtitle "e · y" for `heyarr.br.thesim.family`.
+ * time — a site titled "h" with the subtitle "e · y" for `heyarr.home.example`.
  * Those rows carry no separators, so they cannot be recovered: a value without the
  * header decodes to an empty list and the next approval rewrites it in this format.
  * The unit separator cannot appear in a host, an app name, a relative-time label or an
