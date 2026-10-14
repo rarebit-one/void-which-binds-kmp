@@ -9,3 +9,5 @@ DerivedData/
 
 # Verification screenshots (captured locally, not committed)
 *.png
+# ...but the asset catalog's images (the app icon) are source.
+!Voidbind/Assets.xcassets/**/*.png

@@ -1,0 +1,19 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Themed-icon layer (Android 13+): the foreground's knot and void in one colour; the
+         launcher tints it. The weave survives because the under strands are real breaks. -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="5"
+        android:strokeLineJoin="round"
+        android:pathData="M44.45,51.43 L48,48 L59.39,36.21 A7.5,7.5 0 1,0 48.61,36.21 L51.43,39.13 M56.57,44.45 L60,48 L71.79,59.39 A7.5,7.5 0 1,0 71.79,48.61 L68.87,51.43 M63.55,56.57 L60,60 L48.61,71.79 A7.5,7.5 0 1,0 59.39,71.79 L56.57,68.87 M51.43,63.55 L48,60 L36.21,48.61 A7.5,7.5 0 1,0 36.21,59.39 L39.13,56.57" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="1.6"
+        android:pathData="M51,51 H57 V57 H51 Z" />
+</vector>

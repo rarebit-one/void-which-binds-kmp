@@ -3,16 +3,21 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- Two interlocking rings in the brand's mint + fern — a placeholder for the
-         Cruciform knot mark, sized inside the adaptive-icon safe zone. -->
+    <!-- The Cruciform knot: one band runs corner to corner around an empty square (the
+         void), throwing a crossed loop out on each side. The strand leaving a corner always
+         passes over, so the crossings alternate over/under along the band. The under strand
+         is simply broken at each crossing, which is why the path has four open runs.
+         Fits the 66dp adaptive-icon safe zone exactly (loop tips at r = 33). -->
     <path
         android:fillColor="#00000000"
         android:strokeColor="#7EE0B3"
-        android:strokeWidth="7"
-        android:pathData="M46,54 m-18,0 a18,18 0 1,0 36,0 a18,18 0 1,0 -36,0" />
+        android:strokeWidth="5"
+        android:strokeLineJoin="round"
+        android:pathData="M44.45,51.43 L48,48 L59.39,36.21 A7.5,7.5 0 1,0 48.61,36.21 L51.43,39.13 M56.57,44.45 L60,48 L71.79,59.39 A7.5,7.5 0 1,0 71.79,48.61 L68.87,51.43 M63.55,56.57 L60,60 L48.61,71.79 A7.5,7.5 0 1,0 59.39,71.79 L56.57,68.87 M51.43,63.55 L48,60 L36.21,48.61 A7.5,7.5 0 1,0 36.21,59.39 L39.13,56.57" />
+    <!-- The void. -->
     <path
         android:fillColor="#00000000"
         android:strokeColor="#2E7D5B"
-        android:strokeWidth="7"
-        android:pathData="M62,54 m-18,0 a18,18 0 1,0 36,0 a18,18 0 1,0 -36,0" />
+        android:strokeWidth="1.6"
+        android:pathData="M51,51 H57 V57 H51 Z" />
 </vector>

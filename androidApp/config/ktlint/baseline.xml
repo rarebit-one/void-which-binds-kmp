@@ -24,7 +24,7 @@
         <error line="145" column="5" source="standard:function-naming" />
     </file>
     <file name="src/main/kotlin/one/rarebit/cruciform/ui/components/CruciformMark.kt">
-        <error line="19" column="5" source="standard:function-naming" />
+        <error line="28" column="5" source="standard:function-naming" />
     </file>
     <file name="src/main/kotlin/one/rarebit/cruciform/ui/components/QrImage.kt">
         <error line="23" column="5" source="standard:function-naming" />
