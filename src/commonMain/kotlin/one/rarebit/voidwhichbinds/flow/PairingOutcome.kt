@@ -120,8 +120,8 @@ object PairingFailures {
     }
 
     /**
-     * `host[:port]` of a URL, for a message (`http://192.168.16.224:7777/pair` →
-     * `192.168.16.224:7777`). Pure string work — commonMain has no URI type. Falls back
+     * `host[:port]` of a URL, for a message (`http://192.0.2.10:7777/pair` →
+     * `192.0.2.10:7777`). Pure string work — commonMain has no URI type. Falls back
      * to the input trimmed of its scheme when there is no recognisable authority.
      */
     fun hostOf(url: String): String {

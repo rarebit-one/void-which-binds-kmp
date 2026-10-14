@@ -37,14 +37,14 @@ class NotifyConfigTest {
             Validation.Valid("https://notify.example.org"),
             NotifyConfig.validate("https://notify.example.org"),
         )
-        assertEquals(Validation.Valid("http://192.168.24.1:2587"), NotifyConfig.validate("http://192.168.24.1:2587"))
+        assertEquals(Validation.Valid("http://192.0.2.1:2587"), NotifyConfig.validate("http://192.0.2.1:2587"))
     }
 
     @Test
     fun `normalises whitespace and trailing slashes so the client's slash-v1 join cannot double up`() {
         assertEquals(
-            Validation.Valid("http://192.168.16.224:2587"),
-            NotifyConfig.validate("  http://192.168.16.224:2587/  "),
+            Validation.Valid("http://192.0.2.10:2587"),
+            NotifyConfig.validate("  http://192.0.2.10:2587/  "),
         )
         assertEquals("https://notify.example.org", NotifyConfig.normalizeOrNull("https://notify.example.org///"))
     }

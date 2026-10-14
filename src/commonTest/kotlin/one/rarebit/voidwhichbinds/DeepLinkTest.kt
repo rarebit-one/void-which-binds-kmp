@@ -15,9 +15,9 @@ import kotlin.test.assertTrue
  */
 class DeepLinkTest {
 
-    private val rp = "http://192.168.16.224:7777"
+    private val rp = "http://192.0.2.10:7777"
     private val id = "d0865b8fd4dd6174b0c35e514a0a5e37"
-    private val brokerQr = "void-which-binds:login?id=$id&rp=http%3A%2F%2F192.168.16.224%3A7777"
+    private val brokerQr = "void-which-binds:login?id=$id&rp=http%3A%2F%2F192.0.2.10%3A7777"
 
     @Test
     fun loginUriWithoutCallbackIsTheQrTuple() {
