@@ -263,7 +263,7 @@
     <ID>ReturnCount:DeviceVoidbindEngine.kt$DeviceVoidbindEngine$private fun existingEncKey(): DeviceIdentity.EncryptionKey?</ID>
     <ID>ReturnCount:Handoff.kt$HandoffRouter$fun fromDeepLink(action: String?, dataString: String?, seq: Int): Handoff?</ID>
     <ID>ReturnCount:IdentityStore.kt$IdentityStore$fun load(): Persisted?</ID>
-    <ID>ReturnCount:RelayConfig.kt$RelayConfig$fun validateBase(input: String, noun: String, example: String): Validation</ID>
+    <ID>ReturnCount:RelayConfig.kt$RelayConfig$fun validateBase(input: String, noun: String, example: String, hasDefault: Boolean): Validation</ID>
     <ID>ReturnCount:RpAppIdentity.kt$RpAppIdentity.Companion$fun openDone(context: Context, scheme: String?, session: String, refusedFor: String? = null): Boolean</ID>
     <ID>ReturnCount:RpAppIdentity.kt$RpAppIdentity.Companion$fun resolve(context: Context, callerPackage: String?): RpAppIdentity</ID>
     <ID>ReturnCount:RpPairHandoff.kt$RpPairHandoff$fun targetFrom(advert: RpHandoffAdvert): RpPairTarget?</ID>

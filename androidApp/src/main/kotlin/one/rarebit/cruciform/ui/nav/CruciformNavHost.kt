@@ -619,7 +619,6 @@ fun CruciformNavHost(
                         state = active,
                         connections = connectionsSummary(relay.url, relay.isDefault, notify.url, notify.isDefault),
                         onCopyIdentity = { clipboard.setText(AnnotatedString(active.identity.fullKey)) },
-                        onRename = { /* rename dialog — later */ },
                         onToggleBiometric = settingsVm::setBiometricApproval,
                         onRenew = { settingsVm.renewMembership() },
                         onAddDevice = { startInvite() },
@@ -631,9 +630,6 @@ fun CruciformNavHost(
                         onForgetRecovery = settingsVm::forgetRecoverySecret,
                         onSplitShares = settingsVm::splitIntoShares,
                         onConnections = { nav.navigate(Routes.CONNECTIONS) { launchSingleTop = true } },
-                        onAbout = { },
-                        onSecurity = { },
-                        onLicenses = { },
                     )
                 }
             }

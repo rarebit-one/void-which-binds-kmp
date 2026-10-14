@@ -198,7 +198,9 @@ private fun EndpointField(
     val focusRequester = remember { FocusRequester() }
     val verdict = validate(draft)
     val liveError = (verdict as? RelayConfig.Validation.Invalid)?.reason
-    val dirty = (verdict as? RelayConfig.Validation.Valid)?.url != url
+    // Changed from what's saved, compared the way Save normalises. An empty field over an
+    // empty (unset) endpoint is untouched, so it isn't flagged before anything is typed.
+    val dirty = draft.trim().trimEnd('/') != url
     val error = saveError ?: liveError.takeIf { dirty }
 
     LaunchedEffect(focus) {

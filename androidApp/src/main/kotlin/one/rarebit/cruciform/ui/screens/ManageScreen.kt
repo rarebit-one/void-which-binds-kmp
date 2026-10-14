@@ -25,9 +25,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.rounded.AddCircle
-import androidx.compose.material.icons.rounded.Code
 import androidx.compose.material.icons.rounded.Devices
-import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Fingerprint
 import androidx.compose.material.icons.rounded.Groups
 import androidx.compose.material.icons.rounded.History
@@ -42,7 +40,6 @@ import androidx.compose.material.icons.rounded.Smartphone
 import androidx.compose.material.icons.rounded.VpnKey
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -94,7 +91,6 @@ fun ManageScreen(
     state: IdentityState.Active,
     connections: String,
     onCopyIdentity: () -> Unit,
-    onRename: () -> Unit,
     onToggleBiometric: (Boolean) -> Unit,
     onRenew: () -> Unit,
     onAddDevice: () -> Unit,
@@ -106,9 +102,6 @@ fun ManageScreen(
     onForgetRecovery: () -> Unit,
     onSplitShares: () -> Unit,
     onConnections: () -> Unit,
-    onAbout: () -> Unit,
-    onSecurity: () -> Unit,
-    onLicenses: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var confirmForget by remember { mutableStateOf(false) }
@@ -152,7 +145,7 @@ fun ManageScreen(
         VSpace(24)
         SectionLabel("This phone")
         VSpace(10)
-        ThisPhoneCard(state, onRename, onToggleBiometric, onRenew)
+        ThisPhoneCard(state, onToggleBiometric, onRenew)
 
         VSpace(24)
         SectionLabel("Devices")
@@ -197,16 +190,15 @@ fun ManageScreen(
         VSpace(10)
         VbCard(modifier = Modifier.fillMaxWidth()) {
             Column {
-                AboutRow(Icons.Rounded.Info, "About Cruciform", "Version ${BuildConfig.VERSION_NAME}", onAbout)
+                // Information rows: nothing behind them yet, so no chevron and no tap. An
+                // open-source licenses row returns with a licenses screen to open.
+                AboutRow(Icons.Rounded.Info, "About Cruciform", "Version ${BuildConfig.VERSION_NAME}")
                 VbHairline(Modifier.padding(horizontal = 16.dp))
                 AboutRow(
                     Icons.Rounded.Security,
                     "Security & protocol",
                     "Void-Which-Binds protocol · hardware-bound device keys",
-                    onSecurity,
                 )
-                VbHairline(Modifier.padding(horizontal = 16.dp))
-                AboutRow(Icons.Rounded.Code, "Open-source licenses", null, onLicenses)
             }
         }
 
@@ -269,25 +261,15 @@ private fun IdentityCard(state: IdentityState.Active, onCopy: () -> Unit) {
 
 /** This phone: its name, where its key lives, the biometric gate, and its membership. */
 @Composable
-private fun ThisPhoneCard(
-    state: IdentityState.Active,
-    onRename: () -> Unit,
-    onToggleBiometric: (Boolean) -> Unit,
-    onRenew: () -> Unit,
-) {
+private fun ThisPhoneCard(state: IdentityState.Active, onToggleBiometric: (Boolean) -> Unit, onRenew: () -> Unit) {
     val device = state.device
     VbCard(modifier = Modifier.fillMaxWidth()) {
         Column {
+            // Read-only until renaming exists: no pencil, no tap.
             RowItem(
                 title = "Device name",
                 subtitle = "${device.name} · ${device.label}",
-                onClick = onRename,
                 leading = { FernIcon(Icons.Rounded.Smartphone) },
-                trailing = {
-                    IconButton(onClick = onRename) {
-                        Icon(Icons.Rounded.Edit, contentDescription = "Rename", tint = VbColors.TextSecondary)
-                    }
-                },
             )
             VbHairline(Modifier.padding(horizontal = 16.dp))
             RowItem(
@@ -515,13 +497,11 @@ private fun FernIcon(icon: ImageVector) {
 }
 
 @Composable
-private fun AboutRow(icon: ImageVector, title: String, subtitle: String?, onClick: () -> Unit) {
+private fun AboutRow(icon: ImageVector, title: String, subtitle: String?) {
     RowItem(
         title = title,
         subtitle = subtitle,
-        onClick = onClick,
         leading = { IconCircle(icon, tint = VbColors.Mint, background = VbColors.SurfaceElevated) },
-        trailing = { Chevron(VbColors.TextMuted) },
     )
 }
 
