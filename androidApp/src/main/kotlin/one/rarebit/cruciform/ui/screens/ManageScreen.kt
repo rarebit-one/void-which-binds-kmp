@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -37,6 +38,7 @@ import androidx.compose.material.icons.rounded.Memory
 import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material.icons.rounded.Security
 import androidx.compose.material.icons.rounded.Shield
+import androidx.compose.material.icons.rounded.Smartphone
 import androidx.compose.material.icons.rounded.VpnKey
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
@@ -77,9 +79,6 @@ import one.rarebit.cruciform.ui.components.VbHairline
 import one.rarebit.cruciform.ui.theme.VbColors
 import one.rarebit.voidwhichbinds.policy.ApprovalPolicy
 
-/** How many trusted sites Manage lists inline, each with its policy and Revoke. */
-private const val SITES_SHOWN = 2
-
 /**
  * Manage: everything about the identity that Home keeps out of the way — the identity
  * fingerprint (to compare and copy), this phone's key protection, biometric gate and
@@ -101,7 +100,6 @@ fun ManageScreen(
     onAddDevice: () -> Unit,
     onDevices: () -> Unit,
     onRevoke: (TrustedSite) -> Unit,
-    onManageSites: () -> Unit,
     onApprovalActivity: () -> Unit,
     onRecoveryBackup: () -> Unit,
     onTestRecovery: () -> Unit,
@@ -175,7 +173,7 @@ fun ManageScreen(
         VSpace(24)
         SectionLabel("Trusted sites")
         VSpace(10)
-        SitesCard(state.trustedSites, onRevoke, onApprovalActivity, onManageSites)
+        SitesCard(state.trustedSites, onRevoke, onApprovalActivity)
 
         VSpace(24)
         SectionLabel("Recovery", color = VbColors.Amber)
@@ -284,7 +282,7 @@ private fun ThisPhoneCard(
                 title = "Device name",
                 subtitle = "${device.name} · ${device.label}",
                 onClick = onRename,
-                leading = { FernIcon(Icons.Rounded.Fingerprint) },
+                leading = { FernIcon(Icons.Rounded.Smartphone) },
                 trailing = {
                     IconButton(onClick = onRename) {
                         Icon(Icons.Rounded.Edit, contentDescription = "Rename", tint = VbColors.TextSecondary)
@@ -374,19 +372,17 @@ private fun ThisPhoneCard(
     }
 }
 
-/** The first few trusted sites with their approval policy and Revoke, then the activity log. */
+/**
+ * Every trusted site with its approval policy and Revoke, then the activity log. The
+ * policy and Revoke share a line under the name, so neither squeezes the name or the
+ * pill into wrapping on a phone-width card.
+ */
 @Composable
-private fun SitesCard(
-    sites: List<TrustedSite>,
-    onRevoke: (TrustedSite) -> Unit,
-    onApprovalActivity: () -> Unit,
-    onManageSites: () -> Unit,
-) {
+private fun SitesCard(sites: List<TrustedSite>, onRevoke: (TrustedSite) -> Unit, onApprovalActivity: () -> Unit) {
     VbCard(modifier = Modifier.fillMaxWidth()) {
         Column {
-            val shown = sites.take(SITES_SHOWN)
-            shown.forEachIndexed { i, site ->
-                Row(Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+            sites.forEachIndexed { i, site ->
+                Row(Modifier.fillMaxWidth().padding(16.dp)) {
                     SiteAvatar(site.accent, diameter = 40)
                     HSpace(14)
                     Column(Modifier.weight(1f)) {
@@ -401,23 +397,19 @@ private fun SitesCard(
                             color = VbColors.TextSecondary,
                         )
                         VSpace(6)
-                        PolicyPill(site)
+                        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                            PolicyPill(site)
+                            Spacer(Modifier.weight(1f))
+                            TextButton(onClick = { onRevoke(site) }) {
+                                Text("Revoke", style = MaterialTheme.typography.labelLarge, color = VbColors.Coral)
+                            }
+                        }
                     }
-                    OutlineButton("Revoke", onClick = { onRevoke(site) }, accent = VbColors.Coral)
                 }
-                if (i < shown.lastIndex) VbHairline(Modifier.padding(horizontal = 16.dp))
+                if (i < sites.lastIndex) VbHairline(Modifier.padding(horizontal = 16.dp))
             }
-            if (shown.isNotEmpty()) VbHairline(Modifier.padding(horizontal = 16.dp))
+            if (sites.isNotEmpty()) VbHairline(Modifier.padding(horizontal = 16.dp))
             NavRow(Icons.Rounded.History, "Approval activity", "Who you approved, and when", onApprovalActivity)
-            if (sites.size > SITES_SHOWN) {
-                VbHairline(Modifier.padding(horizontal = 16.dp))
-                RowItem(
-                    title = "Manage all ${sites.size} trusted sites",
-                    titleColor = VbColors.Mint,
-                    onClick = onManageSites,
-                    trailing = { Chevron(VbColors.Mint) },
-                )
-            }
         }
     }
 }

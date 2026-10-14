@@ -151,10 +151,10 @@ class PairingErrorTest {
                 UserIdentity.create(),
                 { 1L },
             )
-        val failed = assertIs<PairingOutcome.Failed>(auth.inviteCatching("https://relay.thesim.family"))
+        val failed = assertIs<PairingOutcome.Failed>(auth.inviteCatching("https://relay.example.org"))
         assertEquals(PairingFailureKind.UNREACHABLE, failed.kind)
-        assertEquals("relay.thesim.family", failed.relayHost)
-        assertTrue(failed.message.contains("relay.thesim.family"))
+        assertEquals("relay.example.org", failed.relayHost)
+        assertTrue(failed.message.contains("relay.example.org"))
     }
 
     @Test
@@ -200,8 +200,8 @@ class PairingErrorTest {
     @Test
     fun hostOfRendersHostAndPortWithoutPathOrScheme() {
         assertEquals("192.168.16.224:7777", PairingFailures.hostOf("http://192.168.16.224:7777/pair"))
-        assertEquals("relay.thesim.family", PairingFailures.hostOf("https://relay.thesim.family"))
-        assertEquals("relay.thesim.family", PairingFailures.hostOf("https://relay.thesim.family/"))
+        assertEquals("relay.example.org", PairingFailures.hostOf("https://relay.example.org"))
+        assertEquals("relay.example.org", PairingFailures.hostOf("https://relay.example.org/"))
         assertEquals("host:1", PairingFailures.hostOf("http://user@host:1/x?y#z"))
         assertEquals("the relay", PairingFailures.hostOf(""))
     }
