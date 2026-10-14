@@ -39,7 +39,7 @@ object NotifyConfig {
      * of trailing slashes so the client's `/v1/...` join cannot produce `base//v1`.
      */
     fun validate(input: String): RelayConfig.Validation =
-        RelayConfig.validateBase(input, noun = "push plane", example = EXAMPLE_NOTIFY)
+        RelayConfig.validateBase(input, noun = "push plane", example = EXAMPLE_NOTIFY, hasDefault = hasDefault)
 
     /** `validate(input)` as a nullable normalised URL, for callers that only need go/no-go. */
     fun normalizeOrNull(input: String): String? = (validate(input) as? RelayConfig.Validation.Valid)?.url

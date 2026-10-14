@@ -62,6 +62,14 @@ class RelayConfigTest {
     }
 
     @Test
+    fun `a blank field only suggests the default when the build has one`() {
+        val withDefault = RelayConfig.validateBase("", noun = "relay", example = "x", hasDefault = true)
+        val withoutDefault = RelayConfig.validateBase(" ", noun = "relay", example = "x", hasDefault = false)
+        assertEquals(Validation.Invalid("Enter the relay URL, or reset to the default."), withDefault)
+        assertEquals(Validation.Invalid("Enter the relay URL."), withoutDefault)
+    }
+
+    @Test
     fun `rejects non-http schemes and bare hosts`() {
         assertIs<Validation.Invalid>(RelayConfig.validate("wss://relay.example.org"))
         assertIs<Validation.Invalid>(RelayConfig.validate("ftp://relay.example.org"))

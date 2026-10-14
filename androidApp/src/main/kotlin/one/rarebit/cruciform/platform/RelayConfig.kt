@@ -50,18 +50,24 @@ object RelayConfig {
      * with its own `/v1/...`, and a `base//v1` would 404). Blank input is invalid —
      * "use the default" is [RelaySettings.reset], not an empty string.
      */
-    fun validate(input: String): Validation = validateBase(input, noun = "relay", example = EXAMPLE_RELAY)
+    fun validate(input: String): Validation =
+        validateBase(input, noun = "relay", example = EXAMPLE_RELAY, hasDefault = hasDefault)
 
     /**
      * The shared endpoint-base rules, parameterised only by how the field names itself
      * in its messages ([noun]) and what a good value looks like ([example]). Every
      * Settings endpoint field validates through here — the relay above and the push
      * plane in [NotifyConfig] — so there is one definition of "an acceptable base URL"
-     * rather than one per field that can drift apart.
+     * rather than one per field that can drift apart. A blank value only suggests
+     * resetting to the default when the build has one ([hasDefault]).
      */
-    fun validateBase(input: String, noun: String, example: String): Validation {
+    fun validateBase(input: String, noun: String, example: String, hasDefault: Boolean): Validation {
         val trimmed = input.trim()
-        if (trimmed.isEmpty()) return Validation.Invalid("Enter the $noun URL, or reset to the default.")
+        if (trimmed.isEmpty()) {
+            return Validation.Invalid(
+                if (hasDefault) "Enter the $noun URL, or reset to the default." else "Enter the $noun URL.",
+            )
+        }
         val uri = try {
             URI(trimmed)
         } catch (e: URISyntaxException) {
