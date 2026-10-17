@@ -119,7 +119,11 @@ group = "one.rarebit.voidwhichbinds"
 // as a second member, so one device can't supply both signatures of a k=2 op. The
 // vectors are pinned to void-which-binds-go v0.19.2 (9ac4d5e), and it adds the custody
 // vectors (#98).
-version = "0.11.1"
+// 0.11.2 (C2 hotfix, also from release/v0.11): NotifyClient now sends the possession
+// proof and the known ops that the v0.19.x notify plane requires. 0.11.1 sent a bare
+// cert, which the plane refuses (ErrPossessionRequired), so no phone could register a
+// push-login wake endpoint.
+version = "0.11.2"
 
 repositories {
     mavenCentral()
