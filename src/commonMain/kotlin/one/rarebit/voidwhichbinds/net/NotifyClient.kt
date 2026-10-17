@@ -1,5 +1,7 @@
 package one.rarebit.voidwhichbinds.net
 
+import one.rarebit.voidwhichbinds.Membership
+import one.rarebit.voidwhichbinds.auth.DeviceCredential
 import one.rarebit.voidwhichbinds.crypto.MiniJson
 
 /**
@@ -9,15 +11,20 @@ import one.rarebit.voidwhichbinds.crypto.MiniJson
  *
  * Wire (byte-identical to void-which-binds-go/notify/handler.go):
  * ```
- * POST   {base}/v1/subscriptions  {cert, channel, endpoint}
+ * POST   {base}/v1/subscriptions  {cert, possession, channel, endpoint, ops}
  *        -> 200 { user_id, device_key, channel, expires_at }
- * DELETE {base}/v1/subscriptions  {cert}                       -> 204
+ * DELETE {base}/v1/subscriptions  {cert, possession, ops}       -> 204
  * ```
- * Both are **cert-authenticated**: the request carries only the device's enrolment
- * cert token, and the plane binds the subscription to the authenticated
- * `(user, device)` the cert names — never to fields the client sent. A device can
- * therefore only register or unsubscribe ITSELF. An un-enrolled device is refused
- * (the plane's 401), surfaced here as a thrown [IllegalStateException].
+ * Both are **cert-authenticated with a possession proof**: the request carries the
+ * device's enrolment cert (its admitting op) and a [one.rarebit.voidwhichbinds.auth.PossessionProof]
+ * over it, and the plane binds the subscription to the authenticated `(user, device)`
+ * — never to fields the client sent. A device can therefore only register or
+ * unsubscribe ITSELF. Since void-which-binds-go v0.19.0 (ADR-0022) the plane refuses a
+ * bare cert (`ErrPossessionRequired`): a cert is a public token and proves nothing
+ * about who sent it. `ops` are the membership ops the device knows (ADR-0007), so a
+ * device admitted by another member — not by the user's genesis cert — evaluates on
+ * first contact. An un-enrolled device, or one with no proof, is refused (the plane's
+ * 401), surfaced here as a thrown [IllegalArgumentException].
  *
  * The plane is a **wake channel, not a crypto path**: registration hands over a
  * public ntfy topic URL and nothing else. This client never sees a private key, a
@@ -43,19 +50,32 @@ class NotifyClient(private val http: HttpTransport, private val base: String) {
 
     /**
      * Register [endpoint] (this device's ntfy topic URL) as a wake address on
-     * [channel] (default [CHANNEL_NTFY]), authenticated by [certToken]. Call it on
-     * app open — a subscription is not a credential, so it is short-lived and the
-     * device re-registers rather than trusting a stale one. Throws if the plane
-     * refuses the registration (un-enrolled device, unserved channel, missing
-     * endpoint).
+     * [channel] (default [CHANNEL_NTFY]), authenticated by [certToken] and
+     * [possession] — a [one.rarebit.voidwhichbinds.auth.PossessionProof] minted over
+     * [certToken] by the device key — presenting the membership [ops] the device knows.
+     * A subscription is not a credential: it lapses at [Subscription.expiresAt] and the
+     * device re-registers before then. Throws if the plane refuses the registration
+     * (un-enrolled device, a missing or bad proof, unserved channel, missing endpoint).
      */
     @Throws(Exception::class)
-    fun subscribe(certToken: String, endpoint: String, channel: String = CHANNEL_NTFY): Subscription {
+    fun subscribe(
+        certToken: String,
+        possession: String,
+        endpoint: String,
+        ops: List<String> = emptyList(),
+        channel: String = CHANNEL_NTFY,
+    ): Subscription {
         require(certToken.isNotEmpty()) { "notify: a device enrolment cert is required" }
+        require(possession.isNotEmpty()) { "notify: a possession proof is required" }
         require(endpoint.isNotEmpty()) { "notify: a wake endpoint is required" }
-        val body = MiniJson.encodeObject(
-            listOf("cert" to certToken, "channel" to channel, "endpoint" to endpoint),
-        ).encodeToByteArray()
+        val fields = mutableListOf<Pair<String, Any>>(
+            "cert" to certToken,
+            "possession" to possession,
+            "channel" to channel,
+            "endpoint" to endpoint,
+        )
+        presented(ops)?.let { fields += "ops" to it }
+        val body = MiniJson.encodeObject(fields).encodeToByteArray()
         val resp = http.post(url(), body, "application/json")
         require(resp.status == 200) { "notify: subscribe refused: HTTP ${resp.status}" }
         val o = MiniJson.parseObject(resp.body.decodeToString())
@@ -68,15 +88,27 @@ class NotifyClient(private val http: HttpTransport, private val base: String) {
     }
 
     /**
-     * Drop THIS device's wake subscription, authenticated by [certToken] — the
-     * `(user, device)` to remove comes from the cert, never the client, so a device
-     * can only unsubscribe itself. Throws if the plane refuses (a bad/expired cert).
+     * Drop THIS device's wake subscription, authenticated by [certToken] and
+     * [possession] exactly as [subscribe] is — the `(user, device)` to remove comes
+     * from the cert, never the client, so a device can only unsubscribe itself. Throws
+     * if the plane refuses (a bad/expired cert, a missing or bad proof).
      */
     @Throws(Exception::class)
-    fun unsubscribe(certToken: String) {
+    fun unsubscribe(certToken: String, possession: String, ops: List<String> = emptyList()) {
         require(certToken.isNotEmpty()) { "notify: a device enrolment cert is required" }
-        val body = MiniJson.encodeObject(listOf("cert" to certToken)).encodeToByteArray()
+        require(possession.isNotEmpty()) { "notify: a possession proof is required" }
+        val fields = mutableListOf<Pair<String, Any>>("cert" to certToken, "possession" to possession)
+        presented(ops)?.let { fields += "ops" to it }
+        val body = MiniJson.encodeObject(fields).encodeToByteArray()
         val resp = http.delete(url(), body, "application/json")
         require(resp.status == 204) { "notify: unsubscribe refused: HTTP ${resp.status}" }
     }
+
+    /**
+     * The `ops` to send: de-duplicated and capped at [DeviceCredential.MAX_PRESENTED_OPS]
+     * (Go `rp.MaxPresentedOps` — the plane refuses a longer list outright), or null when
+     * there is nothing to present (the field is then omitted, as Go's `omitempty` does).
+     */
+    private fun presented(ops: List<String>): List<String>? =
+        Membership.merge(ops).take(DeviceCredential.MAX_PRESENTED_OPS).takeIf { it.isNotEmpty() }
 }

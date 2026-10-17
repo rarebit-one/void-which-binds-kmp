@@ -32,7 +32,6 @@ import one.rarebit.voidwhichbinds.flow.LoginApproval
 import one.rarebit.voidwhichbinds.flow.PairingFailures
 import one.rarebit.voidwhichbinds.flow.PairingOutcome
 import one.rarebit.voidwhichbinds.net.HttpTransport
-import one.rarebit.voidwhichbinds.net.NotifyClient
 import one.rarebit.voidwhichbinds.policy.ApprovalPolicy
 import one.rarebit.voidwhichbinds.policy.ApprovalPolicyManager
 import java.io.InterruptedIOException
@@ -338,7 +337,8 @@ class DeviceVoidbindEngine(
     // --- Push wake ------------------------------------------------------------
 
     // Best-effort, both ways: a failed wake registration just means no background push,
-    // and scanned-QR login is unaffected, so callers log or ignore the Failed.
+    // and scanned-QR login is unaffected, so callers log or ignore the Failed. Each
+    // registration carries a possession proof (see [PushWake]), signed behind presence.
     override suspend fun registerForPush(endpoint: String): EngineResult<Unit> = ioResult(
         PUSH_FAILED,
         revealPreconditions = false,
@@ -348,7 +348,7 @@ class DeviceVoidbindEngine(
         // register with — scanned-QR login works without a wake channel.
         val notifyBase = notifyBase.takeIf { it.isNotBlank() }
             ?: return@ioResult internalFailure("No push plane is set up.")
-        NotifyClient(transport, notifyBase).subscribe(persisted.enrolmentCert, endpoint)
+        pushWake().register(notifyBase, persisted.enrolmentCert, endpoint, persisted.ops) { withDeviceAuth(it) }
         EngineResult.Ready(Unit)
     }
 
@@ -358,9 +358,11 @@ class DeviceVoidbindEngine(
     ) {
         val persisted = store.load() ?: return@ioResult EngineResult.Ready(Unit)
         val notifyBase = notifyBase.takeIf { it.isNotBlank() } ?: return@ioResult EngineResult.Ready(Unit)
-        NotifyClient(transport, notifyBase).unsubscribe(persisted.enrolmentCert)
+        pushWake().unregister(notifyBase, persisted.enrolmentCert, persisted.ops) { withDeviceAuth(it) }
         EngineResult.Ready(Unit)
     }
+
+    private fun pushWake() = PushWake(store, transport, deviceKeys, clock)
 
     // --- Pairing --------------------------------------------------------------
     //
