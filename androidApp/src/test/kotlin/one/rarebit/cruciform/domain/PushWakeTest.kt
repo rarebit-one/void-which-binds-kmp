@@ -8,13 +8,16 @@ import one.rarebit.cruciform.testing.FakeTransport
 import one.rarebit.cruciform.testing.InMemoryPrefs
 import one.rarebit.cruciform.testing.InMemorySealer
 import one.rarebit.cruciform.testing.SoftwareDeviceKeys
-import one.rarebit.voidwhichbinds.Ed25519Engine
+import one.rarebit.voidwhichbinds.Ed25519Verifier
 import one.rarebit.voidwhichbinds.auth.PossessionProof
 import one.rarebit.voidwhichbinds.crypto.MiniJson
 import one.rarebit.voidwhichbinds.net.HttpResponse
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.security.KeyFactory
+import java.security.Signature
+import java.security.spec.X509EncodedKeySpec
 
 /**
  * The push-login wake registration, through [DeviceVoidbindEngine] and [PushWake].
@@ -65,7 +68,7 @@ class PushWakeTest {
         val cert = sent["cert"] as String
         assertEquals(ENDPOINT, sent["endpoint"])
         // The proof verifies against THIS device's key, over the very cert sent.
-        PossessionProof.verify(sent["possession"] as String, keys.publicKey, cert, NOW, Ed25519Engine.verifier())
+        PossessionProof.verify(sent["possession"] as String, keys.publicKey, cert, NOW, jdkEd25519)
         @Suppress("UNCHECKED_CAST")
         val ops = sent["ops"] as List<String>
         assertTrue("the device presents the ops it knows, its own admission included", cert in ops)
@@ -126,7 +129,20 @@ class PushWakeTest {
         assertEquals(3, transport.requests.size)
     }
 
+    /** The JDK's own Ed25519, an independent check of the library's signature. */
+    private val jdkEd25519 = Ed25519Verifier { pub, msg, sig ->
+        val spki = X509EncodedKeySpec(ED25519_SPKI_PREFIX + pub)
+        Signature.getInstance("Ed25519").run {
+            initVerify(KeyFactory.getInstance("Ed25519").generatePublic(spki))
+            update(msg)
+            verify(sig)
+        }
+    }
+
     private companion object {
+        /** The DER SubjectPublicKeyInfo header for a raw 32-byte Ed25519 key (RFC 8410). */
+        val ED25519_SPKI_PREFIX = byteArrayOf(0x30, 0x2a, 0x30, 0x05, 0x06, 0x03, 0x2b, 0x65, 0x70, 0x03, 0x21, 0x00)
+
         const val NOW = 1_800_000_000L
         const val DAY = 24L * 60 * 60
         const val NOTIFY = "https://notify.example.test"
