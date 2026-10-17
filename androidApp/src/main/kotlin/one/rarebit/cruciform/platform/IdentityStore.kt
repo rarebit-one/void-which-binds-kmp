@@ -217,11 +217,41 @@ class IdentityStore(private val prefs: SharedPreferences, private val sealed: Se
         prefs.edit().putString(KEY_SITES, TrustedSiteCodec.encode(trustedSites().filterNot { it.id == id })).apply()
     }
 
+    // --- push wake registration (what the notify plane last accepted) -----------
+
+    /** The last subscription the push plane accepted, or null when none is recorded. */
+    class PushRegistration(val endpoint: String, val plane: String, val expiresAt: Long)
+
+    fun pushRegistration(): PushRegistration? {
+        val endpoint = prefs.getString(KEY_PUSH_ENDPOINT, null)
+        val plane = prefs.getString(KEY_PUSH_PLANE, null)
+        return if (endpoint == null || plane == null) {
+            null
+        } else {
+            PushRegistration(endpoint, plane, prefs.getLong(KEY_PUSH_EXPIRES_AT, 0L))
+        }
+    }
+
+    fun savePushRegistration(endpoint: String, plane: String, expiresAt: Long) = prefs.edit()
+        .putString(KEY_PUSH_ENDPOINT, endpoint)
+        .putString(KEY_PUSH_PLANE, plane)
+        .putLong(KEY_PUSH_EXPIRES_AT, expiresAt)
+        .apply()
+
+    fun clearPushRegistration() = prefs.edit()
+        .remove(KEY_PUSH_ENDPOINT)
+        .remove(KEY_PUSH_PLANE)
+        .remove(KEY_PUSH_EXPIRES_AT)
+        .apply()
+
     fun clear() {
         prefs.edit().clear().apply()
     }
 
     private companion object {
+        const val KEY_PUSH_ENDPOINT = "pushEndpoint"
+        const val KEY_PUSH_PLANE = "pushPlane"
+        const val KEY_PUSH_EXPIRES_AT = "pushExpiresAt"
         const val KEY_CERT = "cert"
         const val KEY_OPS = "ops"
         const val KEY_USER_PUB = "userPub"
