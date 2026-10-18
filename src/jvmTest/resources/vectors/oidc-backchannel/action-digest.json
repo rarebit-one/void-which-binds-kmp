@@ -1,0 +1,29 @@
+{
+  "name": "action-digest",
+  "description": "A fixed step-up and a fixed consent action as moneta builds them, and the ADR-0019 digest (unpadded base64url) the RP recomputes from (kind, oidc:client/\u003cown client_id\u003e, the returned summary, the params it sent).",
+  "kind": "action-digest",
+  "actions": [
+    {
+      "note": "step-up",
+      "client_id": "nutripod-web",
+      "display_name": "Nutripod",
+      "kind": "step-up",
+      "binding_message": "Approve payout of SGD 1,200.00 to Acme Pte Ltd",
+      "params": "{\"amount\":\"1200.00\",\"currency\":\"SGD\",\"operation\":\"payout\",\"payee\":\"acme-pte-ltd\"}",
+      "resource": "oidc:client/nutripod-web",
+      "summary": "Nutripod: Approve payout of SGD 1,200.00 to Acme Pte Ltd",
+      "action_digest": "vRIR0xR86k4Ls8I1EPyc2fO7O6C1CpyhLCQJjSe_d98"
+    },
+    {
+      "note": "consent",
+      "client_id": "nutripod-web",
+      "display_name": "Nutripod",
+      "kind": "consent",
+      "binding_message": "Allow Agent (agent.example) to use your Nutripod tools",
+      "params": "{\"client_id\":\"mcp-client-7f3a\",\"redirect_uri\":\"https://agent.example/callback\",\"scopes\":[\"mcp:tools.read\",\"mcp:tools.write\"]}",
+      "resource": "oidc:client/nutripod-web",
+      "summary": "Nutripod: Allow Agent (agent.example) to use your Nutripod tools (scopes: mcp:tools.read, mcp:tools.write)",
+      "action_digest": "PBuCTTWY_OhqUz-FR4oKgMu0wuYD-ZzeC6QxIvpZV74"
+    }
+  ]
+}

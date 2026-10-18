@@ -1,0 +1,73 @@
+{
+  "name": "consent-params",
+  "description": "Consent params are exactly {\"client_id\",\"redirect_uri\"?,\"resource\"?,\"scopes\"} in RFC 8785 form (parsed, re-serialised, byte-compared), scopes sorted and de-duplicated; client_id is the moneta client the scopes are mapped under.",
+  "kind": "consent-params",
+  "params_rows": [
+    {
+      "note": "the canonical object",
+      "client_id": "nutripod-web",
+      "params": "{\"client_id\":\"mcp-client-7f3a\",\"redirect_uri\":\"https://agent.example/callback\",\"scopes\":[\"mcp:tools.read\",\"mcp:tools.write\"]}",
+      "verdict": "ok"
+    },
+    {
+      "note": "canonical, with resource and without redirect_uri",
+      "client_id": "nutripod-web",
+      "params": "{\"client_id\":\"mcp-client-7f3a\",\"resource\":\"https://mcp.nutripod.example/\",\"scopes\":[\"mcp:tools.read\"]}",
+      "verdict": "ok"
+    },
+    {
+      "note": "non-canonical: members out of order",
+      "client_id": "nutripod-web",
+      "params": "{\"client_id\":\"mcp-client-7f3a\",\"scopes\":[\"mcp:tools.read\",\"mcp:tools.write\"],\"redirect_uri\":\"https://agent.example/callback\"}",
+      "verdict": "invalid_request"
+    },
+    {
+      "note": "non-canonical: whitespace",
+      "client_id": "nutripod-web",
+      "params": "{\"client_id\": \"mcp-client-7f3a\",\"scopes\":[\"mcp:tools.read\"]}",
+      "verdict": "invalid_request"
+    },
+    {
+      "note": "non-canonical: an unnecessary escape (\\u002d for '-')",
+      "client_id": "nutripod-web",
+      "params": "{\"client_id\":\"mcp\\u002dclient-7f3a\",\"scopes\":[\"mcp:tools.read\"]}",
+      "verdict": "invalid_request"
+    },
+    {
+      "note": "unknown member",
+      "client_id": "nutripod-web",
+      "params": "{\"client_id\":\"mcp-client-7f3a\",\"scopes\":[\"mcp:tools.read\"],\"state\":\"x\"}",
+      "verdict": "invalid_request"
+    },
+    {
+      "note": "unsorted scopes",
+      "client_id": "nutripod-web",
+      "params": "{\"client_id\":\"mcp-client-7f3a\",\"scopes\":[\"mcp:tools.write\",\"mcp:tools.read\"]}",
+      "verdict": "invalid_request"
+    },
+    {
+      "note": "duplicate scopes",
+      "client_id": "nutripod-web",
+      "params": "{\"client_id\":\"mcp-client-7f3a\",\"scopes\":[\"mcp:tools.read\",\"mcp:tools.read\"]}",
+      "verdict": "invalid_request"
+    },
+    {
+      "note": "no scopes",
+      "client_id": "nutripod-web",
+      "params": "{\"client_id\":\"mcp-client-7f3a\",\"scopes\":[]}",
+      "verdict": "invalid_request"
+    },
+    {
+      "note": "a scope that does not map",
+      "client_id": "nutripod-web",
+      "params": "{\"client_id\":\"mcp-client-7f3a\",\"scopes\":[\"mcp/tools.read\"]}",
+      "verdict": "invalid_request"
+    },
+    {
+      "note": "client_id missing",
+      "client_id": "nutripod-web",
+      "params": "{\"scopes\":[\"mcp:tools.read\"]}",
+      "verdict": "invalid_request"
+    }
+  ]
+}

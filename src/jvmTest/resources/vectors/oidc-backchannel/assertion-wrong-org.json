@@ -1,0 +1,49 @@
+{
+  "name": "assertion-wrong-org",
+  "description": "org is another org's id.",
+  "kind": "assertion",
+  "keys": {
+    "current": {
+      "seed": "a3e49d83a62f325288d1edd8a3f04edc7aa5c999da74fc23a248049996962962",
+      "jwk": {
+        "kty": "OKP",
+        "crv": "Ed25519",
+        "x": "-lHW-V3IAnMSEM_HWC1FI7-Y9WpczrbS2vypp5PGGJA",
+        "kid": "DZgWU2dqfo6E9dQGjojGQI_0Zqqpp_3V5WtcOd-ybJ8",
+        "use": "sig",
+        "alg": "EdDSA"
+      }
+    }
+  },
+  "jwks": {
+    "keys": [
+      {
+        "kty": "OKP",
+        "crv": "Ed25519",
+        "x": "-lHW-V3IAnMSEM_HWC1FI7-Y9WpczrbS2vypp5PGGJA",
+        "kid": "DZgWU2dqfo6E9dQGjojGQI_0Zqqpp_3V5WtcOd-ybJ8",
+        "use": "sig",
+        "alg": "EdDSA"
+      }
+    ]
+  },
+  "pins": [
+    "DZgWU2dqfo6E9dQGjojGQI_0Zqqpp_3V5WtcOd-ybJ8"
+  ],
+  "verifier": "assertion",
+  "expect": {
+    "issuer": "https://moneta.example",
+    "client_id": "nutripod-web",
+    "org": "ed25519:65214fc93773949e91197bf15d29c81f34538cfc0d479da9560d8bd12f2bc582",
+    "subject": "ed25519:ceaf69b0b2f5a23ba37b90951eea5f651160cc3e6f7ba8db7fa278f886d52a86",
+    "kind": "step-up",
+    "action_digest": "vRIR0xR86k4Ls8I1EPyc2fO7O6C1CpyhLCQJjSe_d98",
+    "now": 1791000300,
+    "leeway": 60
+  },
+  "signer": "current",
+  "header": "{\"alg\":\"EdDSA\",\"kid\":\"DZgWU2dqfo6E9dQGjojGQI_0Zqqpp_3V5WtcOd-ybJ8\",\"typ\":\"vwb-approval+jwt\"}",
+  "payload": "{\"iss\":\"https://moneta.example\",\"sub\":\"ed25519:ceaf69b0b2f5a23ba37b90951eea5f651160cc3e6f7ba8db7fa278f886d52a86\",\"aud\":\"nutripod-web\",\"org\":\"ed25519:5c3d6c9742f1f722c8823f876de25b702ddfeca10954bf1edb517f2536be5e57\",\"iat\":1791000300,\"exp\":1791000600,\"auth_time\":1791000280,\"amr\":[\"mca\",\"pop\"],\"act_digest\":\"vRIR0xR86k4Ls8I1EPyc2fO7O6C1CpyhLCQJjSe_d98\",\"kind\":\"step-up\",\"jti\":\"4zCqBZcaOh9lFZx3uhAXcg\"}",
+  "token": "eyJhbGciOiJFZERTQSIsImtpZCI6IkRaZ1dVMmRxZm82RTlkUUdqb2pHUUlfMFpxcXBwXzNWNVd0Y09kLXliSjgiLCJ0eXAiOiJ2d2ItYXBwcm92YWwrand0In0.eyJpc3MiOiJodHRwczovL21vbmV0YS5leGFtcGxlIiwic3ViIjoiZWQyNTUxOTpjZWFmNjliMGIyZjVhMjNiYTM3YjkwOTUxZWVhNWY2NTExNjBjYzNlNmY3YmE4ZGI3ZmEyNzhmODg2ZDUyYTg2IiwiYXVkIjoibnV0cmlwb2Qtd2ViIiwib3JnIjoiZWQyNTUxOTo1YzNkNmM5NzQyZjFmNzIyYzg4MjNmODc2ZGUyNWI3MDJkZGZlY2ExMDk1NGJmMWVkYjUxN2YyNTM2YmU1ZTU3IiwiaWF0IjoxNzkxMDAwMzAwLCJleHAiOjE3OTEwMDA2MDAsImF1dGhfdGltZSI6MTc5MTAwMDI4MCwiYW1yIjpbIm1jYSIsInBvcCJdLCJhY3RfZGlnZXN0IjoidlJJUjB4Ujg2azRMczhJMUVQeWMyZk83TzZDMUNweWhMQ1FKalNlX2Q5OCIsImtpbmQiOiJzdGVwLXVwIiwianRpIjoiNHpDcUJaY2FPaDlsRlp4M3VoQVhjZyJ9.gfX5OZLdnfNNnwaU4nshuPAXHs_W2ie30sHmALIXduKw6bFw6c2xJfuu82AP9jF8d7f3BHo82UtTYxWAy2XbBQ",
+  "verdict": "wrong_org"
+}

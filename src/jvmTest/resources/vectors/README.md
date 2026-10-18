@@ -122,8 +122,21 @@ void-which-binds-go; the RP side is server-only and nothing here replays it.
 
 ## `custody-sealedfile/`
 
-Copied for completeness (v0.19.1), so the whole directory matches void-which-binds-go.
-It is Go's Argon2id-sealed key file for the same counting seed; nothing here replays it.
+void-which-binds-go ADR-0021's passphrase-sealed key file (v0.19.1) for the same
+counting seed. `custody/SealedFileVectorTest` opens Go's blob, re-seals the same inputs
+to the identical bytes and refuses every refusal row with Go's error kind (ADR-0010).
+
+## `device-dir/`
+
+void-which-binds-go's custody device directory as `device.Store` writes it (the record,
+the `custody-sealedfile` blob, the enrolment cert and the membership replica).
+`custody/GoDeviceDirVectorTest` loads it with `GoDeviceDir` as Go does, reads the same
+replica and members, and refuses or ignores each edited file as Go does (ADR-0010).
+
+## `custody-tpm-blob/` and `oidc-backchannel/`
+
+Copied for completeness, so the whole directory matches void-which-binds-go: the TPM
+custody backend and OIDC back-channel logout are Go-side only; nothing here replays them.
 
 ## `rp-roster/`
 

@@ -1,0 +1,89 @@
+{
+  "name": "consent-scope-mapping",
+  "description": "ConsentPolicyScope: an OAuth scope matching [a-z0-9._-]+(:[a-z0-9._-]+)* maps to oidc:client/\u003cclient_id\u003e/\u003cscope with ':' replaced by '/'\u003e, a valid ADR-0017 scope of at most 128 bytes; anything else is invalid_request.",
+  "kind": "consent-scope-mapping",
+  "mappings": [
+    {
+      "note": "the ADR's example",
+      "client_id": "nutripod-web",
+      "scope": "mcp:tools.read",
+      "verdict": "ok",
+      "policy_scope": "oidc:client/nutripod-web/mcp/tools.read"
+    },
+    {
+      "note": "several segments",
+      "client_id": "nutripod-web",
+      "scope": "mcp:eval:run",
+      "verdict": "ok",
+      "policy_scope": "oidc:client/nutripod-web/mcp/eval/run"
+    },
+    {
+      "note": "one segment",
+      "client_id": "nutripod-web",
+      "scope": "profile",
+      "verdict": "ok",
+      "policy_scope": "oidc:client/nutripod-web/profile"
+    },
+    {
+      "note": "maps to exactly 128 bytes",
+      "client_id": "nutripod-web",
+      "scope": "mcp:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "verdict": "ok",
+      "policy_scope": "oidc:client/nutripod-web/mcp/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    {
+      "note": "maps to 129 bytes",
+      "client_id": "nutripod-web",
+      "scope": "mcp:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "verdict": "invalid_request"
+    },
+    {
+      "note": "a '/' (would collide with mcp:tools.read)",
+      "client_id": "nutripod-web",
+      "scope": "mcp/tools.read",
+      "verdict": "invalid_request"
+    },
+    {
+      "note": "uppercase",
+      "client_id": "nutripod-web",
+      "scope": "MCP:tools.read",
+      "verdict": "invalid_request"
+    },
+    {
+      "note": "an empty segment",
+      "client_id": "nutripod-web",
+      "scope": "mcp::tools",
+      "verdict": "invalid_request"
+    },
+    {
+      "note": "a leading ':'",
+      "client_id": "nutripod-web",
+      "scope": ":mcp",
+      "verdict": "invalid_request"
+    },
+    {
+      "note": "a trailing ':'",
+      "client_id": "nutripod-web",
+      "scope": "mcp:",
+      "verdict": "invalid_request"
+    },
+    {
+      "note": "empty",
+      "client_id": "nutripod-web",
+      "scope": "",
+      "verdict": "invalid_request"
+    },
+    {
+      "note": "a space",
+      "client_id": "nutripod-web",
+      "scope": "mcp tools",
+      "verdict": "invalid_request"
+    },
+    {
+      "note": "a character outside the set",
+      "client_id": "nutripod-web",
+      "scope": "mcp:tools+read",
+      "verdict": "invalid_request"
+    }
+  ]
+}
