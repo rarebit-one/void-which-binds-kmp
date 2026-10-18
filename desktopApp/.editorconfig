@@ -1,0 +1,3 @@
+# Compose: a @Composable function is named like a type (Kotlin's Compose API guidelines).
+[*.{kt,kts}]
+ktlint_function_naming_ignore_when_annotated_with = Composable
