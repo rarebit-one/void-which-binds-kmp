@@ -1,0 +1,434 @@
+{
+  "name": "poll",
+  "description": "One auth_req_id's polls, at seconds after issuance: slow_down when sooner than interval after the last poll (the interval then grows by 5 s, and every poll moves the last-poll time) or beyond 60 polls; ok means the approval's state answers. interval and polls are the state after each poll.",
+  "kind": "poll",
+  "polls": [
+    {
+      "note": "on time: 5 s after issuance",
+      "at": 5,
+      "verdict": "ok",
+      "interval": 5,
+      "polls": 1
+    },
+    {
+      "note": "early: 3 s after the last poll",
+      "at": 8,
+      "verdict": "slow_down",
+      "interval": 10,
+      "polls": 2
+    },
+    {
+      "note": "early again: 9 s after the last, the interval is now 10 s",
+      "at": 17,
+      "verdict": "slow_down",
+      "interval": 15,
+      "polls": 3
+    },
+    {
+      "note": "on time at the grown 15 s interval",
+      "at": 32,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 4
+    },
+    {
+      "note": "exactly the interval later is on time",
+      "at": 47,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 5
+    },
+    {
+      "note": "on time",
+      "at": 62,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 6
+    },
+    {
+      "note": "on time",
+      "at": 77,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 7
+    },
+    {
+      "note": "on time",
+      "at": 92,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 8
+    },
+    {
+      "note": "on time",
+      "at": 107,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 9
+    },
+    {
+      "note": "on time",
+      "at": 122,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 10
+    },
+    {
+      "note": "on time",
+      "at": 137,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 11
+    },
+    {
+      "note": "on time",
+      "at": 152,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 12
+    },
+    {
+      "note": "on time",
+      "at": 167,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 13
+    },
+    {
+      "note": "on time",
+      "at": 182,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 14
+    },
+    {
+      "note": "on time",
+      "at": 197,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 15
+    },
+    {
+      "note": "on time",
+      "at": 212,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 16
+    },
+    {
+      "note": "on time",
+      "at": 227,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 17
+    },
+    {
+      "note": "on time",
+      "at": 242,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 18
+    },
+    {
+      "note": "on time",
+      "at": 257,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 19
+    },
+    {
+      "note": "on time",
+      "at": 272,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 20
+    },
+    {
+      "note": "on time",
+      "at": 287,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 21
+    },
+    {
+      "note": "on time",
+      "at": 302,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 22
+    },
+    {
+      "note": "on time",
+      "at": 317,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 23
+    },
+    {
+      "note": "on time",
+      "at": 332,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 24
+    },
+    {
+      "note": "on time",
+      "at": 347,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 25
+    },
+    {
+      "note": "on time",
+      "at": 362,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 26
+    },
+    {
+      "note": "on time",
+      "at": 377,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 27
+    },
+    {
+      "note": "on time",
+      "at": 392,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 28
+    },
+    {
+      "note": "on time",
+      "at": 407,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 29
+    },
+    {
+      "note": "on time",
+      "at": 422,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 30
+    },
+    {
+      "note": "on time",
+      "at": 437,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 31
+    },
+    {
+      "note": "on time",
+      "at": 452,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 32
+    },
+    {
+      "note": "on time",
+      "at": 467,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 33
+    },
+    {
+      "note": "on time",
+      "at": 482,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 34
+    },
+    {
+      "note": "on time",
+      "at": 497,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 35
+    },
+    {
+      "note": "on time",
+      "at": 512,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 36
+    },
+    {
+      "note": "on time",
+      "at": 527,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 37
+    },
+    {
+      "note": "on time",
+      "at": 542,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 38
+    },
+    {
+      "note": "on time",
+      "at": 557,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 39
+    },
+    {
+      "note": "on time",
+      "at": 572,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 40
+    },
+    {
+      "note": "on time",
+      "at": 587,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 41
+    },
+    {
+      "note": "on time",
+      "at": 602,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 42
+    },
+    {
+      "note": "on time",
+      "at": 617,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 43
+    },
+    {
+      "note": "on time",
+      "at": 632,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 44
+    },
+    {
+      "note": "on time",
+      "at": 647,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 45
+    },
+    {
+      "note": "on time",
+      "at": 662,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 46
+    },
+    {
+      "note": "on time",
+      "at": 677,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 47
+    },
+    {
+      "note": "on time",
+      "at": 692,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 48
+    },
+    {
+      "note": "on time",
+      "at": 707,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 49
+    },
+    {
+      "note": "on time",
+      "at": 722,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 50
+    },
+    {
+      "note": "on time",
+      "at": 737,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 51
+    },
+    {
+      "note": "on time",
+      "at": 752,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 52
+    },
+    {
+      "note": "on time",
+      "at": 767,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 53
+    },
+    {
+      "note": "on time",
+      "at": 782,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 54
+    },
+    {
+      "note": "on time",
+      "at": 797,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 55
+    },
+    {
+      "note": "on time",
+      "at": 812,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 56
+    },
+    {
+      "note": "on time",
+      "at": 827,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 57
+    },
+    {
+      "note": "on time",
+      "at": 842,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 58
+    },
+    {
+      "note": "on time",
+      "at": 857,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 59
+    },
+    {
+      "note": "on time",
+      "at": 872,
+      "verdict": "ok",
+      "interval": 15,
+      "polls": 60
+    },
+    {
+      "note": "the 61st poll is over the limit, though on time",
+      "at": 902,
+      "verdict": "slow_down",
+      "interval": 15,
+      "polls": 61
+    }
+  ]
+}

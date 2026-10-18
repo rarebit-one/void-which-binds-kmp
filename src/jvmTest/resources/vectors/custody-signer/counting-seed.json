@@ -8,6 +8,7 @@
   "signers": [
     "raw-ed25519",
     "sealedfile",
-    "software-keys"
+    "software-keys",
+    "tpm"
   ]
 }

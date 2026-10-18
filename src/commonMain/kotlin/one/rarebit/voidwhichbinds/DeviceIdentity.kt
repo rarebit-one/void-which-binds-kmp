@@ -20,15 +20,32 @@ import one.rarebit.voidwhichbinds.crypto.X25519
  * The app constructs one per session from its [DeviceKeyStore] (for [signPublicKey]
  * + [sign]) and its stored [EncryptionKey]; this library never persists anything.
  */
-class DeviceIdentity(
+class DeviceIdentity internal constructor(
     /** The device's 32-byte Ed25519 public signing key. */
     val signPublicKey: ByteArray,
     /** The device's 32-byte X25519 public encryption key (cert `denc`). */
     val encPublicKey: ByteArray,
-    /** The device's 32-byte X25519 private encryption scalar (unseals delivered certs). */
-    val encPrivateKey: ByteArray,
+    private val encPrivateKeyFn: () -> ByteArray,
     private val signFn: (ByteArray) -> ByteArray,
 ) {
+    constructor(
+        signPublicKey: ByteArray,
+        encPublicKey: ByteArray,
+        encPrivateKey: ByteArray,
+        signFn: (ByteArray) -> ByteArray,
+    ) : this(signPublicKey, encPublicKey, { encPrivateKey }, signFn)
+
+    /**
+     * The device's 32-byte X25519 private encryption scalar (unseals delivered certs). A
+     * passphrase-sealed desktop device (`custody.SealedDeviceKeys`, JVM) supplies it lazily,
+     * so reading it may unlock, and may throw there; a phone's is fixed at construction.
+     *
+     * No `@Throws`: Kotlin/Native allows it only on functions and constructors. It is not
+     * needed, because only the `internal` constructor takes a supplier, and only jvmMain
+     * calls it; on iOS this getter returns the array the public constructor was given.
+     */
+    val encPrivateKey: ByteArray get() = encPrivateKeyFn()
+
     /** Sign [message] with the hardware device key (biometric-gated on-device). */
     fun sign(message: ByteArray): ByteArray = signFn(message)
 

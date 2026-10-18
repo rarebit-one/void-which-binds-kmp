@@ -36,6 +36,18 @@ plainly, not a hardware claim.
    subkey step over the platform IETF ChaCha20-Poly1305 actuals), now zeroing its subkey after use.
    HChaCha20 is also pinned by draft-irtf-cfrg-xchacha's test vector, cross-checked against Go's
    `chacha20.HChaCha20`.
+5. **`custody/GoDeviceDir` reads Go's device directory** (`device.Store`: `device.json`,
+   `device.sealed`, `enrolment.cert`, `ops.jsonl`) for a sealed device only, with Go's checks:
+   the sealed file's `device` signer and X25519 recipient must equal the record's keys, or it
+   refuses (Go `ErrCustodyMismatch`). The cert is re-verified on every load, and one that no
+   longer admits the device reads as not enrolled. The replica is merged on read and written
+   atomically (0600). Pinned by void-which-binds-go's `device-dir` vector.
+6. **`custody/SealedDeviceKeys` gives the flows a signer, an unwrap and a `DeviceIdentity`**,
+   asking for the passphrase lazily with the reference CLI's `lazyKeys` semantics: public halves
+   never ask; a private operation unlocks if the hold (default 10 minutes, measured after the KDF
+   returns) has lapsed; a failed first unlock is kept, a failed renewal is not, and an explicit
+   `unlock(passphrase)` clears a kept failure. `DeviceIdentity` gains an internal constructor
+   whose X25519 private key is supplied lazily, so building one never unlocks.
 
 ## Consequences
 

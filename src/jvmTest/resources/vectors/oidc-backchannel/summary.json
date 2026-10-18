@@ -1,0 +1,119 @@
+{
+  "name": "summary",
+  "description": "BackchannelAction's summary: the registry display name, \": \", the vetted binding_message, and for consent moneta's own scope suffix; then each binding_message refusal (answered invalid_binding_message).",
+  "kind": "summary",
+  "summaries": [
+    {
+      "note": "step-up: prefix and message",
+      "client_id": "nutripod-web",
+      "display_name": "Nutripod",
+      "kind": "step-up",
+      "binding_message": "Approve payout of SGD 1,200.00 to Acme Pte Ltd",
+      "params": "{\"amount\":\"1200.00\",\"currency\":\"SGD\",\"operation\":\"payout\",\"payee\":\"acme-pte-ltd\"}",
+      "verdict": "ok",
+      "summary": "Nutripod: Approve payout of SGD 1,200.00 to Acme Pte Ltd"
+    },
+    {
+      "note": "consent: the scope suffix is written from params",
+      "client_id": "nutripod-web",
+      "display_name": "Nutripod",
+      "kind": "consent",
+      "binding_message": "Allow Agent (agent.example) to use your Nutripod tools",
+      "params": "{\"client_id\":\"mcp-client-7f3a\",\"redirect_uri\":\"https://agent.example/callback\",\"scopes\":[\"mcp:tools.read\",\"mcp:tools.write\"]}",
+      "verdict": "ok",
+      "summary": "Nutripod: Allow Agent (agent.example) to use your Nutripod tools (scopes: mcp:tools.read, mcp:tools.write)"
+    },
+    {
+      "note": "200 bytes, the maximum",
+      "client_id": "nutripod-web",
+      "display_name": "Nutripod",
+      "kind": "step-up",
+      "binding_message": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "params": "{\"amount\":\"1200.00\",\"currency\":\"SGD\",\"operation\":\"payout\",\"payee\":\"acme-pte-ltd\"}",
+      "verdict": "ok",
+      "summary": "Nutripod: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    {
+      "note": "empty",
+      "client_id": "nutripod-web",
+      "display_name": "Nutripod",
+      "kind": "step-up",
+      "binding_message": "",
+      "params": "{\"amount\":\"1200.00\",\"currency\":\"SGD\",\"operation\":\"payout\",\"payee\":\"acme-pte-ltd\"}",
+      "verdict": "invalid_binding_message"
+    },
+    {
+      "note": "too-long: 201 bytes",
+      "client_id": "nutripod-web",
+      "display_name": "Nutripod",
+      "kind": "step-up",
+      "binding_message": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "params": "{\"amount\":\"1200.00\",\"currency\":\"SGD\",\"operation\":\"payout\",\"payee\":\"acme-pte-ltd\"}",
+      "verdict": "invalid_binding_message"
+    },
+    {
+      "note": "cc: a tab (U+0009)",
+      "client_id": "nutripod-web",
+      "display_name": "Nutripod",
+      "kind": "step-up",
+      "binding_message": "Approve\tpayout",
+      "params": "{\"amount\":\"1200.00\",\"currency\":\"SGD\",\"operation\":\"payout\",\"payee\":\"acme-pte-ltd\"}",
+      "verdict": "invalid_binding_message"
+    },
+    {
+      "note": "bidi: U+202E RIGHT-TO-LEFT OVERRIDE (Cf)",
+      "client_id": "nutripod-web",
+      "display_name": "Nutripod",
+      "kind": "step-up",
+      "binding_message": "Approve ‮payout",
+      "params": "{\"amount\":\"1200.00\",\"currency\":\"SGD\",\"operation\":\"payout\",\"payee\":\"acme-pte-ltd\"}",
+      "verdict": "invalid_binding_message"
+    },
+    {
+      "note": "zero-width: U+200B ZERO WIDTH SPACE (Cf)",
+      "client_id": "nutripod-web",
+      "display_name": "Nutripod",
+      "kind": "step-up",
+      "binding_message": "Approve​payout",
+      "params": "{\"amount\":\"1200.00\",\"currency\":\"SGD\",\"operation\":\"payout\",\"payee\":\"acme-pte-ltd\"}",
+      "verdict": "invalid_binding_message"
+    },
+    {
+      "note": "line-separator: U+2028 (Zl)",
+      "client_id": "nutripod-web",
+      "display_name": "Nutripod",
+      "kind": "step-up",
+      "binding_message": "Approve\u2028payout",
+      "params": "{\"amount\":\"1200.00\",\"currency\":\"SGD\",\"operation\":\"payout\",\"payee\":\"acme-pte-ltd\"}",
+      "verdict": "invalid_binding_message"
+    },
+    {
+      "note": "nfc-non-ascii: U+00E9 precomposed é (NFC)",
+      "client_id": "nutripod-web",
+      "display_name": "Nutripod",
+      "kind": "step-up",
+      "binding_message": "Pay Café Ltd",
+      "params": "{\"amount\":\"1200.00\",\"currency\":\"SGD\",\"operation\":\"payout\",\"payee\":\"acme-pte-ltd\"}",
+      "verdict": "ok",
+      "summary": "Nutripod: Pay Café Ltd"
+    },
+    {
+      "note": "not-nfc: e + U+0301 COMBINING ACUTE ACCENT (NFC is U+00E9)",
+      "client_id": "nutripod-web",
+      "display_name": "Nutripod",
+      "kind": "step-up",
+      "binding_message": "Pay Café Ltd",
+      "params": "{\"amount\":\"1200.00\",\"currency\":\"SGD\",\"operation\":\"payout\",\"payee\":\"acme-pte-ltd\"}",
+      "verdict": "invalid_binding_message"
+    },
+    {
+      "note": "leading-space",
+      "client_id": "nutripod-web",
+      "display_name": "Nutripod",
+      "kind": "step-up",
+      "binding_message": " Approve payout",
+      "params": "{\"amount\":\"1200.00\",\"currency\":\"SGD\",\"operation\":\"payout\",\"payee\":\"acme-pte-ltd\"}",
+      "verdict": "invalid_binding_message"
+    }
+  ]
+}

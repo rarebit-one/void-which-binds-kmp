@@ -1,0 +1,49 @@
+{
+  "name": "assertion-ok-managed",
+  "description": "An org-managed person (sub mp:) stepped up with a passkey; re-mints byte for byte and verifies.",
+  "kind": "assertion",
+  "keys": {
+    "current": {
+      "seed": "a3e49d83a62f325288d1edd8a3f04edc7aa5c999da74fc23a248049996962962",
+      "jwk": {
+        "kty": "OKP",
+        "crv": "Ed25519",
+        "x": "-lHW-V3IAnMSEM_HWC1FI7-Y9WpczrbS2vypp5PGGJA",
+        "kid": "DZgWU2dqfo6E9dQGjojGQI_0Zqqpp_3V5WtcOd-ybJ8",
+        "use": "sig",
+        "alg": "EdDSA"
+      }
+    }
+  },
+  "jwks": {
+    "keys": [
+      {
+        "kty": "OKP",
+        "crv": "Ed25519",
+        "x": "-lHW-V3IAnMSEM_HWC1FI7-Y9WpczrbS2vypp5PGGJA",
+        "kid": "DZgWU2dqfo6E9dQGjojGQI_0Zqqpp_3V5WtcOd-ybJ8",
+        "use": "sig",
+        "alg": "EdDSA"
+      }
+    ]
+  },
+  "pins": [
+    "DZgWU2dqfo6E9dQGjojGQI_0Zqqpp_3V5WtcOd-ybJ8"
+  ],
+  "verifier": "assertion",
+  "expect": {
+    "issuer": "https://moneta.example",
+    "client_id": "nutripod-web",
+    "org": "ed25519:65214fc93773949e91197bf15d29c81f34538cfc0d479da9560d8bd12f2bc582",
+    "subject": "mp:f5eacf5a96f9f986d13f20a4621d5f71",
+    "kind": "step-up",
+    "action_digest": "vRIR0xR86k4Ls8I1EPyc2fO7O6C1CpyhLCQJjSe_d98",
+    "now": 1791000300,
+    "leeway": 60
+  },
+  "signer": "current",
+  "header": "{\"alg\":\"EdDSA\",\"kid\":\"DZgWU2dqfo6E9dQGjojGQI_0Zqqpp_3V5WtcOd-ybJ8\",\"typ\":\"vwb-approval+jwt\"}",
+  "payload": "{\"iss\":\"https://moneta.example\",\"sub\":\"mp:f5eacf5a96f9f986d13f20a4621d5f71\",\"aud\":\"nutripod-web\",\"org\":\"ed25519:65214fc93773949e91197bf15d29c81f34538cfc0d479da9560d8bd12f2bc582\",\"iat\":1791000300,\"exp\":1791000600,\"auth_time\":1791000280,\"amr\":[\"mfa\",\"pop\",\"user\"],\"act_digest\":\"vRIR0xR86k4Ls8I1EPyc2fO7O6C1CpyhLCQJjSe_d98\",\"kind\":\"step-up\",\"jti\":\"w4N7X-GhdePWg9cjmweNtQ\"}",
+  "token": "eyJhbGciOiJFZERTQSIsImtpZCI6IkRaZ1dVMmRxZm82RTlkUUdqb2pHUUlfMFpxcXBwXzNWNVd0Y09kLXliSjgiLCJ0eXAiOiJ2d2ItYXBwcm92YWwrand0In0.eyJpc3MiOiJodHRwczovL21vbmV0YS5leGFtcGxlIiwic3ViIjoibXA6ZjVlYWNmNWE5NmY5Zjk4NmQxM2YyMGE0NjIxZDVmNzEiLCJhdWQiOiJudXRyaXBvZC13ZWIiLCJvcmciOiJlZDI1NTE5OjY1MjE0ZmM5Mzc3Mzk0OWU5MTE5N2JmMTVkMjljODFmMzQ1MzhjZmMwZDQ3OWRhOTU2MGQ4YmQxMmYyYmM1ODIiLCJpYXQiOjE3OTEwMDAzMDAsImV4cCI6MTc5MTAwMDYwMCwiYXV0aF90aW1lIjoxNzkxMDAwMjgwLCJhbXIiOlsibWZhIiwicG9wIiwidXNlciJdLCJhY3RfZGlnZXN0IjoidlJJUjB4Ujg2azRMczhJMUVQeWMyZk83TzZDMUNweWhMQ1FKalNlX2Q5OCIsImtpbmQiOiJzdGVwLXVwIiwianRpIjoidzRON1gtR2hkZVBXZzljam13ZU50USJ9.2V0BNHlIjoTzHamO8t8wY24c1L7Z1A4p-56MuPDfz8ki-ePiZmhGcsQUUDOiAPTMNZEBFFYznP5LHR1OOmk-DQ",
+  "verdict": "ok"
+}

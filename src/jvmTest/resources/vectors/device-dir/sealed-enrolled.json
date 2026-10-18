@@ -1,0 +1,90 @@
+{
+  "name": "sealed-enrolled",
+  "description": "a custody device holding the custody-sealedfile device-floor blob, enrolled by a genesis-signed add of the identity 40..5f, that then signed an add of a second device (60..7f) through its sealed signer",
+  "sealed_file_name": "device.sealed",
+  "passphrase": "correct horse battery staple",
+  "now": "2026-01-02T04:04:05Z",
+  "files": {
+    "device.json": "{\n  \"id\": \"01a14f05-a811-7bd8-b0d5-21d9c0a87458\",\n  \"name\": \"vector-device\",\n  \"algorithm\": \"ed25519\",\n  \"public_key\": \"ed25519:03a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b8\",\n  \"encryption_key\": \"x25519:358072d6365880d1aeea329adf9121383851ed21a28e3b75e965d0d2cd166254\",\n  \"created_at\": \"2026-01-02T03:04:05Z\",\n  \"key_custody\": \"external\"\n}\n",
+    "device.sealed": "766f69642d77686963682d62696e64732d7365616c65642d66696c652d76310001000000030004000001808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9fc0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7020100358072d6365880d1aeea329adf9121383851ed21a28e3b75e965d0d2cd166254020664657669636503a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b8804a382a1b7e3749605100e351443cc3914b02f4095616e53654480695951375bb315514be7e9ed22b737b0c02b40b0d3afad8fed933a68353a78d33a0ee0dc4cf5ffce4c8a0187974982f5efcc724d8245fc5d434fdd110ae00",
+    "enrolment.cert": "eyJ2IjozLCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLm9wIiwidXNyIjoiZWQyNTUxOToyNTQzYjkyZmYxMDk1NTExNDc2YWRjODM2OWRiNmRkYzkzMzY2NWExMTk3OGRkYTE0MDRlZTEwNjZjYTk1NTlkIiwib3AiOiJhZGQiLCJkZXYiOiJlZDI1NTE5OjAzYTEwN2JmZjNjZTEwYmUxZDcwZGQxOGU3NGJjMDk5NjdlNGQ2MzA5YmE1MGQ1ZjFkZGM4NjY0MTI1NTMxYjgiLCJkZW5jIjoieDI1NTE5OjM1ODA3MmQ2MzY1ODgwZDFhZWVhMzI5YWRmOTEyMTM4Mzg1MWVkMjFhMjhlM2I3NWU5NjVkMGQyY2QxNjYyNTQiLCJieSI6ImVkMjU1MTk6MjU0M2I5MmZmMTA5NTUxMTQ3NmFkYzgzNjlkYjZkZGM5MzM2NjVhMTE5NzhkZGExNDA0ZWUxMDY2Y2E5NTU5ZCIsInByZXYiOltdLCJpYXQiOjE3NjczMjMwNDUsImV4cCI6MTc3NTA5OTA0NX0.pDj9-pgK5Jx9PhwZVWUsoW9tHsYAlF_1CI9jW5DG2MauQQdBq1dbFLo5T8MGWxUAs3Ve6YjdLbfDXW-ZQYUYCA\n",
+    "ops.jsonl": "eyJ2IjozLCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLm9wIiwidXNyIjoiZWQyNTUxOToyNTQzYjkyZmYxMDk1NTExNDc2YWRjODM2OWRiNmRkYzkzMzY2NWExMTk3OGRkYTE0MDRlZTEwNjZjYTk1NTlkIiwib3AiOiJhZGQiLCJkZXYiOiJlZDI1NTE5OjE3NDU1M2I0NTZkZGRmYzY5MDhlY2FiMWMxMDFmZTZhYjIxZTJiYWEwNjE3Nzk1YjdkNDNhNjM0ODI5OTNmZDUiLCJkZW5jIjoieDI1NTE5OjQ5M2U4MmZjNzQ0NjRhNTkyNjg4MTc2MjNkMjA1M2M1ZWI4ZTJjYzRhOTg4YjRmZWUxNzllYzZiMDEwZDUzMWQiLCJieSI6ImVkMjU1MTk6MDNhMTA3YmZmM2NlMTBiZTFkNzBkZDE4ZTc0YmMwOTk2N2U0ZDYzMDliYTUwZDVmMWRkYzg2NjQxMjU1MzFiOCIsInByZXYiOlsic2hhMjU2OmE2ZmNmZDAwZTQxOWQxZmNkNzZjMDUxNzRhODM0YmNiZWU2MmNlYTZkZjRiNzliODBjNGNkZjk3Y2Q0Y2ZlMGUiXSwiaWF0IjoxNzY3MzIzMDQ1LCJleHAiOjE3NzUwOTkwNDV9.0FKv9gCZ9cMCRcJ0qbfvfkx2OKPZNREeRL6CGRvmdR14NZEZnGMa6oFcmpO0QqGpoYDGKyvoh8FId3D5wHUQCg\neyJ2IjozLCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLm9wIiwidXNyIjoiZWQyNTUxOToyNTQzYjkyZmYxMDk1NTExNDc2YWRjODM2OWRiNmRkYzkzMzY2NWExMTk3OGRkYTE0MDRlZTEwNjZjYTk1NTlkIiwib3AiOiJhZGQiLCJkZXYiOiJlZDI1NTE5OjAzYTEwN2JmZjNjZTEwYmUxZDcwZGQxOGU3NGJjMDk5NjdlNGQ2MzA5YmE1MGQ1ZjFkZGM4NjY0MTI1NTMxYjgiLCJkZW5jIjoieDI1NTE5OjM1ODA3MmQ2MzY1ODgwZDFhZWVhMzI5YWRmOTEyMTM4Mzg1MWVkMjFhMjhlM2I3NWU5NjVkMGQyY2QxNjYyNTQiLCJieSI6ImVkMjU1MTk6MjU0M2I5MmZmMTA5NTUxMTQ3NmFkYzgzNjlkYjZkZGM5MzM2NjVhMTE5NzhkZGExNDA0ZWUxMDY2Y2E5NTU5ZCIsInByZXYiOltdLCJpYXQiOjE3NjczMjMwNDUsImV4cCI6MTc3NTA5OTA0NX0.pDj9-pgK5Jx9PhwZVWUsoW9tHsYAlF_1CI9jW5DG2MauQQdBq1dbFLo5T8MGWxUAs3Ve6YjdLbfDXW-ZQYUYCA\n"
+  },
+  "device": {
+    "id": "01a14f05-a811-7bd8-b0d5-21d9c0a87458",
+    "name": "vector-device",
+    "algorithm": "ed25519",
+    "public_key": "ed25519:03a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b8",
+    "encryption_key": "x25519:358072d6365880d1aeea329adf9121383851ed21a28e3b75e965d0d2cd166254",
+    "created_at": "2026-01-02T03:04:05Z",
+    "key_custody": "external"
+  },
+  "enrolment": "enrolled",
+  "enrolled_user": "ed25519:2543b92ff1095511476adc8369db6ddc933665a11978dda1404ee1066ca9559d",
+  "ops": [
+    "eyJ2IjozLCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLm9wIiwidXNyIjoiZWQyNTUxOToyNTQzYjkyZmYxMDk1NTExNDc2YWRjODM2OWRiNmRkYzkzMzY2NWExMTk3OGRkYTE0MDRlZTEwNjZjYTk1NTlkIiwib3AiOiJhZGQiLCJkZXYiOiJlZDI1NTE5OjE3NDU1M2I0NTZkZGRmYzY5MDhlY2FiMWMxMDFmZTZhYjIxZTJiYWEwNjE3Nzk1YjdkNDNhNjM0ODI5OTNmZDUiLCJkZW5jIjoieDI1NTE5OjQ5M2U4MmZjNzQ0NjRhNTkyNjg4MTc2MjNkMjA1M2M1ZWI4ZTJjYzRhOTg4YjRmZWUxNzllYzZiMDEwZDUzMWQiLCJieSI6ImVkMjU1MTk6MDNhMTA3YmZmM2NlMTBiZTFkNzBkZDE4ZTc0YmMwOTk2N2U0ZDYzMDliYTUwZDVmMWRkYzg2NjQxMjU1MzFiOCIsInByZXYiOlsic2hhMjU2OmE2ZmNmZDAwZTQxOWQxZmNkNzZjMDUxNzRhODM0YmNiZWU2MmNlYTZkZjRiNzliODBjNGNkZjk3Y2Q0Y2ZlMGUiXSwiaWF0IjoxNzY3MzIzMDQ1LCJleHAiOjE3NzUwOTkwNDV9.0FKv9gCZ9cMCRcJ0qbfvfkx2OKPZNREeRL6CGRvmdR14NZEZnGMa6oFcmpO0QqGpoYDGKyvoh8FId3D5wHUQCg",
+    "eyJ2IjozLCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLm9wIiwidXNyIjoiZWQyNTUxOToyNTQzYjkyZmYxMDk1NTExNDc2YWRjODM2OWRiNmRkYzkzMzY2NWExMTk3OGRkYTE0MDRlZTEwNjZjYTk1NTlkIiwib3AiOiJhZGQiLCJkZXYiOiJlZDI1NTE5OjAzYTEwN2JmZjNjZTEwYmUxZDcwZGQxOGU3NGJjMDk5NjdlNGQ2MzA5YmE1MGQ1ZjFkZGM4NjY0MTI1NTMxYjgiLCJkZW5jIjoieDI1NTE5OjM1ODA3MmQ2MzY1ODgwZDFhZWVhMzI5YWRmOTEyMTM4Mzg1MWVkMjFhMjhlM2I3NWU5NjVkMGQyY2QxNjYyNTQiLCJieSI6ImVkMjU1MTk6MjU0M2I5MmZmMTA5NTUxMTQ3NmFkYzgzNjlkYjZkZGM5MzM2NjVhMTE5NzhkZGExNDA0ZWUxMDY2Y2E5NTU5ZCIsInByZXYiOltdLCJpYXQiOjE3NjczMjMwNDUsImV4cCI6MTc3NTA5OTA0NX0.pDj9-pgK5Jx9PhwZVWUsoW9tHsYAlF_1CI9jW5DG2MauQQdBq1dbFLo5T8MGWxUAs3Ve6YjdLbfDXW-ZQYUYCA"
+  ],
+  "members": [
+    "ed25519:03a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b8",
+    "ed25519:174553b456dddfc6908ecab1c101fe6ab21e2baa0617795b7d43a63482993fd5"
+  ],
+  "refusals": [
+    {
+      "name": "signer-mismatch",
+      "description": "device.json names another signing key than the sealed file's device signer",
+      "file": "device.json",
+      "contents": "{\n  \"algorithm\": \"ed25519\",\n  \"created_at\": \"2026-01-02T03:04:05Z\",\n  \"encryption_key\": \"x25519:358072d6365880d1aeea329adf9121383851ed21a28e3b75e965d0d2cd166254\",\n  \"id\": \"01a14f05-a811-7bd8-b0d5-21d9c0a87458\",\n  \"key_custody\": \"external\",\n  \"name\": \"vector-device\",\n  \"public_key\": \"ed25519:174553b456dddfc6908ecab1c101fe6ab21e2baa0617795b7d43a63482993fd5\"\n}\n",
+      "error": "custody-mismatch"
+    },
+    {
+      "name": "recipient-mismatch",
+      "description": "device.json names another encryption key than the sealed file's holder",
+      "file": "device.json",
+      "contents": "{\n  \"algorithm\": \"ed25519\",\n  \"created_at\": \"2026-01-02T03:04:05Z\",\n  \"encryption_key\": \"x25519:493e82fc74464a59268817623d2053c5eb8e2cc4a988b4fee179ec6b010d531d\",\n  \"id\": \"01a14f05-a811-7bd8-b0d5-21d9c0a87458\",\n  \"key_custody\": \"external\",\n  \"name\": \"vector-device\",\n  \"public_key\": \"ed25519:03a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b8\"\n}\n",
+      "error": "custody-mismatch"
+    },
+    {
+      "name": "software-record",
+      "description": "device.json without key_custody: a software device, opened with custody keys",
+      "file": "device.json",
+      "contents": "{\n  \"algorithm\": \"ed25519\",\n  \"created_at\": \"2026-01-02T03:04:05Z\",\n  \"encryption_key\": \"x25519:358072d6365880d1aeea329adf9121383851ed21a28e3b75e965d0d2cd166254\",\n  \"id\": \"01a14f05-a811-7bd8-b0d5-21d9c0a87458\",\n  \"name\": \"vector-device\",\n  \"public_key\": \"ed25519:03a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b8\"\n}\n",
+      "error": "custody-mismatch"
+    },
+    {
+      "name": "unknown-key-custody",
+      "description": "key_custody names a custody this reader does not know",
+      "file": "device.json",
+      "contents": "{\n  \"algorithm\": \"ed25519\",\n  \"created_at\": \"2026-01-02T03:04:05Z\",\n  \"encryption_key\": \"x25519:358072d6365880d1aeea329adf9121383851ed21a28e3b75e965d0d2cd166254\",\n  \"id\": \"01a14f05-a811-7bd8-b0d5-21d9c0a87458\",\n  \"key_custody\": \"tpm\",\n  \"name\": \"vector-device\",\n  \"public_key\": \"ed25519:03a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b8\"\n}\n",
+      "error": "malformed"
+    },
+    {
+      "name": "no-encryption-key",
+      "description": "a custody record without its encryption key",
+      "file": "device.json",
+      "contents": "{\n  \"algorithm\": \"ed25519\",\n  \"created_at\": \"2026-01-02T03:04:05Z\",\n  \"id\": \"01a14f05-a811-7bd8-b0d5-21d9c0a87458\",\n  \"key_custody\": \"external\",\n  \"name\": \"vector-device\",\n  \"public_key\": \"ed25519:03a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b8\"\n}\n",
+      "error": "malformed"
+    },
+    {
+      "name": "bad-created-at",
+      "description": "created_at is not RFC 3339",
+      "file": "device.json",
+      "contents": "{\n  \"algorithm\": \"ed25519\",\n  \"created_at\": \"yesterday\",\n  \"encryption_key\": \"x25519:358072d6365880d1aeea329adf9121383851ed21a28e3b75e965d0d2cd166254\",\n  \"id\": \"01a14f05-a811-7bd8-b0d5-21d9c0a87458\",\n  \"key_custody\": \"external\",\n  \"name\": \"vector-device\",\n  \"public_key\": \"ed25519:03a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b8\"\n}\n",
+      "error": "malformed"
+    },
+    {
+      "name": "foreign-cert",
+      "description": "enrolment.cert admits the other device: ignored, so the device is not enrolled",
+      "file": "enrolment.cert",
+      "contents": "eyJ2IjozLCJ0eXAiOiJ2b2lkLXdoaWNoLWJpbmRzLm9wIiwidXNyIjoiZWQyNTUxOToyNTQzYjkyZmYxMDk1NTExNDc2YWRjODM2OWRiNmRkYzkzMzY2NWExMTk3OGRkYTE0MDRlZTEwNjZjYTk1NTlkIiwib3AiOiJhZGQiLCJkZXYiOiJlZDI1NTE5OjE3NDU1M2I0NTZkZGRmYzY5MDhlY2FiMWMxMDFmZTZhYjIxZTJiYWEwNjE3Nzk1YjdkNDNhNjM0ODI5OTNmZDUiLCJkZW5jIjoieDI1NTE5OjQ5M2U4MmZjNzQ0NjRhNTkyNjg4MTc2MjNkMjA1M2M1ZWI4ZTJjYzRhOTg4YjRmZWUxNzllYzZiMDEwZDUzMWQiLCJieSI6ImVkMjU1MTk6MDNhMTA3YmZmM2NlMTBiZTFkNzBkZDE4ZTc0YmMwOTk2N2U0ZDYzMDliYTUwZDVmMWRkYzg2NjQxMjU1MzFiOCIsInByZXYiOlsic2hhMjU2OmE2ZmNmZDAwZTQxOWQxZmNkNzZjMDUxNzRhODM0YmNiZWU2MmNlYTZkZjRiNzliODBjNGNkZjk3Y2Q0Y2ZlMGUiXSwiaWF0IjoxNzY3MzIzMDQ1LCJleHAiOjE3NzUwOTkwNDV9.0FKv9gCZ9cMCRcJ0qbfvfkx2OKPZNREeRL6CGRvmdR14NZEZnGMa6oFcmpO0QqGpoYDGKyvoh8FId3D5wHUQCg\n",
+      "enrolment": "not_enrolled"
+    },
+    {
+      "name": "no-replica",
+      "description": "ops.jsonl empty: the genesis-signed cert alone still enrols",
+      "file": "ops.jsonl",
+      "contents": "",
+      "enrolment": "enrolled"
+    }
+  ]
+}
