@@ -196,6 +196,11 @@ kotlin {
         commonTest.dependencies {
             implementation(kotlin("test"))
         }
+        jvmMain.dependencies {
+            // Argon2id for the sealed-file custody codec (custody/SealedFile, ADR-0010): the
+            // JVM (desktop) target only, so commonMain keeps cryptography-kotlin as its one dep.
+            implementation(libs.bouncycastle.bcprov)
+        }
     }
 }
 

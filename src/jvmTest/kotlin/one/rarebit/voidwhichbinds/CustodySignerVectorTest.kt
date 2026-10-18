@@ -14,7 +14,7 @@ import kotlin.test.assertTrue
  * by `VOID_WHICH_BINDS_GO_REF`): from the counting seed `00..1f`, this library's
  * software Ed25519 must derive the same `signer_id` and mint the same
  * `base64url(body) "." base64url(signature)` token byte for byte as every Go custody
- * signer. (The `custody-sealedfile/` vector is Go-side only; it is not replayed here.)
+ * signer. (The `custody-sealedfile/` vector is replayed by `custody/SealedFileVectorTest`.)
  */
 class CustodySignerVectorTest {
 

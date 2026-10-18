@@ -62,6 +62,7 @@ src/
                        GoStrings (Go TrimSpace whitespace, UTF-8 len)
   commonTest/…         pure + cryptography-kotlin tests (run on every target)
   jvmMain/…            DeviceKeyStore actual (software), JdkHttpTransport, AEAD actual
+  jvmMain/…/custody/   SealedFile: the Go sealed-file device custody, byte for byte (ADR-0010)
   jvmTest/…            JvmEd25519 (JDK provider, test-only) + keystore test; golden-vector
                        parity (resources/vectors/ = void-which-binds-go testdata, verbatim);
                        live void-which-binds-go interop

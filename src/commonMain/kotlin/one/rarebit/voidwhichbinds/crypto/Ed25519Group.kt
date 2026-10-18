@@ -33,13 +33,17 @@ internal object Ed25519Group {
         require(seed.size == 32) { "ed25519: seed must be 32 bytes" }
         // RFC 8032: h = SHA-512(seed); the low 32 bytes, clamped, are the scalar.
         val h = sha512.hashBlocking(seed)
-        h[0] = (h[0].toInt() and 248).toByte()
-        h[31] = ((h[31].toInt() and 127) or 64).toByte()
-        val p = Array(4) { LongArray(16) }
-        scalarBase(p, h) // uses h[0..31]
-        val pk = ByteArray(32)
-        pack(pk, p)
-        return pk
+        try {
+            h[0] = (h[0].toInt() and 248).toByte()
+            h[31] = ((h[31].toInt() and 127) or 64).toByte()
+            val p = Array(4) { LongArray(16) }
+            scalarBase(p, h) // uses h[0..31]
+            val pk = ByteArray(32)
+            pack(pk, p)
+            return pk
+        } finally {
+            h.fill(0) // the signing scalar and nonce prefix: as secret as the seed
+        }
     }
 
     // --- Field element (gf): 16 limbs, radix 2^16, TweetNaCl layout over 2^255-19 ---

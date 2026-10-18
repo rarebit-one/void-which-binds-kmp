@@ -8,6 +8,8 @@ kotlin = "2.3.20"
 # AGP compatible with the Gradle 8.9 wrapper.
 agp = "8.7.3"
 cryptography = "0.6.0"
+# Argon2id for the JVM sealed-file custody codec (jvmMain only; ADR-0010).
+bouncycastle = "1.86"
 compose-bom = "2024.09.03"
 coroutines = "1.9.0"
 androidx-core = "1.13.1"
@@ -31,6 +33,7 @@ detektKotlin = "2.0.21"
 [libraries]
 cryptography-core = { module = "dev.whyoleg.cryptography:cryptography-core", version.ref = "cryptography" }
 cryptography-provider-optimal = { module = "dev.whyoleg.cryptography:cryptography-provider-optimal", version.ref = "cryptography" }
+bouncycastle-bcprov = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bouncycastle" }
 
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose-bom" }
 compose-ui = { module = "androidx.compose.ui:ui" }
