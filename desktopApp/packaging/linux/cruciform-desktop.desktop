@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Cruciform
+GenericName=Device authenticator
+Comment=Approve sign-ins and add devices with this computer's sealed device key
+Exec=@BIN@ %u
+Terminal=false
+Categories=Utility;Security;
+MimeType=x-scheme-handler/void-which-binds;

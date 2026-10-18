@@ -27,4 +27,13 @@ void-which-binds CLI, or from a phone.
 ./gradlew :desktopApp:run                    # run it
 ./gradlew :desktopApp:test                   # the engine's tests, over Go's device-dir vector
 ./gradlew :desktopApp:createDistributable   # a self-contained app image (its own runtime)
+./gradlew :desktopApp:desktopReleaseTarball  # the release tarball: app image, .desktop entry, install.sh
 ```
+
+## Install a release
+
+Releases are cut on `desktop-v*` tags (`release-desktop.yml`): one tarball per Linux
+architecture, with `SHA256SUMS`. Unpack one and run `./install.sh` (no root): it installs
+the app under `~/.local/share/cruciform-desktop`, a launcher in `~/.local/bin`, and a
+`.desktop` entry that makes `void-which-binds:` links open the app. `./install.sh
+--uninstall` removes all three and leaves the device directory alone.

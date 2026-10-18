@@ -1,0 +1,103 @@
+name: release-desktop
+
+# Cuts a release of Cruciform for the desktop (:desktopApp). Triggered by a `desktop-v*`
+# tag, its own prefix beside the library's `v*` (publish.yml) and the Android app's
+# `app-v*` (release.yml), so the three never collide. For each Linux architecture it
+# builds the self-contained app image (its own Java runtime) and packs it with the
+# .desktop entry and install.sh, which registers the void-which-binds: scheme for the
+# user, then attaches the tarballs to the tag's GitHub Release.
+#
+# Nothing is baked in: the desktop app has no endpoint defaults (relay, sites, brokers
+# are set in its Settings), so no repository variables are needed here.
+
+on:
+  push:
+    tags:
+      - "desktop-v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing tag to (re)build a release for"
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-desktop-${{ inputs.tag || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        runner: [ubuntu-latest, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          ref: ${{ inputs.tag || github.ref }}
+          persist-credentials: false
+
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - uses: gradle/actions/setup-gradle@48b5f213c81028ace310571dc5ec0fbbca0b2947 # v4
+        with:
+          cache-disabled: true # release path: no Gradle cache restore (zizmor cache-poisoning)
+
+      - name: Build the app image tarball
+        env:
+          RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+        run: ./gradlew :desktopApp:desktopReleaseTarball "-PdesktopReleaseVersion=$RELEASE_TAG" --no-daemon --stacktrace
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: tarball-${{ matrix.runner }}
+          path: desktopApp/build/release/*.tar.gz
+          if-no-files-found: error
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          pattern: tarball-*
+          merge-multiple: true
+          path: dist
+
+      - name: Publish the GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ inputs.tag || github.ref_name }}
+        run: |
+          version="${TAG#desktop-v}"
+          # The tag's own commit: on a dispatched rebuild GITHUB_SHA is the dispatch ref's,
+          # not the commit the build checked out and packaged.
+          commit="$(gh api "repos/$GH_REPO/commits/$TAG" --jq .sha)"
+          (cd dist && sha256sum ./*.tar.gz > SHA256SUMS)
+          {
+            printf '**Cruciform for the desktop %s**\n\n' "$version"
+            printf 'Linux app images (x86_64 and aarch64), each with its own Java runtime.\n'
+            printf 'Unpack, then run `./install.sh` (no root) to install for this user and\n'
+            printf 'open `void-which-binds:` links with it; `./install.sh --uninstall` removes it.\n\n'
+            printf 'It holds this computer'"'"'s passphrase-sealed device (void-which-binds-go'"'"'s\n'
+            printf 'device directory). **Not hardware-backed.**\n\n'
+            printf -- '- Tag: `%s`\n' "$TAG"
+            printf -- '- Commit: `%s`\n' "$commit"
+          } > notes.md
+          pre=false
+          case "$version" in *-*) pre=true ;; esac
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" dist/*.tar.gz dist/SHA256SUMS --clobber
+            gh release edit "$TAG" --title "Cruciform desktop $version" --notes-file notes.md --prerelease="$pre"
+          else
+            gh release create "$TAG" dist/*.tar.gz dist/SHA256SUMS --title "Cruciform desktop $version" \
+              --notes-file notes.md --prerelease="$pre" --verify-tag
+          fi

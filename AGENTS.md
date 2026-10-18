@@ -150,7 +150,9 @@ deterministic (not CryptoKit on iOS).
 
 Published as `one.rarebit.voidwhichbinds:void-which-binds-client` (GitHub Packages) by
 `.github/workflows/publish.yml` on a `v*` tag, which must equal `version` in `build.gradle.kts`. The
-Cruciform APK is released separately on `app-v*` tags (`.github/workflows/release.yml`).
+Cruciform APK is released separately on `app-v*` tags (`.github/workflows/release.yml`), and
+Cruciform for the desktop (`desktopApp/`, Linux app-image tarballs with `install.sh`, which
+registers the `void-which-binds:` scheme) on `desktop-v*` tags (`release-desktop.yml`).
 
 Annotated source map: [`docs/agents/layout.md`](docs/agents/layout.md).
 
