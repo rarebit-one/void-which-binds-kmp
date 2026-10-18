@@ -26,13 +26,21 @@ internal object XChaCha20Poly1305 {
     /** AEAD-seal [plaintext] → ciphertext‖tag (Go's `AEAD.Seal` framing). */
     fun encrypt(key: ByteArray, nonce24: ByteArray, aad: ByteArray, plaintext: ByteArray): ByteArray {
         val (subkey, ietfNonce) = derive(key, nonce24)
-        return aeadIetfSeal(subkey, ietfNonce, aad, plaintext)
+        try {
+            return aeadIetfSeal(subkey, ietfNonce, aad, plaintext)
+        } finally {
+            subkey.fill(0)
+        }
     }
 
     /** AEAD-open ciphertext‖tag; throws on an authentication failure. */
     fun decrypt(key: ByteArray, nonce24: ByteArray, aad: ByteArray, ciphertext: ByteArray): ByteArray {
         val (subkey, ietfNonce) = derive(key, nonce24)
-        return aeadIetfOpen(subkey, ietfNonce, aad, ciphertext)
+        try {
+            return aeadIetfOpen(subkey, ietfNonce, aad, ciphertext)
+        } finally {
+            subkey.fill(0)
+        }
     }
 
     /** The XChaCha20 subkey + the reduced 12-byte IETF nonce for [key]/[nonce24]. */
@@ -56,7 +64,7 @@ internal object XChaCha20Poly1305 {
      * key and a 16-byte nonce, returning words 0..3 ‖ 12..15 — the RFC-draft
      * intermediate-key derivation, with **no** final add of the initial state.
      */
-    private fun hChaCha20(key: ByteArray, nonce16: ByteArray): ByteArray {
+    internal fun hChaCha20(key: ByteArray, nonce16: ByteArray): ByteArray {
         val s = IntArray(16)
         s[0] = C0
         s[1] = C1
@@ -83,6 +91,7 @@ internal object XChaCha20Poly1305 {
         putLeU32(s[13], out, 20)
         putLeU32(s[14], out, 24)
         putLeU32(s[15], out, 28)
+        s.fill(0)
         return out
     }
 

@@ -143,6 +143,9 @@ internal object X25519 {
         mul(a, a, c)
         val q = ByteArray(32)
         pack25519(q, a)
+        // The clamped scalar is the private key; the ladder state follows its bits.
+        z.fill(0)
+        for (l in arrayOf(a, b, c, d, e, f)) l.fill(0)
         return q
     }
 
