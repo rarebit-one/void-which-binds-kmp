@@ -40,6 +40,15 @@ sourceSets.test {
     resources.srcDir(rootProject.file("src/jvmTest/resources"))
 }
 
+// The version comes from the release tag: CI passes `-PdesktopReleaseVersion=desktop-v1.2.3`
+// (release-desktop.yml); a local build falls back to the constant. Not `releaseVersionName`:
+// a -P property reaches every project, and :androidApp derives its versionCode from that one. jpackage takes only
+// MAJOR.MINOR.PATCH, so a prerelease suffix (-rc.1) stays in the tarball's name only.
+val desktopVersion: String =
+    providers.gradleProperty("desktopReleaseVersion").orNull
+        ?.trim()?.removePrefix("desktop-v")?.takeIf { it.isNotEmpty() }
+        ?: "1.0.0"
+
 compose.desktop {
     application {
         mainClass = "one.rarebit.cruciform.desktop.MainKt"
@@ -47,10 +56,26 @@ compose.desktop {
         // ships the app image with a .desktop entry and an installer that does (packaging).
         nativeDistributions {
             packageName = "cruciform-desktop"
-            packageVersion = "1.0.0"
+            packageVersion = desktopVersion.substringBefore('-')
             // java.net.http (JdkHttpTransport) is not in jpackage's default module set.
             modules("java.net.http")
         }
+    }
+}
+
+// The release artefact: the self-contained app image (its own runtime) plus the .desktop
+// entry and install.sh, which registers the void-which-binds: scheme for the user.
+val desktopReleaseTarball by tasks.registering(Tar::class) {
+    group = "distribution"
+    description = "Packs the app image, its .desktop entry and install.sh for a release."
+    dependsOn("createDistributable")
+    val arch = System.getProperty("os.arch").let { if (it == "amd64") "x86_64" else it }
+    archiveFileName.set("cruciform-desktop-$desktopVersion-linux-$arch.tar.gz")
+    destinationDirectory.set(layout.buildDirectory.dir("release"))
+    compression = Compression.GZIP
+    into("cruciform-desktop-$desktopVersion") {
+        from(layout.buildDirectory.dir("compose/binaries/main/app"))
+        from("packaging/linux")
     }
 }
 
