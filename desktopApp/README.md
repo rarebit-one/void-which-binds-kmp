@@ -19,6 +19,14 @@ unlocked. Every screen says so.
 | Approvals | Fetch an ADR-0019 action approval from the configured brokers and show it. Answering is not possible from the desktop yet: no endpoint for answers is defined |
 | Settings | The pairing relay, the sites told of device changes, the approval brokers. Nothing is built in |
 
+**Keyboard:** Tab moves through the screen list (the focused screen is ringed) and Enter
+opens it; Ctrl+1 to Ctrl+6 open the screens in list order from anywhere in the window.
+
+**One window:** a second launch, such as a browser opening a `void-which-binds:` link while
+the app is open, hands its link to the open window (which switches to Sign in or Approvals
+with the link filled in) and exits. It goes over a socket in `$XDG_RUNTIME_DIR`; nothing is
+looked up or signed until you click.
+
 The passphrase is asked for in the app (never echoed, never on the clipboard) and held
 for 10 minutes, then wiped. The app does not create or enrol a device: do that with the
 void-which-binds CLI, or from a phone.
