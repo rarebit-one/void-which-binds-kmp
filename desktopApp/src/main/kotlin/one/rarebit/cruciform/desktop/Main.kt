@@ -49,8 +49,10 @@ fun main(args: Array<String>) {
             LaunchedEffect(state.raise) {
                 if (state.raise > 0) {
                     window.isMinimized = false
+                    // toFront only. A window.requestFocus() here moves AWT focus from the
+                    // Compose layer to the frame itself, and no key reaches Compose after it:
+                    // Tab and the Ctrl+digit shortcuts go dead. Activation restores the focus.
                     window.toFront()
-                    window.requestFocus()
                 }
             }
             App(engine, state)
