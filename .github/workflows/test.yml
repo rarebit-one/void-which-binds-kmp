@@ -24,8 +24,8 @@ jobs:
           java-version: "21"
       # Caches the Gradle wrapper/dependency/Kotlin-Native downloads between runs.
       - uses: gradle/actions/setup-gradle@48b5f213c81028ace310571dc5ec0fbbca0b2947 # v4
-      - name: gradle jvmTest + android compile
-        run: ./gradlew jvmTest compileReleaseKotlinAndroid --no-daemon --stacktrace
+      - name: gradle jvmTest + desktop app tests + android compile
+        run: ./gradlew jvmTest :desktopApp:test compileReleaseKotlinAndroid --no-daemon --stacktrace
 
   # ktlint + detekt over the library and :androidApp. Pre-existing findings are
   # frozen in config/{ktlint,detekt}/baseline.xml (per project), so only NEW

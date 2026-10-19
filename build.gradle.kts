@@ -12,6 +12,9 @@ plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.compose.compiler) apply false
+    // :desktopApp's (the Compose Desktop authenticator for a sealed-file device, #127).
+    alias(libs.plugins.kotlin.jvm) apply false
+    alias(libs.plugins.compose.multiplatform) apply false
     // Publishes the shared client (identity/net/flow wire brain + DeviceKeyStore
     // seam) as the consumable `void-which-binds-client` artifact to GitHub Packages, so
     // relying-party apps (allthing-android, heyarr-mobile) depend on it over the

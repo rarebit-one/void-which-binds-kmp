@@ -1,0 +1,12 @@
+# Compose on top of the shared defaults: a @Composable is named like a type, and a screen
+# is one composable that reads top to bottom (Kotlin's Compose API guidelines).
+naming:
+  FunctionNaming:
+    ignoreAnnotated: ['Composable']
+complexity:
+  LongMethod:
+    ignoreAnnotated: ['Composable']
+  TooManyFunctions:
+    ignoreAnnotatedFunctions: ['Composable']
+  CyclomaticComplexMethod:
+    ignoreAnnotated: ['Composable']

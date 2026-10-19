@@ -70,5 +70,6 @@ src/
   androidMain/…        DeviceKeyStore actual (StrongBox/TEE AES-GCM seal), VoidbindAndroid
   iosMain/…            DeviceKeyStore actual (Secure-Enclave seal via SecureEnclaveSealer), VoidbindIos
 androidApp/            Cruciform Android app (Compose), depends on project(":")
+desktopApp/            Cruciform desktop (Compose Desktop, JVM): a sealed-file device in Go's device dir (#127)
 iosApp/                Cruciform iOS app (SwiftUI, XcodeGen), links VoidWhichBinds.xcframework
 ```

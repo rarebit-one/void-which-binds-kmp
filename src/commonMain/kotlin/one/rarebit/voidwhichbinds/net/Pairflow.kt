@@ -222,10 +222,31 @@ class PairflowInitiator(
      * by this device, citing the current heads of the ops it holds — seal the
      * admission (the op + the ops) to the responder's encryption key, and post it.
      * The signed op joins [ops] so the caller can record it in its replica.
+     *
+     * Retry-safe: the add is signed and sealed once. A call after a failed delivery re-sends
+     * the same sealed admission. If the relay answers 409 (its write-once slot already
+     * written), the slot is read back, and only bytes equal to this admission count as an
+     * earlier attempt having landed; anything else there fails. A retry never signs a
+     * second add.
      */
     fun authorise(sealer: CertSealer = VoidbindCertSealer) {
         check(handshook) { "pairflow: authorise before a successful handshake" }
         check(!refused) { "pairflow: authorise after refuse" }
+        val retry = admission != null
+        val msg = admission ?: sealAdmission(sealer).also { admission = it }
+        try {
+            relay.post("cert", msg)
+        } catch (e: RelayHttpException) {
+            // The slot is write-once and anyone holding the session can write it, so a
+            // retry's 409 counts as delivered only when the bytes there are these bytes.
+            if (!retry || e.status != HTTP_CONFLICT || relay.readOwn("cert")?.contentEquals(msg) != true) throw e
+        }
+    }
+
+    /** The sealed admission, once signed: what every delivery attempt sends. */
+    private var admission: ByteArray? = null
+
+    private fun sealAdmission(sealer: CertSealer): ByteArray {
         val view = Membership.evaluate(userId, ops, now)
         val opToken = MembershipOp.sign(
             signer, signPub, userId, MembershipOp.Kind.ADD,
@@ -244,13 +265,12 @@ class PairflowInitiator(
             },
         )
         val sealed = sealer.seal(admission, respEnc)
-        val msg = MiniJson.encodeObject(
+        return MiniJson.encodeObject(
             listOf(
                 "wrapped" to Base64Url.encode(sealed.wrapped),
                 "cipher" to Base64Url.encode(sealed.cipher),
             ),
-        )
-        relay.post("cert", msg.encodeToByteArray())
+        ).encodeToByteArray()
     }
 
     /**
@@ -393,3 +413,6 @@ class PairflowResponder(
         return Admission(opToken, ops)
     }
 }
+
+/** The relay's answer to a write into a write-once slot that is already written. */
+private const val HTTP_CONFLICT = 409

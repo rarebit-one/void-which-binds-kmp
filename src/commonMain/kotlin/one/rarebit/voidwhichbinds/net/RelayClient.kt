@@ -76,6 +76,19 @@ class RelayClient(
         if (resp.status != 204) throw RelayHttpException(resp.status, "post $role/$type")
     }
 
+    /**
+     * Read back THIS role's own [type] slot once: its bytes, or null if it is empty. Lets a
+     * writer whose write was answered 409 see what actually occupies the slot.
+     */
+    internal fun readOwn(type: String): ByteArray? {
+        val resp = http.get(slotUrl(role, type))
+        return when (resp.status) {
+            200 -> resp.body
+            404 -> null
+            else -> throw RelayHttpException(resp.status, "read $role/$type")
+        }
+    }
+
     /** Poll the PEER role's [type] slot until present, returning its bytes. */
     fun fetch(type: String): ByteArray {
         val p = peer()
