@@ -96,8 +96,8 @@ jobs:
           case "$version" in *-*) pre=true ;; esac
           if gh release view "$TAG" >/dev/null 2>&1; then
             gh release upload "$TAG" dist/*.tar.gz dist/SHA256SUMS --clobber
-            gh release edit "$TAG" --title "Cruciform desktop $version" --notes-file notes.md --prerelease="$pre"
+            gh release edit "$TAG" --title "$TAG" --notes-file notes.md --prerelease="$pre"
           else
-            gh release create "$TAG" dist/*.tar.gz dist/SHA256SUMS --title "Cruciform desktop $version" \
+            gh release create "$TAG" dist/*.tar.gz dist/SHA256SUMS --title "$TAG" \
               --notes-file notes.md --prerelease="$pre" --verify-tag
           fi
