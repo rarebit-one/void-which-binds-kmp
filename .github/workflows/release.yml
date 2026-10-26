@@ -165,7 +165,7 @@ jobs:
           case "$VERSION" in *-*) pre=true ;; esac
           if gh release view "$TAG" >/dev/null 2>&1; then
             gh release upload "$TAG" "$APK" --clobber
-            gh release edit "$TAG" --title "Cruciform $VERSION" --notes-file notes.md --prerelease="$pre"
+            gh release edit "$TAG" --title "$TAG" --notes-file notes.md --prerelease="$pre"
           else
-            gh release create "$TAG" "$APK" --title "Cruciform $VERSION" --notes-file notes.md --prerelease="$pre"
+            gh release create "$TAG" "$APK" --title "$TAG" --notes-file notes.md --prerelease="$pre"
           fi
