@@ -4,27 +4,27 @@
 [versions]
 # Kotlin 2.3.x: cryptography-kotlin 0.6.0 ships 2.3.x metadata, so the compiler must
 # match. The Compose compiler plugin version is tied to the Kotlin version.
-kotlin = "2.3.20"
+kotlin = "2.4.21"
 # AGP compatible with the Gradle 8.9 wrapper.
-agp = "8.7.3"
+agp = "9.4.1"
 cryptography = "0.6.0"
 # Argon2id for the JVM sealed-file custody codec (jvmMain only; ADR-0010).
 bouncycastle = "1.86"
-compose-bom = "2024.09.03"
+compose-bom = "2026.09.00"
 # Compose Multiplatform, for the desktop (JVM) app only (:desktopApp, #127). Its compiler
 # plugin is Kotlin's own (compose-compiler, versioned with kotlin).
 compose-multiplatform = "1.12.2"
-coroutines = "1.9.0"
-androidx-core = "1.13.1"
+coroutines = "1.11.0"
+androidx-core = "1.19.1"
 androidx-activity = "1.9.2"
 androidx-lifecycle = "2.8.6"
-androidx-navigation = "2.8.0"
+androidx-navigation = "2.10.2"
 androidx-biometric = "1.1.0"
-androidx-fragment = "1.8.3"
+androidx-fragment = "1.9.1"
 camerax = "1.3.4"
 mlkit-barcode = "17.3.0"
-zxing = "3.5.3"
-okhttp = "4.12.0"
+zxing = "3.5.4"
+okhttp = "5.5.0"
 junit = "4.13.2"
 # Lint. detekt 1.23.8 is built against Kotlin 2.0.21; its own `detekt` classpath is
 # pinned to that (root build.gradle.kts), independent of the project's Kotlin.
