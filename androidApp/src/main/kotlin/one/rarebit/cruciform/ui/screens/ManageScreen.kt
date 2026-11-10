@@ -25,6 +25,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.rounded.AddCircle
+import androidx.compose.material.icons.rounded.Description
 import androidx.compose.material.icons.rounded.Devices
 import androidx.compose.material.icons.rounded.Fingerprint
 import androidx.compose.material.icons.rounded.Groups
@@ -102,6 +103,7 @@ fun ManageScreen(
     onForgetRecovery: () -> Unit,
     onSplitShares: () -> Unit,
     onConnections: () -> Unit,
+    onLicences: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     var confirmForget by remember { mutableStateOf(false) }
@@ -190,14 +192,27 @@ fun ManageScreen(
         VSpace(10)
         VbCard(modifier = Modifier.fillMaxWidth()) {
             Column {
-                // Information rows: nothing behind them yet, so no chevron and no tap. An
-                // open-source licenses row returns with a licenses screen to open.
+                // Information rows: nothing behind them, so no chevron and no tap.
                 AboutRow(Icons.Rounded.Info, "About Cruciform", "Version ${BuildConfig.VERSION_NAME}")
                 VbHairline(Modifier.padding(horizontal = 16.dp))
                 AboutRow(
                     Icons.Rounded.Security,
                     "Security & protocol",
                     "Void-Which-Binds protocol · hardware-bound device keys",
+                )
+                VbHairline(Modifier.padding(horizontal = 16.dp))
+                RowItem(
+                    title = "Open-source licences",
+                    subtitle = "The libraries Cruciform is built with",
+                    leading = {
+                        IconCircle(
+                            Icons.Rounded.Description,
+                            tint = VbColors.Mint,
+                            background = VbColors.SurfaceElevated,
+                        )
+                    },
+                    trailing = { Chevron(VbColors.TextMuted) },
+                    onClick = onLicences,
                 )
             }
         }
