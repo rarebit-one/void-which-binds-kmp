@@ -65,8 +65,6 @@ compose.desktop {
     }
 }
 
-// The release artefact: the self-contained app image (its own runtime) plus the .desktop
-// entry and install.sh, which registers the void-which-binds: scheme for the user.
 // Third-party notices for the desktop app image and release tarball. AboutLibraries
 // exports the runtime classpath's libraries and licences (with full texts for the
 // common ones) as JSON; thirdPartyNotices renders that as plain text, which
@@ -132,6 +130,8 @@ val thirdPartyNotices by tasks.registering {
 compose.desktop.application.nativeDistributions.appResourcesRootDir.set(noticesRoot)
 tasks.matching { it.name == "prepareAppResources" }.configureEach { dependsOn(thirdPartyNotices) }
 
+// The release artefact: the self-contained app image (its own runtime) plus the .desktop
+// entry and install.sh, which registers the void-which-binds: scheme for the user.
 val desktopReleaseTarball by tasks.registering(Tar::class) {
     group = "distribution"
     description = "Packs the app image, its .desktop entry and install.sh for a release."
