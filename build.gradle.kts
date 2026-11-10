@@ -13,6 +13,7 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.compose.compiler) apply false
     alias(libs.plugins.aboutlibraries.android) apply false
+    alias(libs.plugins.aboutlibraries) apply false
     // :desktopApp's (the Compose Desktop authenticator for a sealed-file device, #127).
     alias(libs.plugins.kotlin.jvm) apply false
     alias(libs.plugins.compose.multiplatform) apply false

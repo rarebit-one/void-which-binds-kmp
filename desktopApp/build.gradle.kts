@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.compose.multiplatform)
+    // Exports the dependency licences; thirdPartyNotices renders them for the app image.
+    alias(libs.plugins.aboutlibraries)
 }
 
 // Bytecode for JVM 17, built on the host JDK (21), as the root library is.
@@ -65,6 +67,71 @@ compose.desktop {
 
 // The release artefact: the self-contained app image (its own runtime) plus the .desktop
 // entry and install.sh, which registers the void-which-binds: scheme for the user.
+// Third-party notices for the desktop app image and release tarball. AboutLibraries
+// exports the runtime classpath's libraries and licences (with full texts for the
+// common ones) as JSON; thirdPartyNotices renders that as plain text, which
+// Compose's appResourcesRootDir copies into the app image (lib/app/resources/) and
+// desktopReleaseTarball also puts at the top of the tarball.
+aboutLibraries {
+    collect {
+        // Only what ships: runtimeClasspath is what the app image packages. Without the
+        // filter the export also reads Compose hot-reload's test classpath (JUnit, EPL-2.0).
+        filterVariants.add("runtimeClasspath")
+        // Licence texts the POMs only link (Bouncy Castle's MIT-style licence).
+        configPath = file("aboutlibraries")
+    }
+    export {
+        outputFile = layout.buildDirectory.file("generated/aboutLibraries/aboutlibraries.json").get().asFile
+        prettyPrint = true
+    }
+}
+
+val noticesRoot = layout.buildDirectory.dir("generated/notices")
+
+val thirdPartyNotices by tasks.registering {
+    group = "distribution"
+    description = "Renders the AboutLibraries export as THIRD_PARTY_LICENSES.txt for the app image."
+    dependsOn("exportLibraryDefinitions")
+    val json = layout.buildDirectory.file("generated/aboutLibraries/aboutlibraries.json")
+    val out = noticesRoot.map { it.file("common/THIRD_PARTY_LICENSES.txt") }
+    inputs.file(json)
+    outputs.file(out)
+    doLast {
+        @Suppress("UNCHECKED_CAST")
+        val root = groovy.json.JsonSlurper().parse(json.get().asFile) as Map<String, Any?>
+        val licences = (root["licenses"] as? Map<String, Map<String, Any?>>).orEmpty()
+        val libraries = (root["libraries"] as? List<Map<String, Any?>>).orEmpty()
+            .sortedBy { (it["name"] as? String ?: it["uniqueId"] as String).lowercase() }
+        val used = linkedSetOf<String>()
+        val text = buildString {
+            appendLine("Third-party software in Cruciform for desktop")
+            appendLine()
+            appendLine("This app is built with the libraries below. Each lists its version and licence;")
+            appendLine("the licence texts follow the list.")
+            appendLine()
+            for (lib in libraries) {
+                val ids = (lib["licenses"] as? List<String>).orEmpty()
+                used += ids
+                val names = ids.joinToString { licences[it]?.get("name") as? String ?: it }
+                val name = lib["name"] ?: lib["uniqueId"]
+                appendLine("$name ${lib["artifactVersion"] ?: ""} (${lib["uniqueId"]}): $names")
+            }
+            for (id in used) {
+                val def = licences[id] ?: continue
+                appendLine()
+                appendLine("=".repeat(78))
+                appendLine("${def["name"] ?: id}${def["url"]?.let { " <$it>" } ?: ""}")
+                appendLine("=".repeat(78))
+                appendLine((def["content"] as? String)?.trim() ?: "See ${def["url"] ?: "the licence URL above"}.")
+            }
+        }
+        out.get().asFile.apply { parentFile.mkdirs() }.writeText(text)
+    }
+}
+
+compose.desktop.application.nativeDistributions.appResourcesRootDir.set(noticesRoot)
+tasks.matching { it.name == "prepareAppResources" }.configureEach { dependsOn(thirdPartyNotices) }
+
 val desktopReleaseTarball by tasks.registering(Tar::class) {
     group = "distribution"
     description = "Packs the app image, its .desktop entry and install.sh for a release."
@@ -76,6 +143,7 @@ val desktopReleaseTarball by tasks.registering(Tar::class) {
     into("cruciform-desktop-$desktopVersion") {
         from(layout.buildDirectory.dir("compose/binaries/main/app"))
         from("packaging/linux")
+        from(thirdPartyNotices)
     }
 }
 
