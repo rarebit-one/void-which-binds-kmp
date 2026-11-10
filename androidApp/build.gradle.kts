@@ -7,6 +7,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
+    // Writes res/raw/aboutlibraries.json (libraries, versions, licence texts) for the
+    // Manage → Open-source licences screen.
+    alias(libs.plugins.aboutlibraries.android)
 }
 
 // ── Release version + signing ────────────────────────────────────────────────
@@ -166,6 +169,14 @@ android {
     }
 }
 
+// Corrections to what the AboutLibraries plugin reads from POMs: CameraX core is
+// Apache-2.0 and bundles libyuv (BSD-3-Clause), whose POM entry carries a URL only.
+aboutLibraries {
+    collect {
+        configPath = file("aboutlibraries")
+    }
+}
+
 kotlin {
     compilerOptions {
         jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
@@ -215,6 +226,8 @@ dependencies {
     testImplementation(kotlin("test"))
     // The invite state machine (pairing/InviteCoordinator) is driven on a test dispatcher.
     testImplementation(libs.kotlinx.coroutines.test)
+    // LicencesScreen's parser reads JSON with org.json, which android.jar only stubs.
+    testImplementation(libs.org.json)
 }
 
 // RpPairManifestQueriesTest reads the manifest at runtime; make it a task input so an

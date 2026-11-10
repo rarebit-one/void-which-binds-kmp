@@ -46,6 +46,7 @@ import one.rarebit.cruciform.ui.screens.ApprovalActivityScreen
 import one.rarebit.cruciform.ui.screens.ConnectionsScreen
 import one.rarebit.cruciform.ui.screens.DevicesScreen
 import one.rarebit.cruciform.ui.screens.HomeScreen
+import one.rarebit.cruciform.ui.screens.LicencesScreen
 import one.rarebit.cruciform.ui.screens.LoginApprovalScreen
 import one.rarebit.cruciform.ui.screens.ManageScreen
 import one.rarebit.cruciform.ui.screens.NumberMatchApprovalScreen
@@ -82,6 +83,9 @@ object Routes {
 
     /** Manage → the pairing relay and push plane this phone dials. */
     const val CONNECTIONS = "connections"
+
+    /** Manage → the third-party libraries in this build and their licences. */
+    const val LICENCES = "licences"
     const val SCAN = "scan"
 
     /** The scanner the Restore / drill fields open: reads a recovery sheet, hands the secret back. */
@@ -630,8 +634,13 @@ fun CruciformNavHost(
                         onForgetRecovery = settingsVm::forgetRecoverySecret,
                         onSplitShares = settingsVm::splitIntoShares,
                         onConnections = { nav.navigate(Routes.CONNECTIONS) { launchSingleTop = true } },
+                        onLicences = { nav.navigate(Routes.LICENCES) { launchSingleTop = true } },
                     )
                 }
+            }
+
+            composable(Routes.LICENCES) {
+                LicencesScreen(onBack = { nav.popBackStack() })
             }
 
             composable(Routes.CONNECTIONS) {
