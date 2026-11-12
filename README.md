@@ -457,3 +457,10 @@ updater that checks for and applies a new signed build — is being designed in
 [`rarebit-one/heyarr-core#441`](https://github.com/rarebit-one/heyarr-core/issues/441).
 Not built yet; this section is the pointer, not the plan.
 
+
+## Licence
+
+Copyright (C) 2026 Rarebit One. The client library (everything outside `androidApp/`,
+`iosApp/` and `desktopApp/`, published as `one.rarebit.voidwhichbinds:void-which-binds-client`)
+is [Apache-2.0](LICENSE), as its POM already declares. Cruciform, the app in
+`androidApp/`, `iosApp/` and `desktopApp/`, is AGPL-3.0: see each folder's `LICENSE`.
