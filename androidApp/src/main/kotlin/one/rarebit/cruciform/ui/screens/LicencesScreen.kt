@@ -27,6 +27,12 @@ import one.rarebit.cruciform.ui.theme.VbColors
 import org.json.JSONArray
 import org.json.JSONObject
 
+// LIC-09: ML Kit's terms make the app responsible for telling users about Google's metrics.
+private const val ML_KIT_DISCLOSURE =
+    "Scanning a QR code uses Google's ML Kit, which reads the camera image on " +
+        "this device; the image never leaves it. ML Kit does send Google metrics about " +
+        "how the scanner performs and is used (Google Privacy Policy: policies.google.com/privacy)."
+
 /** One third-party library compiled into this app, as the AboutLibraries plugin recorded it. */
 internal data class OssLibrary(
     val name: String,
@@ -84,18 +90,8 @@ fun LicencesScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
         LazyColumn(Modifier.padding(ScreenPadding)) {
             item {
                 Text(
-                    "Cruciform is built with these open-source libraries. Tap one to read its licence.",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = VbColors.TextMuted,
-                    modifier = Modifier.padding(bottom = 16.dp),
-                )
-            }
-            // LIC-09: ML Kit's terms make the app responsible for telling users about Google's metrics.
-            item {
-                Text(
-                    "Scanning a QR code uses Google's ML Kit, which reads the camera image on " +
-                        "this device; the image never leaves it. ML Kit does send Google metrics about " +
-                        "how the scanner performs and is used (Google Privacy Policy: policies.google.com/privacy).",
+                    "Cruciform is built with these open-source libraries. Tap one to read its licence.\n\n" +
+                        ML_KIT_DISCLOSURE,
                     style = MaterialTheme.typography.bodyMedium,
                     color = VbColors.TextMuted,
                     modifier = Modifier.padding(bottom = 16.dp),
