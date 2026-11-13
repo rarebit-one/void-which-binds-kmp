@@ -464,3 +464,12 @@ Copyright (C) 2026 Rarebit One. The client library (everything outside `androidA
 `iosApp/` and `desktopApp/`, published as `one.rarebit.voidwhichbinds:void-which-binds-client`)
 is [Apache-2.0](LICENSE), as its POM already declares. Cruciform, the app in
 `androidApp/`, `iosApp/` and `desktopApp/`, is AGPL-3.0: see each folder's `LICENSE`.
+
+## Privacy
+
+Cruciform's QR scanner uses Google's ML Kit (`com.google.mlkit:barcode-scanning`). It decodes the
+camera image on the device, and the image never leaves it. ML Kit does contact Google from time
+to time for model and compatibility updates, and sends Google metrics about how the API performs
+and is used. Google processes them as described in its [Privacy Policy](https://policies.google.com/privacy)
+and the [ML Kit terms](https://developers.google.com/ml-kit/terms). The app's own licences screen
+(Open-source licences) says the same.

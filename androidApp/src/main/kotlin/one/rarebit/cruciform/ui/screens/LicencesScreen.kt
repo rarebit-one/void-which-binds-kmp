@@ -90,6 +90,17 @@ fun LicencesScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
                     modifier = Modifier.padding(bottom = 16.dp),
                 )
             }
+            // LIC-09: ML Kit's terms make the app responsible for telling users about Google's metrics.
+            item {
+                Text(
+                    "Scanning a QR code uses Google's ML Kit, which reads the camera image on " +
+                        "this device; the image never leaves it. ML Kit does send Google metrics about " +
+                        "how the scanner performs and is used (Google Privacy Policy: policies.google.com/privacy).",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = VbColors.TextMuted,
+                    modifier = Modifier.padding(bottom = 16.dp),
+                )
+            }
             items(libraries, key = { it.name + "@" + it.version }) { lib ->
                 val key = lib.name + "@" + lib.version
                 VbCard(modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp)) {
