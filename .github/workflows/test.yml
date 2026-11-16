@@ -23,7 +23,7 @@ jobs:
           distribution: temurin
           java-version: "21"
       # Caches the Gradle wrapper/dependency/Kotlin-Native downloads between runs.
-      - uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a # v4
+      - uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a # v4.4.3
       - name: gradle jvmTest + desktop app tests + android compile
         run: ./gradlew jvmTest :desktopApp:test compileReleaseKotlinAndroid --no-daemon --stacktrace
 
@@ -41,7 +41,7 @@ jobs:
           distribution: temurin
           java-version: "21"
       # Caches the Gradle wrapper/dependency/Kotlin-Native downloads between runs.
-      - uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a # v4
+      - uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a # v4.4.3
       - name: gradle ktlintCheck + detekt
         run: ./gradlew ktlintCheck detekt --no-daemon --stacktrace
 
@@ -97,7 +97,7 @@ jobs:
           distribution: temurin
           java-version: "21"
       # Caches the Gradle wrapper/dependency/Kotlin-Native downloads between runs.
-      - uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a # v4
+      - uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a # v4.4.3
       - name: gradle assemble app (debug) + pure-JVM unit tests
         run: ./gradlew :androidApp:assembleDebug :androidApp:testDebugUnitTest --no-daemon --stacktrace
 
@@ -114,7 +114,7 @@ jobs:
           distribution: temurin
           java-version: "21"
       # Caches the Gradle wrapper/dependency/Kotlin-Native downloads between runs.
-      - uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a # v4
+      - uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a # v4.4.3
       # iosSimulatorArm64Test runs commonTest (+ iosTest) as a Kotlin/Native test
       # binary on the simulator, so the pure encodings and the CryptoKit-backed
       # cryptography-kotlin provider are exercised on Apple, not just compiled.

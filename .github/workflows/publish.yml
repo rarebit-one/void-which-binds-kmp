@@ -43,7 +43,7 @@ jobs:
         with:
           distribution: temurin
           java-version: "21"
-      - uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a # v4
+      - uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a # v4.4.3
         with:
           cache-disabled: true # release path: no Gradle cache restore (zizmor cache-poisoning; cold build measured)
       - name: tag must equal the build.gradle.kts version
