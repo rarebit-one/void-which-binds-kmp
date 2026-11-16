@@ -135,7 +135,7 @@ iOS targets compile only on **macOS**. Details: `docs/agents/build-and-test.md`.
 
 ```sh
 ./gradlew jvmTest                          # primary: compiles + runs common + JVM tests
-./gradlew compileReleaseKotlinAndroid      # Android library compile (needs the SDK)
+./gradlew compileAndroidMain               # Android library compile (needs the SDK)
 ./gradlew :androidApp:assembleDebug :androidApp:testDebugUnitTest   # Cruciform app
 ./gradlew compileKotlinIosSimulatorArm64 iosSimulatorArm64Test      # iOS (macOS only)
 ./gradlew assembleVoidWhichBindsXCFramework      # → build/XCFrameworks/{debug,release}/VoidWhichBinds.xcframework

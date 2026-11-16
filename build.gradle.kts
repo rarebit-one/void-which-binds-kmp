@@ -3,14 +3,15 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 plugins {
     // Kotlin 2.3.x: cryptography-kotlin 0.6.0 (the release that adds Ed25519 +
     // X25519 across JDK/CryptoKit/OpenSSL) ships 2.3.x metadata, so the project
-    // compiler must match. AGP bumped to a version compatible with Gradle 8.9.
-    // Versions live in gradle/libs.versions.toml.
+    // compiler must match. AGP 9: the library's Android target comes from the
+    // Android-KMP library plugin (AGP 9 refuses com.android.library beside
+    // kotlin.multiplatform). Versions live in gradle/libs.versions.toml.
     alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.android.library)
+    alias(libs.plugins.android.kotlin.multiplatform.library)
     // :androidApp's plugins, declared here (not applied) so the whole build shares
     // one plugin classpath and :androidApp can apply them by alias.
+    // (No kotlin-android: AGP 9 compiles the app's Kotlin itself.)
     alias(libs.plugins.android.application) apply false
-    alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.compose.compiler) apply false
     alias(libs.plugins.aboutlibraries.android) apply false
     alias(libs.plugins.aboutlibraries) apply false
@@ -161,14 +162,24 @@ kotlin {
     }
 
     // Android — StrongBox/TEE-backed AES-GCM seal over a software Ed25519 key.
-    androidTarget {
+    // The Android-KMP library plugin's target: a single variant, which is what is published
+    // as `void-which-binds-client-android` (the old plugin's `release` variant).
+    android {
+        namespace = "one.rarebit.voidwhichbinds"
+        compileSdk = 37
+        // minSdk 33: StrongBox (API 28+) plus a platform that reliably carries
+        // Ed25519 in its provider and the modern BiometricPrompt/CryptoObject API.
+        minSdk = 33
+        // AGP 9 would otherwise stamp the published AAR with minCompileSdk = compileSdk,
+        // forcing every consuming app onto compileSdk 37. Keep the floor the AAR always had.
+        aarMetadata { minCompileSdk = 1 }
+        // Kotlin's and Java's target for the android compilations.
         compilerOptions {
             jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
         }
-        // Publish only the release variant of the Android artifact
-        // (`void-which-binds-client-android`) — deterministic, and what a consuming app
-        // resolves. Debug is a build-time concern of the consuming app.
-        publishLibraryVariants("release")
+        // src/androidHostTest: JVM unit tests against the android variant (the plugin
+        // leaves host tests off unless asked for).
+        withHostTest {}
     }
 
     // iOS — Secure-Enclave-P256 ECIES seal over a software Ed25519 key. Building
@@ -206,20 +217,6 @@ kotlin {
             // JVM (desktop) target only, so commonMain keeps cryptography-kotlin as its one dep.
             implementation(libs.bouncycastle.bcprov)
         }
-    }
-}
-
-android {
-    namespace = "one.rarebit.voidwhichbinds"
-    compileSdk = 35
-    defaultConfig {
-        // minSdk 33: StrongBox (API 28+) plus a platform that reliably carries
-        // Ed25519 in its provider and the modern BiometricPrompt/CryptoObject API.
-        minSdk = 33
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 

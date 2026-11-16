@@ -3,15 +3,17 @@
 Moved verbatim from the old `CLAUDE.md` ("Build & test"). The commands themselves are in [`AGENTS.md`](../../AGENTS.md).
 
 Host toolchain: **JDK 21** (bytecode targets JVM 17), no system `gradle`/`kotlin` —
-use the **wrapper** (`./gradlew`, self-downloads Gradle 8.9; the Kotlin plugin is
-**2.3.20**, required by cryptography-kotlin 0.6.0's metadata; AGP 8.7.3). All
+use the **wrapper** (`./gradlew`, self-downloads Gradle 9.9; the Kotlin plugin is
+**2.3.20**, required by cryptography-kotlin 0.6.0's metadata; AGP 9.5.1, whose
+Android-KMP library plugin gives the library its Android target and whose built-in
+Kotlin compiles `:androidApp`). All
 plugin and dependency versions live in `gradle/libs.versions.toml` (the `libs`
 catalog), shared by the root library and `:androidApp`. The
 Android target and the `:androidApp` module need an Android SDK (`ANDROID_HOME` or
 `local.properties`). The iOS targets compile only on **macOS** (Kotlin/Native Apple
 targets are skipped on a Linux host).
 
-Targets: `jvm()` (dev/test, software keystore), `androidTarget()` (StrongBox/TEE),
+Targets: `jvm()` (dev/test, software keystore), `android { }` (StrongBox/TEE; the Android-KMP library plugin's single-variant target),
 `iosArm64()` + `iosSimulatorArm64()` (Secure Enclave via the Swift sealer, exported
 as the `VoidWhichBinds` XCFramework). Tests in `commonTest` run on every target; `jvmTest`
 adds the golden-vector parity suites, the JVM keystore test and live void-which-binds-go

@@ -5,10 +5,14 @@
 # Kotlin 2.3.x: cryptography-kotlin 0.6.0 ships 2.3.x metadata, so the compiler must
 # match. The Compose compiler plugin version is tied to the Kotlin version.
 kotlin = "2.3.20"
-# AGP compatible with the Gradle 8.9 wrapper.
-agp = "8.7.3"
-# Generates the open-source licences list (res/raw/aboutlibraries.json) for Cruciform.
-aboutlibraries = "13.2.1"
+# AGP 9: built-in Kotlin (no kotlin-android plugin) and, for the KMP library at the root,
+# the Android-KMP library plugin (com.android.kotlin.multiplatform.library) — AGP 9 refuses
+# com.android.library beside kotlin.multiplatform. Needs the Gradle >= 9.1 wrapper.
+agp = "9.5.1"
+# Generates the open-source licences list (res/raw/aboutlibraries.json) for Cruciform. Moves
+# with AGP: 13.2.1 no longer writes res/raw on AGP 9 (R.raw.aboutlibraries goes missing);
+# 15.x needs AGP >= 8.13.
+aboutlibraries = "15.3.0"
 cryptography = "0.6.0"
 # Argon2id for the JVM sealed-file custody codec (jvmMain only; ADR-0010).
 bouncycastle = "1.86"
@@ -73,11 +77,10 @@ org-json = { module = "org.json:json", version = "20260814" }
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
-android-library = { id = "com.android.library", version.ref = "agp" }
+android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 aboutlibraries-android = { id = "com.mikepenz.aboutlibraries.plugin.android", version.ref = "aboutlibraries" }
 # The JVM flavour, for the desktop app: exports the same licence data as JSON (no Android resources).
