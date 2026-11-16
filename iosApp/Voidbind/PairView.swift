@@ -103,7 +103,8 @@ final class PairModel: ObservableObject {
                 switch mode {
                 case .join:
                     guard let pairing, let hs else { await MainActor.run { self.phase = .done }; return }
-                    let cert = try pairing.confirm(handshake: hs)
+                    // The admitting op is the device's credential (what it presents as `cert`).
+                    let cert = try pairing.confirm(handshake: hs).op
                     await MainActor.run { self.phase = .done; onEnrolled(cert) }
                 case .connect:
                     guard let auth, let inv else { await MainActor.run { self.phase = .done }; return }

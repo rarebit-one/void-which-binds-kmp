@@ -43,7 +43,7 @@ public final class VoidbindEngine {
     /// Provision (or load) this device's key material: the Secure-Enclave-sealed
     /// Ed25519 signing key + a persisted X25519 encryption keypair.
     public func deviceIdentity() -> DeviceIdentity {
-        let store = DeviceKeyStore.companion.getOrCreate(alias: Self.deviceAlias)
+        let store = DeviceKeyStore.companion.getOrCreate(alias: Self.deviceAlias, userAuthValiditySeconds: 30)
         let enc = loadOrCreateEncryptionKey()
         return DeviceIdentity(
             signPublicKey: store.publicKey().bytes,
@@ -66,11 +66,16 @@ public final class VoidbindEngine {
     // MARK: - Coordinators (the ViewModels drive begin → SAS/audience → confirm)
 
     public func loginApproval(cert: String, device: DeviceIdentity) -> LoginApproval {
-        LoginApproval(http: transport, device: device, enrolmentCert: cert)
+        LoginApproval(http: transport, device: device, enrolmentCert: cert, knownOps: [])
     }
 
     public func devicePairing(device: DeviceIdentity) -> DevicePairing {
-        DevicePairing(http: transport, device: device, pollIntervalMillis: 150)
+        DevicePairing(
+            http: transport,
+            device: device,
+            clock: { KotlinLong(longLong: Self.now()) },
+            pollIntervalMillis: 150
+        )
     }
 
     public func deviceAuthorization(identity: UserIdentity) -> DeviceAuthorization {
@@ -79,7 +84,9 @@ public final class VoidbindEngine {
             identity: identity,
             clock: { KotlinLong(longLong: Self.now()) },
             certLifetimeSeconds: Enrolment.shared.DEFAULT_LIFETIME_SECONDS,
-            pollIntervalMillis: 150
+            pollIntervalMillis: 150,
+            knownOps: [],
+            maxWaitMillis: RelayClient.companion.DEFAULT_MAX_WAIT_MILLIS
         )
     }
 
