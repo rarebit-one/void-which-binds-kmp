@@ -125,5 +125,14 @@ jobs:
       - name: gradle iOS compile + simulator tests
         run: >-
           ./gradlew compileKotlinIosArm64 compileKotlinIosSimulatorArm64
-          iosSimulatorArm64Test
+          iosSimulatorArm64Test linkDebugFrameworkIosSimulatorArm64
           --no-daemon --stacktrace
+      # Nothing builds the iosApp Swift in CI, so type-check it against the framework the
+      # library exports: a Kotlin API change that breaks a Swift caller fails here (#147).
+      - name: type-check the iosApp Swift
+        run: |
+          FW=build/bin/iosSimulatorArm64/debugFramework
+          for swift in "iosApp/Voidbind/*.swift" iosApp/Smoke/RuntimeSmoke.swift; do
+            xcrun --sdk iphonesimulator swiftc -typecheck \
+              -target arm64-apple-ios17.0-simulator -F "$FW" $swift
+          done

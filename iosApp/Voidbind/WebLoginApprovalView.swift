@@ -53,7 +53,7 @@ final class WebLoginModel: ObservableObject {
         let sp = policy.policyFor(rp: policyKey())
         self.hasPolicy = true
         self.pinnedAlwaysAsk = sp?.pinnedAlwaysAsk == true
-        self.trusted = sp?.policy == ApprovalPolicy.trustedTofu
+        self.trusted = sp?.policy == ApprovalPolicy.trustedtofu
     }
 
     /// Pin/clear "always ask" for this RP from the sheet.

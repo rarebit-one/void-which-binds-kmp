@@ -55,7 +55,7 @@ final class AppModel: ObservableObject {
 
     /// Whether the given RP host is trusted-on-first-use (streamlined) rather than always-ask.
     func isTrusted(_ rp: String) -> Bool {
-        policy.policyFor(rp: rp)?.policy == ApprovalPolicy.trustedTofu
+        policy.policyFor(rp: rp)?.policy == ApprovalPolicy.trustedtofu
     }
 
     /// Whether the user pinned "always ask" for the given RP host.

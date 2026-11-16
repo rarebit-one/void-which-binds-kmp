@@ -49,8 +49,10 @@ Project facts: target + display name `Cruciform`, bundle id `one.rarebit.crucifo
 `CruciformApp` (not `VoidWhichBinds`) so `import VoidWhichBinds` resolves to the framework and
 not the app target itself.
 
-> ⚠️ CI verifies the KMP library (`jvmTest` + Android + the iOS klibs) and the
-> Swift files are type-checked against the real exported framework. What still
+> ⚠️ CI verifies the KMP library (`jvmTest` + Android + the iOS klibs), and its `ios`
+> job type-checks these Swift files and `Smoke/RuntimeSmoke.swift` against the real
+> exported framework (step "type-check the iosApp Swift"). Kotlin default arguments are
+> not exported, so a Swift call passes every parameter. What still
 > needs a **real iPhone** is the runtime Secure Enclave + biometric behaviour —
 > see [`../docs/DEVICE-TESTING.md`](../docs/DEVICE-TESTING.md).
 >
