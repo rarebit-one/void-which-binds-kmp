@@ -51,6 +51,7 @@ object TokenType {
      * It reads an unauthenticated claim, but it can only REFUSE, so every verifier
      * runs it straight after splitting the token, before the signature, as Go does.
      */
+    @Throws(Exception::class)
     fun check(obj: Map<String, Any>, vararg allowed: String): String {
         val caseVariant = obj.keys.any { it != "typ" && it.equals("typ", ignoreCase = true) }
         val raw = obj["typ"]

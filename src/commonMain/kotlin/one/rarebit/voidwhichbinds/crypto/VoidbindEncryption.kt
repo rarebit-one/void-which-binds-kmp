@@ -69,6 +69,7 @@ public object VoidbindEncryption {
     fun newSpaceKey(): ByteArray = CryptographyRandom.Default.nextBytes(SPACE_KEY_SIZE)
 
     /** Seal [spaceKey] to a recipient's raw 32-byte X25519 public key. */
+    @Throws(Exception::class)
     fun seal(spaceKey: ByteArray, recipientPub: ByteArray): ByteArray {
         require(spaceKey.size == SPACE_KEY_SIZE) { "seal: space key must be 32 bytes" }
         require(recipientPub.size == 32) { "seal: recipient public key must be 32 bytes" }
@@ -83,6 +84,7 @@ public object VoidbindEncryption {
     }
 
     /** Unwrap a 104-byte blob with the recipient's raw 32-byte X25519 seed. */
+    @Throws(Exception::class)
     fun unwrap(wrapped: ByteArray, recipientSeed: ByteArray): ByteArray {
         require(wrapped.size == WRAP_OVERHEAD) {
             "unwrap: wrapped key must be $WRAP_OVERHEAD bytes, got ${wrapped.size}"
@@ -99,6 +101,7 @@ public object VoidbindEncryption {
     }
 
     /** Encrypt a payload under a space key: nonce(24) ‖ ciphertext‖tag (no aad). */
+    @Throws(Exception::class)
     fun encryptChange(spaceKey: ByteArray, plaintext: ByteArray): ByteArray {
         require(spaceKey.size == SPACE_KEY_SIZE) { "encryptChange: space key must be 32 bytes" }
         val nonce = CryptographyRandom.Default.nextBytes(WRAP_NONCE_LEN)
@@ -107,6 +110,7 @@ public object VoidbindEncryption {
     }
 
     /** Reverse of [encryptChange]. */
+    @Throws(Exception::class)
     fun decryptChange(spaceKey: ByteArray, blob: ByteArray): ByteArray {
         require(spaceKey.size == SPACE_KEY_SIZE) { "decryptChange: space key must be 32 bytes" }
         require(blob.size >= WRAP_NONCE_LEN + XChaCha20Poly1305.TAG_SIZE) { "decryptChange: ciphertext too short" }

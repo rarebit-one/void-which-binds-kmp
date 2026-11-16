@@ -45,6 +45,7 @@ object Base64Url {
         return sb.toString()
     }
 
+    @Throws(Exception::class)
     fun decode(s: String): ByteArray {
         if (s.isEmpty()) return ByteArray(0)
         require(s.length % 4 != 1) { "invalid base64url length: ${s.length}" }

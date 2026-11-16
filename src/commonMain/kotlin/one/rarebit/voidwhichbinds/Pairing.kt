@@ -68,6 +68,7 @@ object Pairing {
      * reveals a key. [enc] is committed as-is (empty or its raw bytes). Refuses a
      * signing key that is not exactly [ED25519_PUBLIC_KEY_SIZE].
      */
+    @Throws(Exception::class)
     fun commit(signPub: ByteArray, enc: ByteArray = ByteArray(0)): ByteArray {
         require(signPub.size == ED25519_PUBLIC_KEY_SIZE) {
             "pairing: key is ${signPub.size} bytes, want $ED25519_PUBLIC_KEY_SIZE"
@@ -80,6 +81,7 @@ object Pairing {
      * run on a peer's revealed keys before deriving the SAS. Refuses a commitment
      * of the wrong length.
      */
+    @Throws(Exception::class)
     fun opens(commitment: ByteArray, signPub: ByteArray, enc: ByteArray = ByteArray(0)): Boolean {
         require(commitment.size == COMMITMENT_LEN) {
             "pairing: commitment is ${commitment.size} bytes, want $COMMITMENT_LEN"
@@ -93,6 +95,7 @@ object Pairing {
      * in the same roles under the same salt. [initiator] is the authorising
      * (existing) device, [responder] the new one.
      */
+    @Throws(Exception::class)
     fun deriveSas(initiator: Keys, responder: Keys, salt: ByteArray): String {
         initiator.validate("initiator")
         responder.validate("responder")
