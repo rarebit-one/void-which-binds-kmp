@@ -100,6 +100,10 @@ jobs:
       - uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a # v4.4.3
       - name: gradle assemble app (debug) + pure-JVM unit tests
         run: ./gradlew :androidApp:assembleDebug :androidApp:testDebugUnitTest --no-daemon --stacktrace
+      # 16 KB-page devices (Android 15+) refuse a 64-bit native library whose LOAD
+      # segments, or stored zip offset, are not 16 KB-aligned (#122).
+      - name: 64-bit native libraries are 16 KB-aligned
+        run: python3 scripts/check-16kb-alignment.py androidApp/build/outputs/apk/debug/androidApp-debug.apk
 
   # The Secure-Enclave `actual` is Kotlin/Native; only a macOS runner has the
   # toolchain that compiles (and simulator-tests) the iOS targets.
