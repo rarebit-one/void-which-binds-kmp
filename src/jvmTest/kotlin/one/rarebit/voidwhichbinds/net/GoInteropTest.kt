@@ -133,7 +133,7 @@ class GoInteropTest {
                 version = Labels.CERT_VERSION, // 2 — required by Go's CertUser
                 user = KeyRef.ed25519(user.publicKey),
                 device = KeyRef.ed25519(dev.publicKey),
-                deviceEnc = KeyRef.x25519(ByteArray(32) { (it + 9).toByte() }),
+                deviceEnc = KeyRef.x25519(ByteArray(32) { (it + 9).toByte() }).render(),
                 issuedAt = now,
                 expiresAt = now + 3600,
             ).encode { msg -> Ed25519Engine.sign(user.privateSeed, msg) }
@@ -180,7 +180,7 @@ class GoInteropTest {
                 version = Labels.CERT_VERSION,
                 user = KeyRef.ed25519(user.publicKey),
                 device = KeyRef.ed25519(dev.publicKey),
-                deviceEnc = KeyRef.x25519(ByteArray(32) { (it + 9).toByte() }),
+                deviceEnc = KeyRef.x25519(ByteArray(32) { (it + 9).toByte() }).render(),
                 issuedAt = now,
                 expiresAt = now + 3600,
             ).encode { msg -> Ed25519Engine.sign(user.privateSeed, msg) }

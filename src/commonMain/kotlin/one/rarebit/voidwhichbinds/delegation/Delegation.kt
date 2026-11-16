@@ -12,6 +12,7 @@ import one.rarebit.voidwhichbinds.MemberKeyException
 import one.rarebit.voidwhichbinds.WebAuthn
 import one.rarebit.voidwhichbinds.crypto.Base64Url
 import one.rarebit.voidwhichbinds.crypto.GoJson
+import one.rarebit.voidwhichbinds.crypto.GoStrings
 import one.rarebit.voidwhichbinds.roster.Roster
 import one.rarebit.voidwhichbinds.scope.Scope
 import one.rarebit.voidwhichbinds.scope.ScopeException
@@ -341,7 +342,7 @@ data class Delegation(
          */
         @Throws(Exception::class)
         fun bodyHash(token: String): String {
-            val body = tokenBody(token.trim()) ?: fail(Failure.MALFORMED, "the delegation token")
+            val body = tokenBody(GoStrings.trimSpace(token)) ?: fail(Failure.MALFORMED, "the delegation token")
             return bodyHashOf(body)
         }
 
@@ -367,7 +368,8 @@ data class Delegation(
             ttlSeconds: Long = 0,
             verifier: Ed25519Verifier = Ed25519Engine.verifier(),
         ): String {
-            val body = tokenBody(delegationToken.trim()) ?: fail(Failure.MALFORMED, "the delegation token")
+            val body = tokenBody(GoStrings.trimSpace(delegationToken))
+                ?: fail(Failure.MALFORMED, "the delegation token")
             val p = parseBody(body)
             val self = KeyRef.ed25519(signerPublicKey).render()
             if (p.principal != self) {
@@ -398,7 +400,7 @@ data class Delegation(
          */
         @Throws(Exception::class)
         fun parse(token: String): Delegation {
-            val t = token.trim()
+            val t = GoStrings.trimSpace(token)
             val dot = t.indexOf('.')
             if (dot < 0) fail(Failure.MALFORMED, "not <body>.<signature>")
             val body = goDecode(t.substring(0, dot)) ?: fail(Failure.MALFORMED, "the body is not base64url")

@@ -3,6 +3,7 @@ package one.rarebit.voidwhichbinds.approval
 import one.rarebit.voidwhichbinds.approval.Approval.Failure
 import one.rarebit.voidwhichbinds.crypto.Base64Url
 import one.rarebit.voidwhichbinds.crypto.GoJson
+import one.rarebit.voidwhichbinds.crypto.GoStruct
 
 /**
  * An approver's answer to a challenge: the body it posts to approve (ADR-0019,
@@ -188,10 +189,12 @@ class FetchResponse(val challenge: FetchedChallenge, val action: WireAction) {
                 }
             } catch (_: ApprovalJson.TypeError) {
                 Approval.fail(Failure.MALFORMED, "a member has the wrong JSON type")
+            } catch (_: GoStruct.TypeError) {
+                Approval.fail(Failure.MALFORMED, "a member has the wrong JSON type")
             }
             return FetchResponse(
                 FetchedChallenge(
-                    c.id, c.nonce, c.audience, c.issuedAt, c.expiresAt, c.candidates, c.actionDigest,
+                    c.id, c.nonce, c.audience, c.issuedAt, c.expiresAt, c.candidates.value(), c.actionDigest,
                     c.resource, c.ttl,
                 ),
                 WireAction(a.kind, a.resource, a.summary, a.params),
@@ -217,7 +220,9 @@ class FetchResponse(val challenge: FetchedChallenge, val action: WireAction) {
         var audience = ""
         var issuedAt = 0L
         var expiresAt = 0L
-        var candidates: List<Long>? = null
+
+        // Go's `[]int`: a repeated member decodes into the elements an earlier one wrote (#113).
+        val candidates = GoStruct.Slice { 0L }
         var actionDigest = ""
         var resource = ""
         var ttl = 0L
@@ -229,7 +234,7 @@ class FetchResponse(val challenge: FetchedChallenge, val action: WireAction) {
                 "audience" -> audience = ApprovalJson.str(v, audience)
                 "issued_at" -> issuedAt = ApprovalJson.long(v, issuedAt)
                 "expires_at" -> expiresAt = ApprovalJson.long(v, expiresAt)
-                "candidates" -> candidates = ApprovalJson.longs(v)
+                "candidates" -> candidates.decode(v) { n, cur -> ApprovalJson.long(n, cur) }
                 "action_digest" -> actionDigest = ApprovalJson.str(v, actionDigest)
                 "resource" -> resource = ApprovalJson.str(v, resource)
                 else -> ttl = ApprovalJson.long(v, ttl)
@@ -280,7 +285,7 @@ internal object FetchNonceResponse {
 /**
  * The JSON the approval bodies need, with Go `encoding/json` semantics: [obj] renders a
  * struct as `json.Marshal` does (compact, fields in order, strings via
- * [GoJson.appendString]); [members]/[str]/[long]/[longs] decode as `json.Unmarshal` into
+ * [GoJson.appendString]); [members]/[str]/[long] decode as `json.Unmarshal` into
  * a struct does; [goUtf8] decodes bytes as Go reads a string.
  */
 internal object ApprovalJson {
@@ -356,13 +361,6 @@ internal object ApprovalJson {
     fun long(node: GoJson.Node, cur: Long): Long = when (node) {
         is GoJson.Num -> node.text.toLongOrNull() ?: throw TypeError()
         GoJson.Null -> cur
-        else -> throw TypeError()
-    }
-
-    /** An `[]int` field: `null` is a nil slice; a `null` element is 0, as Go leaves it. */
-    fun longs(node: GoJson.Node): List<Long>? = when (node) {
-        GoJson.Null -> null
-        is GoJson.Arr -> node.items.map { long(it, 0L) }
         else -> throw TypeError()
     }
 

@@ -2,6 +2,7 @@ package one.rarebit.voidwhichbinds
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -37,7 +38,7 @@ class CertTest {
         version = Labels.CERT_VERSION,
         user = KeyRef.ed25519(ByteArray(32) { (it + 1).toByte() }),
         device = KeyRef.ed25519(ByteArray(32) { (it * 2 + 1).toByte() }),
-        deviceEnc = KeyRef.x25519(ByteArray(32) { (it * 3 + 7).toByte() }),
+        deviceEnc = KeyRef.x25519(ByteArray(32) { (it * 3 + 7).toByte() }).render(),
         issuedAt = 1_724_700_000L,
         expiresAt = 1_756_236_000L,
     )
@@ -54,6 +55,19 @@ class CertTest {
 
         // Re-encoding the parsed cert yields the identical token (canonical form).
         assertEquals(token, parsed.cert.encode(FakeEd.signer))
+    }
+
+    @Test
+    fun anEmptyDencIsOmittedButOnlyACanonicalX25519KeyIsMinted() {
+        // Go's `denc,omitempty`: a parsed cert that binds no encryption key renders none.
+        val bare = sampleCert().copy(deviceEnc = "")
+        assertFalse(bare.signingBytes().decodeToString().contains("denc"))
+        val x = sampleCert().deviceEnc
+        for (denc in listOf("", "garbage", x.uppercase(), " $x", "ed25519:" + x.substringAfter(':'))) {
+            assertFailsWith<IllegalArgumentException>(denc) {
+                sampleCert().copy(deviceEnc = denc).encode(FakeEd.signer)
+            }
+        }
     }
 
     @Test

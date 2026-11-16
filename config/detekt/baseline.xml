@@ -7,7 +7,7 @@
     <ID>ComplexCondition:MiniJson.kt$MiniJson.Parser$i &lt; s.length &amp;&amp; (s[i] == '.' || s[i] == 'e' || s[i] == 'E')</ID>
     <ID>CyclomaticComplexMethod:Membership.kt$Membership.Evaluator$fun distinctMemberCosigners(op: MembershipOp, members: Set&lt;String&gt;): Int</ID>
     <ID>CyclomaticComplexMethod:Membership.kt$Membership.Evaluator$fun frame(set: Set&lt;String&gt;, window: (MembershipOp) -&gt; String): FrameState</ID>
-    <ID>CyclomaticComplexMethod:MembershipOp.kt$MembershipOp$private fun validate()</ID>
+    <ID>CyclomaticComplexMethod:MembershipOp.kt$MembershipOp$private fun validate(unknownKind: String?)</ID>
     <ID>CyclomaticComplexMethod:MembershipOp.kt$MembershipOp.Companion$fun verify(rawToken: String, verifier: Ed25519Verifier = Ed25519Engine.verifier()): MembershipOp</ID>
     <ID>CyclomaticComplexMethod:MiniJson.kt$MiniJson.Parser$fun parseString(): String</ID>
     <ID>CyclomaticComplexMethod:NetworkClientsTest.kt$NetworkClientsTest$private fun route(ex: HttpExchange)</ID>
@@ -260,7 +260,7 @@
     <ID>SwallowedException:MembershipOp.kt$MembershipOp.Companion$e: IllegalArgumentException</ID>
     <ID>SwallowedException:PossessionProof.kt$PossessionProof$e: Exception</ID>
     <ID>SwallowedException:PossessionProof.kt$PossessionProof$e: IllegalArgumentException</ID>
-    <ID>ThrowsCount:MembershipOp.kt$MembershipOp$private fun validate()</ID>
+    <ID>ThrowsCount:MembershipOp.kt$MembershipOp$private fun validate(unknownKind: String?)</ID>
     <ID>ThrowsCount:MembershipOp.kt$MembershipOp.Companion$fun user(rawToken: String): String</ID>
     <ID>ThrowsCount:MembershipOp.kt$MembershipOp.Companion$fun verify(rawToken: String, verifier: Ed25519Verifier = Ed25519Engine.verifier()): MembershipOp</ID>
     <ID>ThrowsCount:MembershipOp.kt$MembershipOp.Companion$internal fun signTyped( typ: String, signer: Ed25519Signer, byPublicKey: ByteArray, usr: String, kind: Kind, dev: String, deviceEnc: String, prev: List&lt;String&gt;, issuedAt: Long, lifetimeSeconds: Long = DEFAULT_LIFETIME_SECONDS, ): String</ID>

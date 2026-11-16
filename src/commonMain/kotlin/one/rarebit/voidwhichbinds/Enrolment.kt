@@ -32,7 +32,7 @@ object Enrolment {
         version = Labels.CERT_VERSION,
         user = identity.userId,
         device = KeyRef.ed25519(device.signPublicKey),
-        deviceEnc = KeyRef.x25519(device.encPublicKey),
+        deviceEnc = KeyRef.x25519(device.encPublicKey).render(),
         issuedAt = issuedAt,
         expiresAt = issuedAt + lifetimeSeconds,
     ).encode(identity.signer())

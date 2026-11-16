@@ -23,7 +23,8 @@ import kotlin.test.assertTrue
  * Every expected verdict below was checked against void-which-binds-go v0.22.0 (c8614e4)
  * with a throwaway Go program feeding the same body shapes to `enrolment.VerifyOp`/`OpUser`,
  * `VerifyCert`, `VerifyPossession`, `pairflow.VerifyRefusal`, `roster.Verify`,
- * `recovery.ParseSecret` and `recovery.CombineShares`.
+ * `recovery.ParseSecret` and `recovery.CombineShares`. The #113 cases (an unknown op kind,
+ * an opaque cert `denc`) were checked the same way against v0.28.1 (e2cf9ba).
  */
 class GoDecodeTest {
 
@@ -162,6 +163,26 @@ class GoDecodeTest {
         assertEquals(MembershipOp.Failure.MALFORMED, e.failure)
     }
 
+    @Test
+    fun opUnknownKindIsRefusedWhereGoValidateRefusesIt() {
+        // Go's validate checks bindings, genesis, keys, iat and prev before its kind
+        // switch, so an unknown kind naming genesis as the device is ErrOpGenesis.
+        fun failure(body: String, signer: Actor = g) =
+            assertFailsWith<MembershipOp.OpException>(body) { MembershipOp.verify(signer.token(body)) }.failure
+        fun op(kind: String, dev: String, by: String = g.id) =
+            "{\"v\":3,\"typ\":\"void-which-binds.op\",\"usr\":\"${g.id}\",\"op\":\"$kind\",\"dev\":\"$dev\"," +
+                "\"by\":\"$by\",\"prev\":[],\"iat\":$T0,\"exp\":${T0 + HOUR}}"
+        val genesis = MembershipOp.Failure.GENESIS
+        val malformed = MembershipOp.Failure.MALFORMED
+        assertEquals(genesis, failure(op("frob", g.id)))
+        assertEquals(genesis, failure(op("", g.id)))
+        assertEquals(malformed, failure(op("frob", g.id, by = "")))
+        assertEquals(malformed, failure(op("frob", a.id)))
+        assertEquals(malformed, failure(op("frob", a.id).replace("\"iat\":$T0,", "")))
+        // Go refuses the kind before its no-prev check: malformed, not no_prev.
+        assertEquals(malformed, failure(op("frob", b.id, by = a.id), signer = a))
+    }
+
     // ---- enrolment.VerifyCert ----
 
     private fun certBody(extra: String = "") =
@@ -175,6 +196,15 @@ class GoDecodeTest {
         assertEquals(KeyRef.parse(b.id), Cert.parse(g.token(certBody(",\"Dev\":\"${b.id}\""))).cert.device)
         assertEquals(0L, Cert.parse(g.token(certBody().replace("\"iat\":$T0,", ""))).cert.issuedAt)
         assertEquals(T0, Cert.parse(g.token(certBody(",\"iat\":null"))).cert.issuedAt)
+        // denc is opaque, as Go's Cert.DeviceEnc is: VerifyCert accepts any string, or none.
+        val enc = "x25519:${"ab".repeat(32)}"
+        for (denc in listOf("", "garbage", a.id, enc.uppercase())) {
+            val body = certBody().replace("\"$enc\"", "\"$denc\"")
+            assertEquals(denc, Cert.parse(g.token(body)).cert.deviceEnc, body)
+        }
+        val noDenc = certBody().replace("\"denc\":\"$enc\",", "")
+        assertEquals("", Cert.parse(g.token(noDenc)).cert.deviceEnc)
+        assertEquals("", Cert.parse(g.token(noDenc.replace("\"v\":2", "\"v\":1"))).cert.deviceEnc)
         for (body in listOf(
             certBody().replace("\"v\":2", "\"v\":2.0"),
             certBody().replace("\"v\":2", "\"v\":4294967298"),

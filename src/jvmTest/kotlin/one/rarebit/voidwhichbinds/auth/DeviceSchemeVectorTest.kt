@@ -48,7 +48,7 @@ class DeviceSchemeVectorTest {
         assertEquals(str("cert_payload_json"), parsed.payload.decodeToString())
         assertEquals(str("user_public_key"), parsed.cert.user.render())
         assertEquals(str("device_public_key"), parsed.cert.device.render())
-        assertEquals(str("device_encryption_key"), parsed.cert.deviceEnc.render())
+        assertEquals(str("device_encryption_key"), parsed.cert.deviceEnc)
         assertEquals(num("cert_issued_at_unix"), parsed.cert.issuedAt)
         assertEquals(num("cert_expires_at_unix"), parsed.cert.expiresAt)
         assertTrue(parsed.verify(Ed25519Engine.verifier()), "cert is signed by usr")
