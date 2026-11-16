@@ -356,13 +356,13 @@ val response = DeviceAuthPolicy.execute(credential, statusOf = { it.status }) { 
 
 ## Build
 
-Requires **JDK 21**. Uses the Gradle wrapper (self-downloads Gradle 8.9 +
-Kotlin 2.3.20). The Android target needs an Android SDK (`ANDROID_HOME` /
+Requires **JDK 21**. Uses the Gradle wrapper (self-downloads Gradle 9.9 +
+Kotlin 2.3.20; AGP 9.5). The Android target needs an Android SDK (`ANDROID_HOME` /
 `local.properties`); the iOS targets need the Kotlin/Native toolchain (auto-downloaded on macOS; Apple targets are skipped on Linux).
 
 ```sh
 ./gradlew jvmTest                          # compile + run common + JVM tests
-./gradlew compileReleaseKotlinAndroid      # Android compile
+./gradlew compileAndroidMain               # Android compile
 ./gradlew compileKotlinIosArm64            # iOS device compile (Kotlin/Native)
 ./gradlew iosSimulatorArm64Test            # commonTest on the iOS simulator (macOS)
 ./gradlew assembleVoidWhichBindsXCFramework      # → build/XCFrameworks/{debug,release}/VoidWhichBinds.xcframework

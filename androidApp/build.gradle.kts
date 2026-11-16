@@ -4,8 +4,8 @@ import java.util.Properties
 plugins {
     // Declared `apply false` in the root build (one shared plugin classpath);
     // versions live in gradle/libs.versions.toml.
+    // AGP 9 compiles this module's Kotlin itself (built-in Kotlin): no kotlin-android plugin.
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
     // Writes res/raw/aboutlibraries.json (libraries, versions, licence texts) for the
     // Manage → Open-source licences screen.
@@ -111,7 +111,9 @@ fun com.android.build.api.dsl.VariantDimension.endpointFields(e: Endpoints) {
 
 android {
     namespace = "one.rarebit.cruciform"
-    compileSdk = 35
+    // 37 for the androidx libraries that require it to compile against; targetSdk (below) is
+    // what sets the platform behaviour the app opts into, and it stays 35.
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "one.rarebit.cruciform"
@@ -223,7 +225,9 @@ dependencies {
 
     // Pure-JVM unit tests (deep-link routing); no Android runtime needed.
     testImplementation(libs.junit)
-    testImplementation(kotlin("test"))
+    // kotlin-test's JUnit 4 flavour, named explicitly: the kotlin-android plugin used to pick it
+    // from `kotlin("test")`, and AGP 9's built-in Kotlin does not (kotlin.test.Test unresolved).
+    testImplementation(kotlin("test-junit"))
     // The invite state machine (pairing/InviteCoordinator) is driven on a test dispatcher.
     testImplementation(libs.kotlinx.coroutines.test)
     // LicencesScreen's parser reads JSON with org.json, which android.jar only stubs.
