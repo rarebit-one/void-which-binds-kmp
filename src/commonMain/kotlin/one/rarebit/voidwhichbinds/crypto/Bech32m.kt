@@ -23,6 +23,7 @@ object Bech32m {
     private val GENERATOR = intArrayOf(0x3b6a57b2, 0x26508e6d, 0x1ea119fa, 0x3d4233dd, 0x2a1462b3)
 
     /** Encode 5-bit groups [data] under [hrp] into a bech32m string. */
+    @Throws(Exception::class)
     fun encode(hrp: String, data: IntArray): String {
         require(hrp.isNotEmpty()) { "empty HRP" }
         val checksum = createChecksum(hrp, data)
@@ -58,6 +59,7 @@ object Bech32m {
     }
 
     /** Decode and verify a bech32m string. Throws on any structural or checksum error. */
+    @Throws(Exception::class)
     fun decode(s: String): Decoded {
         require(s.length in 8..90) { "bech32m string length out of range: ${s.length}" }
         val lower = s.lowercase()
@@ -111,6 +113,7 @@ object Bech32m {
      * General power-of-two base conversion (RFC-style `convertbits`).
      * Used to pack raw bytes (8-bit) into 5-bit groups and back.
      */
+    @Throws(Exception::class)
     fun convertBits(data: IntArray, fromBits: Int, toBits: Int, pad: Boolean): IntArray {
         var acc = 0
         var bits = 0

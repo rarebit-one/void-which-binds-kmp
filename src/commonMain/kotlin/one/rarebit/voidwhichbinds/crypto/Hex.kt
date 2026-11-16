@@ -19,6 +19,7 @@ object Hex {
         return sb.toString()
     }
 
+    @Throws(Exception::class)
     fun decode(hex: String): ByteArray {
         require(hex.length % 2 == 0) { "hex string must have even length, got ${hex.length}" }
         val out = ByteArray(hex.length / 2)

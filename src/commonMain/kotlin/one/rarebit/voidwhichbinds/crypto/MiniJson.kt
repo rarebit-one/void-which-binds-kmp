@@ -21,6 +21,7 @@ object MiniJson {
      * `Long`, `Boolean`, a `List` of those (or of nested objects), or a nested
      * object given as another ordered `List<Pair<String, Any>>`.
      */
+    @Throws(Exception::class)
     fun encodeObject(fields: List<Pair<String, Any>>): String {
         val sb = StringBuilder()
         encodeObjectInto(sb, fields)
@@ -100,6 +101,7 @@ object MiniJson {
      * integer `candidates` reads as a list of [Long]), or a nested
      * `Map<String, Any>` for an object.
      */
+    @Throws(Exception::class)
     fun parseObject(json: String): Map<String, Any> {
         val p = Parser(json)
         p.skipWs()

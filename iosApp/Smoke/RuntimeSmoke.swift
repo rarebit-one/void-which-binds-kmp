@@ -56,7 +56,7 @@ do {
 }
 
 // 4. the web-login QR wire round-trips byte-identically through Swift.
-let qr = LoginQr.shared.encode(rp: "https://homelab.example:8443/app", id: "L1a2b3")
+let qr = try! LoginQr.shared.encode(rp: "https://homelab.example:8443/app", id: "L1a2b3")
 print("QR_MATCH \(qr == "void-which-binds:login?id=L1a2b3&rp=https%3A%2F%2Fhomelab.example%3A8443%2Fapp" ? "OK" : "FAIL")")
 
 print("SMOKE_DONE")

@@ -34,7 +34,9 @@ import kotlin.concurrent.Volatile
  * @param signer the device signing key — `DeviceKeyStore.asSigner()` in an app.
  * @param clock unix seconds now; injected so the reuse window is testable.
  */
-class DeviceCredential(
+class DeviceCredential
+@Throws(Exception::class)
+constructor(
     val certToken: String,
     private val signer: Ed25519Signer,
     private val clock: () -> Long,
@@ -69,6 +71,7 @@ class DeviceCredential(
      * The presentation to send now — the live one while it is inside the reuse
      * window, else a fresh mint (which on a phone may prompt for user presence).
      */
+    @Throws(Exception::class)
     fun current(): Presentation {
         val p = live
         if (p != null && clock() < p.issuedAt + reuseForSeconds) return p
@@ -76,9 +79,11 @@ class DeviceCredential(
     }
 
     /** The `Authorization` header value to send now — `Device <cert>~<proof>`. */
+    @Throws(Exception::class)
     fun headerValue(): String = current().headerValue
 
     /** Force a fresh proof — after a `401`, or on wake. Replaces the live presentation. */
+    @Throws(Exception::class)
     fun refresh(): Presentation = mint(certToken, signer, clock(), ttlSeconds).also { live = it }
 
     companion object {
@@ -111,6 +116,7 @@ class DeviceCredential(
             one.rarebit.voidwhichbinds.Membership.merge(ops).take(MAX_PRESENTED_OPS).joinToString(",")
 
         /** Build the credential VALUE `<cert>~<proof>` (the part after `Device `). Pure. */
+        @Throws(Exception::class)
         fun format(cert: String, proof: String): String {
             require(cert.isNotEmpty() && proof.isNotEmpty()) { "a device credential needs a cert and a proof" }
             require(!cert.contains(SEPARATOR)) { "cert must not contain the '$SEPARATOR' separator" }
@@ -118,9 +124,11 @@ class DeviceCredential(
         }
 
         /** The full header value `Device <cert>~<proof>`. Pure. */
+        @Throws(Exception::class)
         fun headerValue(cert: String, proof: String): String = "$SCHEME ${format(cert, proof)}"
 
         /** Split a credential VALUE (or a full `Device …` header value) back into (cert, proof). */
+        @Throws(Exception::class)
         fun parse(value: String): Pair<String, String> {
             val v = if (value.startsWith("$SCHEME ")) value.substring(SCHEME.length + 1) else value
             val i = v.indexOf(SEPARATOR)
@@ -136,6 +144,7 @@ class DeviceCredential(
          * [PossessionProof] signed by [signer], joined to the cert. Stateless — use a
          * [DeviceCredential] instance to get the reuse window.
          */
+        @Throws(Exception::class)
         fun mint(
             certToken: String,
             signer: Ed25519Signer,

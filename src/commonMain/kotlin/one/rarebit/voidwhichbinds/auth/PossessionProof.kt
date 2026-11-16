@@ -93,6 +93,7 @@ object PossessionProof {
      * `DeviceKeyStore.asSigner()`, which may block on user presence. A non-positive
      * ttl means [DEFAULT_TTL_SECONDS], as in Go.
      */
+    @Throws(Exception::class)
     fun mint(certToken: String, signer: Ed25519Signer, now: Long, ttlSeconds: Long = DEFAULT_TTL_SECONDS): String {
         require(certToken.isNotEmpty()) { "possession proof needs a cert token to bind to" }
         val ttl = if (ttlSeconds <= 0) DEFAULT_TTL_SECONDS else ttlSeconds
@@ -130,6 +131,7 @@ object PossessionProof {
      * any JSON in an unknown member; a value of the wrong JSON type is [Reason.MALFORMED].
      */
     @Suppress("ThrowsCount") // one refusal per Go decode step
+    @Throws(Exception::class)
     fun parse(proof: String): Payload {
         val dot = proof.indexOf('.')
         if (dot <= 0 || dot >= proof.length - 1) throw Refused(Reason.MALFORMED, "possession proof is not <body>.<sig>")
@@ -173,6 +175,7 @@ object PossessionProof {
      * [certToken], and [now] (unix seconds) lies inside its window with the skew
      * asymmetry above. Throws [Refused] with the server's reason, else returns the payload.
      */
+    @Throws(Exception::class)
     fun verify(
         proof: String,
         devicePublicKey: ByteArray,

@@ -104,7 +104,9 @@ sealed class PairflowAuthority {
     ) : PairflowAuthority()
 }
 
-class PairflowInitiator(
+class PairflowInitiator
+@Throws(Exception::class)
+constructor(
     private val relay: RelayClient,
     authority: PairflowAuthority,
     private val salt: ByteArray,
@@ -195,6 +197,7 @@ class PairflowInitiator(
      * a genesis initiator's missing encryption key is framed into the commitment and
      * the SAS, so a relay that ADDS one is caught. The reveal carries [ops].
      */
+    @Throws(Exception::class)
     fun handshake(): String {
         val myCommit = Pairing.commit(signPub, encPub)
         relay.post("commit", myCommit)
@@ -229,6 +232,7 @@ class PairflowInitiator(
      * earlier attempt having landed; anything else there fails. A retry never signs a
      * second add.
      */
+    @Throws(Exception::class)
     fun authorise(sealer: CertSealer = VoidbindCertSealer) {
         check(handshook) { "pairflow: authorise before a successful handshake" }
         check(!refused) { "pairflow: authorise after refuse" }
@@ -287,6 +291,7 @@ class PairflowInitiator(
      * The signer is this device's key, so on a hardware keystore signing the refusal
      * passes the same biometric gate as [authorise].
      */
+    @Throws(Exception::class)
     fun refuse() {
         check(!authorised) { "pairflow: refuse after authorise" }
         val token = PairRefusal.sign(signer, signPub, salt)
@@ -295,7 +300,9 @@ class PairflowInitiator(
     }
 }
 
-class PairflowResponder(
+class PairflowResponder
+@Throws(Exception::class)
+constructor(
     private val relay: RelayClient,
     /** The identity (`ed25519:<hex>`) from the invite — what the initiator must be a member of. */
     private val userId: String,
@@ -333,6 +340,7 @@ class PairflowResponder(
      * itself). A non-member gets no string: there is nothing for a human to be
      * talked into confirming.
      */
+    @Throws(Exception::class)
     fun handshake(): String {
         val myCommit = Pairing.commit(deviceSignPub, deviceEncPub)
         relay.post("commit", myCommit)
@@ -377,6 +385,7 @@ class PairflowResponder(
      * throws [PairingRefusedException] at once. Anything else there — a forgery, another
      * session's refusal, a relay without the slot — is ignored and the wait goes on.
      */
+    @Throws(Exception::class)
     fun receive(deviceEncPriv: ByteArray, sealer: CertSealer = VoidbindCertSealer): Admission {
         check(handshook) { "pairflow: receive before a successful handshake" }
         val cert = relay.fetchWatching("cert", PairRefusal.SLOT) { refusal ->

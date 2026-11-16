@@ -123,6 +123,7 @@ object WebLogin {
      * is the device's enrolment cert; the signing key must be the one that cert
      * names, or the RP's `weblogin.Verify` refuses the assertion.
      */
+    @Throws(Exception::class)
     fun signAssertion(
         challenge: Challenge,
         certToken: String,
@@ -143,6 +144,7 @@ object WebLogin {
      * (its `ErrNumberMismatch`), restoring the origin-binding a scanned QR gave for
      * free. Matches void-which-binds-go's `SignAssertionV2`.
      */
+    @Throws(Exception::class)
     fun signAssertionV2(
         challenge: Challenge,
         chosen: Int,

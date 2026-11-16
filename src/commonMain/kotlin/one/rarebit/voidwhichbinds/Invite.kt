@@ -46,6 +46,7 @@ object Invite {
      * salt below the freshness floor ([Pairing.MIN_SALT_LEN]) or an unparseable
      * [usr], matching the Go side's guards.
      */
+    @Throws(Exception::class)
     fun encode(relay: String, session: String, salt: ByteArray, usr: String): String {
         require(relay.isNotEmpty() && session.isNotEmpty()) { "invite needs a relay and a session" }
         require(salt.size >= Pairing.MIN_SALT_LEN) {

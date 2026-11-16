@@ -32,7 +32,9 @@ import one.rarebit.voidwhichbinds.crypto.MiniJson
  * cert), and not parsed here, since whatever seals to it validates it (#113). [encode]
  * still mints only a canonical `x25519:<hex>`.
  */
-data class Cert(
+data class Cert
+@Throws(Exception::class)
+constructor(
     val version: Int,
     val user: KeyRef,
     val device: KeyRef,
@@ -81,6 +83,7 @@ data class Cert(
     }
 
     /** Verify the token's signature against this cert's `usr` (user identity) key. */
+    @Throws(Exception::class)
     fun verify(token: String, verifier: Ed25519Verifier): Boolean {
         val dot = token.indexOf('.')
         if (dot < 0) return false
@@ -112,6 +115,7 @@ data class Cert(
          * `denc` is kept as it is, absent being empty (Go `VerifyCert`, #113).
          */
         @Suppress("ThrowsCount") // one refusal per Go decode step
+        @Throws(Exception::class)
         fun parse(token: String): Parsed {
             val dot = token.indexOf('.')
             require(dot > 0 && dot < token.length - 1) { "malformed cert token (missing '.')" }

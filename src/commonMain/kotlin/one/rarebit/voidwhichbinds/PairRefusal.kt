@@ -52,6 +52,7 @@ object PairRefusal {
      * [signPublicKey] (a member device's key, or genesis's). Mirrors void-which-binds-go
      * `pairflow.SignRefusal`.
      */
+    @Throws(Exception::class)
     fun sign(signer: Ed25519Signer, signPublicKey: ByteArray, salt: ByteArray): String {
         require(signPublicKey.size == KEY_LEN) { "pairflow: a 32-byte ed25519 key is required" }
         val body = MiniJson.encodeObject(

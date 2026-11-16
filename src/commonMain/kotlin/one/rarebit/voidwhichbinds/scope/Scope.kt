@@ -34,6 +34,7 @@ object Scope {
     const val MAX_SCOPES = 32
 
     /** Refuses [s] unless it is one well-formed scope, naming the first rule it breaks. Go `scope.Validate`. */
+    @Throws(Exception::class)
     fun validate(s: String) {
         val len = s.encodeToByteArray().size
         val colon = s.indexOf(':')
@@ -53,6 +54,7 @@ object Scope {
      * scope, and the result is sorted by byte order, de-duplicated, and holds
      * 1–[MAX_SCOPES] entries. Go `scope.CanonicalList`.
      */
+    @Throws(Exception::class)
     fun canonicalList(scopes: List<String>): List<String> {
         val out = LinkedHashSet<String>()
         for (s in scopes) {
@@ -71,6 +73,7 @@ object Scope {
      * in strictly ascending byte order. It refuses rather than repairs. Go
      * `scope.ValidateList`.
      */
+    @Throws(Exception::class)
     fun validateList(scopes: List<String>) {
         if (scopes.isEmpty() || scopes.size > MAX_SCOPES) {
             throw ScopeException("scope: malformed: a scope list holds 1 to $MAX_SCOPES scopes: ${scopes.size}")

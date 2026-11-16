@@ -59,6 +59,7 @@ public class OffloadPairingResponder(
      * revealed, and the desktop's commitment is opened against its revealed key
      * before the SAS is derived.
      */
+    @Throws(Exception::class)
     public fun handshake(t: OffloadTransport, invite: OffloadDeepLink.PairInvite): Handshaken {
         t.post(OffloadSlots.COMMIT, Pairing.commit(devicePub, deviceEnc))
         val desktopCommit = t.fetch(OffloadSlots.COMMIT)
@@ -79,6 +80,7 @@ public class OffloadPairingResponder(
      * side that never confirms pins nobody. Returns the transport key to pin as the
      * paired terminal.
      */
+    @Throws(Exception::class)
     public fun confirm(t: OffloadTransport, invite: OffloadDeepLink.PairInvite, h: Handshaken): ByteArray {
         val transcript = OffloadProtocol.pairConfirmTranscript(
             invite.session,
@@ -116,6 +118,7 @@ public class OffloadUnwrapResponder(
     private val verifier: Ed25519Verifier,
 ) {
     /** Serve exactly one unwrap over the given (already-woken) relay session. */
+    @Throws(Exception::class)
     public fun serveOnce(t: OffloadTransport) {
         val req = OffloadProtocol.verifyRequest(verifier, pinnedTransportPub, t.fetch(OffloadSlots.UNWRAP_REQ))
         val spaceKey = VoidbindEncryption.unwrap(req.wrapped, deviceEncSeed)

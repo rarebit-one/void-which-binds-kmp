@@ -140,6 +140,7 @@ data class MembershipOp(
          * Mirrors void-which-binds-go `enrolment.SignOp` byte-for-byte.
          */
         @Suppress("ThrowsCount") // one refusal per Go guard, in Go's order
+        @Throws(Exception::class)
         fun sign(
             signer: Ed25519Signer,
             byPublicKey: ByteArray,
@@ -200,6 +201,7 @@ data class MembershipOp(
          * genesis (`by = usr`), with no prev. Throws [OpException] for anything that is
          * not an op. Mirrors void-which-binds-go `enrolment.VerifyOp`.
          */
+        @Throws(Exception::class)
         fun verify(rawToken: String, verifier: Ed25519Verifier = Ed25519Engine.verifier()): MembershipOp {
             val token = GoStrings.trimSpace(rawToken)
             val dot = token.indexOf('.')
@@ -271,6 +273,7 @@ data class MembershipOp(
          * which pinned genesis key to evaluate under (void-which-binds-go `enrolment.OpUser`).
          * Accepts every version [verify] accepts; throws [OpException] otherwise.
          */
+        @Throws(Exception::class)
         fun user(rawToken: String): String {
             val token = GoStrings.trimSpace(rawToken)
             val dot = token.indexOf('.')
@@ -370,6 +373,7 @@ data class MembershipOp(
          *
          * Mirrors void-which-binds-go `enrolment.CosignOp` byte-for-byte.
          */
+        @Throws(Exception::class)
         fun cosign(cosigner: Ed25519Signer, cosignerPublicKey: ByteArray, op: MembershipOp): Cosig {
             require(cosignerPublicKey.size == 32) { "a co-signing key is required" }
             op.checkKeys()
@@ -393,6 +397,7 @@ data class MembershipOp(
          * Mirrors void-which-binds-go `enrolment.AttachCosigs` byte-for-byte: the payload keeps
          * [op]'s `typ`, with `cosig` placed between `prev` and `iat`.
          */
+        @Throws(Exception::class)
         fun attachCosigs(
             primary: Ed25519Signer,
             primaryPublicKey: ByteArray,

@@ -26,6 +26,7 @@ object LoginQr {
     class Parsed(val rp: String, val id: String)
 
     /** Render the QR the browser shows. Refuses an empty rp or id, matching Go. */
+    @Throws(Exception::class)
     fun encode(rp: String, id: String): String {
         require(rp.isNotEmpty() && id.isNotEmpty()) { "a login QR needs an rp and an id" }
         return PREFIX + UrlQuery.encode(listOf("rp" to rp, "id" to id))

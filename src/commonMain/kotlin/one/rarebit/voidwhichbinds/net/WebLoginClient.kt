@@ -50,6 +50,7 @@ class WebLoginClient(private val http: HttpTransport, private val rpBase: String
     class Poll(val status: String, val token: String?, val user: String?)
 
     /** Browser: start a login. */
+    @Throws(Exception::class)
     fun createLogin(): Created {
         val resp = http.post(trimr(rpBase) + "/login")
         require(resp.status == 200) { "weblogin: create: HTTP ${resp.status}" }
@@ -63,6 +64,7 @@ class WebLoginClient(private val http: HttpTransport, private val rpBase: String
      * never receives it. Used for push logins, where nothing is scanned, to restore
      * the QR's origin-binding.
      */
+    @Throws(Exception::class)
     fun createNumberMatchLogin(): CreatedNumberMatch {
         val resp = http.post(trimr(rpBase) + "/login?mode=number-match")
         require(resp.status == 200) { "weblogin: create v2: HTTP ${resp.status}" }
@@ -73,6 +75,7 @@ class WebLoginClient(private val http: HttpTransport, private val rpBase: String
     }
 
     /** Browser: poll a login's status (and token once approved). */
+    @Throws(Exception::class)
     fun poll(id: String): Poll {
         val resp = http.get(trimr(rpBase) + "/login/" + id)
         require(resp.status == 200) { "weblogin: poll: HTTP ${resp.status}" }
@@ -86,6 +89,7 @@ class WebLoginClient(private val http: HttpTransport, private val rpBase: String
      * (the true number is DELIBERATELY absent — the phone must not learn which
      * candidate is right).
      */
+    @Throws(Exception::class)
     fun fetchChallenge(id: String): WebLogin.Challenge {
         val resp = http.get(trimr(rpBase) + "/login/" + id + "/challenge")
         // A reached-but-refused RP throws the typed exception so the flow layer can tell it
@@ -109,6 +113,7 @@ class WebLoginClient(private val http: HttpTransport, private val rpBase: String
      * assertion carries the chosen `match_number`; a v1 one omits it (matching Go's
      * `omitempty`), so the same call serves both.
      */
+    @Throws(Exception::class)
     fun approve(id: String, assertion: WebLogin.Assertion) {
         // Field order follows void-which-binds-go's Assertion struct (cert, ops, sig, match_number).
         val fields = buildList<Pair<String, Any>> {

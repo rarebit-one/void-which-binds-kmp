@@ -46,6 +46,7 @@ public object OffloadDeepLink {
      * query keys are emitted in sorted order (relay, salt, session, v), matching Go's
      * `url.Values.Encode`, so a Kotlin-rendered invite is byte-identical to the Go one.
      */
+    @Throws(Exception::class)
     public fun encodePairInvite(relayBase: String, session: String, salt: ByteArray): String {
         require(relayBase.isNotEmpty() && session.isNotEmpty()) { "offload invite needs a relay and a session" }
         require(salt.size >= MIN_SALT_LEN) { "offload invite salt is ${salt.size} bytes, want at least $MIN_SALT_LEN" }
@@ -59,6 +60,7 @@ public object OffloadDeepLink {
     }
 
     /** Parse a `void-which-binds:offload-pair?…` invite, or throw [IllegalArgumentException]. */
+    @Throws(Exception::class)
     public fun parsePairInvite(uri: String): PairInvite {
         val q = queryOf(uri, PAIR_OPAQUE)
         require(q["v"] == PAIR_VERSION) { "offload invite version ${q["v"]}, want $PAIR_VERSION" }
@@ -71,12 +73,14 @@ public object OffloadDeepLink {
     }
 
     /** Encode an unwrap wake-ping, matching heyarr-core / void-which-binds-go `notify.EncodeUnwrap`. */
+    @Throws(Exception::class)
     public fun encodeWakePing(relayBase: String, session: String): String {
         require(relayBase.isNotEmpty() && session.isNotEmpty()) { "unwrap ping needs a relay and a session" }
         return "$SCHEME:$UNWRAP_OPAQUE?" + UrlQuery.encode(listOf("relay" to relayBase, "session" to session))
     }
 
     /** Parse a `void-which-binds:unwrap?…` wake-ping, or throw [IllegalArgumentException]. */
+    @Throws(Exception::class)
     public fun parseWakePing(uri: String): WakePing {
         val q = queryOf(uri, UNWRAP_OPAQUE)
         val relay = q["relay"].orEmpty()

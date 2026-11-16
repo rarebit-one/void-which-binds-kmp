@@ -24,6 +24,7 @@ data class KeyRef(val alg: String, val bytes: ByteArray) {
         fun x25519(bytes: ByteArray): KeyRef = KeyRef(Labels.ALG_X25519, bytes)
 
         /** Parse an `<alg>:<hex>` string. Throws on a missing/unknown prefix or bad hex. */
+        @Throws(Exception::class)
         fun parse(s: String): KeyRef {
             val idx = s.indexOf(':')
             require(idx > 0) { "key ref missing '<alg>:' prefix: '$s'" }
@@ -44,6 +45,7 @@ data class KeyRef(val alg: String, val bytes: ByteArray) {
          * set member, a second spelling is one key counted as two identities.
          * Mirrors void-which-binds-go `identity.ParseCanonicalPublicKey` (#116).
          */
+        @Throws(Exception::class)
         fun parseCanonicalEd25519(s: String): ByteArray {
             val ref = parse(s)
             require(ref.alg == Labels.ALG_ED25519 && ref.bytes.size == ED25519_KEY_LEN) {

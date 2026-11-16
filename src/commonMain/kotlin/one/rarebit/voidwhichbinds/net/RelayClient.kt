@@ -55,6 +55,7 @@ class RelayClient(
         const val DEFAULT_MAX_WAIT_MILLIS: Long = 60_000
 
         /** Ask the relay to open a session and return its id. */
+        @Throws(Exception::class)
         fun createSession(http: HttpTransport, base: String): String {
             val resp = http.post(trimr(base) + "/v1/sessions")
             if (resp.status != 200) throw RelayHttpException(resp.status, "create session")
@@ -71,6 +72,7 @@ class RelayClient(
     private fun slotUrl(role: String, type: String) = "${trimr(base)}/v1/sessions/$session/$role/$type"
 
     /** Write this role's [type] slot (write-once at the relay). */
+    @Throws(Exception::class)
     fun post(type: String, payload: ByteArray) {
         val resp = http.put(slotUrl(role, type), payload, "application/octet-stream")
         if (resp.status != 204) throw RelayHttpException(resp.status, "post $role/$type")
@@ -90,6 +92,7 @@ class RelayClient(
     }
 
     /** Poll the PEER role's [type] slot until present, returning its bytes. */
+    @Throws(Exception::class)
     fun fetch(type: String): ByteArray {
         val p = peer()
         var waited = 0L
@@ -117,6 +120,7 @@ class RelayClient(
      * 404, e.g. a relay that predates the slot answers 400) is dropped silently: the wait
      * then behaves exactly like [fetch].
      */
+    @Throws(Exception::class)
     fun fetchWatching(type: String, watch: String, onWatch: (ByteArray) -> Unit): ByteArray {
         val p = peer()
         var watching = true

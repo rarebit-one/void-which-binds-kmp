@@ -8,7 +8,7 @@
     <ID>CyclomaticComplexMethod:Membership.kt$Membership.Evaluator$fun distinctMemberCosigners(op: MembershipOp, members: Set&lt;String&gt;): Int</ID>
     <ID>CyclomaticComplexMethod:Membership.kt$Membership.Evaluator$fun frame(set: Set&lt;String&gt;, window: (MembershipOp) -&gt; String): FrameState</ID>
     <ID>CyclomaticComplexMethod:MembershipOp.kt$MembershipOp$private fun validate(unknownKind: String?)</ID>
-    <ID>CyclomaticComplexMethod:MembershipOp.kt$MembershipOp.Companion$fun verify(rawToken: String, verifier: Ed25519Verifier = Ed25519Engine.verifier()): MembershipOp</ID>
+    <ID>CyclomaticComplexMethod:MembershipOp.kt$MembershipOp.Companion$@Throws(Exception::class) fun verify(rawToken: String, verifier: Ed25519Verifier = Ed25519Engine.verifier()): MembershipOp</ID>
     <ID>CyclomaticComplexMethod:MiniJson.kt$MiniJson.Parser$fun parseString(): String</ID>
     <ID>CyclomaticComplexMethod:NetworkClientsTest.kt$NetworkClientsTest$private fun route(ex: HttpExchange)</ID>
     <ID>EmptyFunctionBlock:LoginApprovalErrorTest.kt$LoginApprovalErrorTest.OkTransport${}</ID>
@@ -261,12 +261,12 @@
     <ID>SwallowedException:PossessionProof.kt$PossessionProof$e: Exception</ID>
     <ID>SwallowedException:PossessionProof.kt$PossessionProof$e: IllegalArgumentException</ID>
     <ID>ThrowsCount:MembershipOp.kt$MembershipOp$private fun validate(unknownKind: String?)</ID>
-    <ID>ThrowsCount:MembershipOp.kt$MembershipOp.Companion$fun user(rawToken: String): String</ID>
-    <ID>ThrowsCount:MembershipOp.kt$MembershipOp.Companion$fun verify(rawToken: String, verifier: Ed25519Verifier = Ed25519Engine.verifier()): MembershipOp</ID>
+    <ID>ThrowsCount:MembershipOp.kt$MembershipOp.Companion$@Throws(Exception::class) fun user(rawToken: String): String</ID>
+    <ID>ThrowsCount:MembershipOp.kt$MembershipOp.Companion$@Throws(Exception::class) fun verify(rawToken: String, verifier: Ed25519Verifier = Ed25519Engine.verifier()): MembershipOp</ID>
     <ID>ThrowsCount:MembershipOp.kt$MembershipOp.Companion$internal fun signTyped( typ: String, signer: Ed25519Signer, byPublicKey: ByteArray, usr: String, kind: Kind, dev: String, deviceEnc: String, prev: List&lt;String&gt;, issuedAt: Long, lifetimeSeconds: Long = DEFAULT_LIFETIME_SECONDS, ): String</ID>
     <ID>ThrowsCount:OffloadProtocol.kt$OffloadProtocol.Reader$fun field(): ByteArray</ID>
-    <ID>ThrowsCount:Pairflow.kt$PairflowResponder$fun receive(deviceEncPriv: ByteArray, sealer: CertSealer = VoidbindCertSealer): Admission</ID>
-    <ID>ThrowsCount:PossessionProof.kt$PossessionProof$fun verify( proof: String, devicePublicKey: ByteArray, certToken: String, now: Long, verifier: Ed25519Verifier, ): Payload</ID>
+    <ID>ThrowsCount:Pairflow.kt$PairflowResponder$@Throws(Exception::class) fun receive(deviceEncPriv: ByteArray, sealer: CertSealer = VoidbindCertSealer): Admission</ID>
+    <ID>ThrowsCount:PossessionProof.kt$PossessionProof$@Throws(Exception::class) fun verify( proof: String, devicePublicKey: ByteArray, certToken: String, now: Long, verifier: Ed25519Verifier, ): Payload</ID>
     <ID>TooGenericExceptionCaught:DevicePairing.kt$DevicePairing$e: Throwable</ID>
     <ID>TooGenericExceptionCaught:PairingOutcome.kt$PairingFailures$e: Throwable</ID>
     <ID>TooGenericExceptionCaught:PossessionProof.kt$PossessionProof$e: Exception</ID>
