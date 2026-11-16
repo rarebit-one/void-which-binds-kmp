@@ -174,6 +174,30 @@ class ApprovalTest {
     }
 
     @Test
+    fun aRepeatedCandidatesMemberReusesItsElementsAsGoDoes() {
+        // Go decodes a repeated []int member into the elements it already holds: a `null`
+        // element keeps the earlier value, and a `null` or `[]` member drops them (#113).
+        // Each verdict was checked against void-which-binds-go v0.28.1's Unmarshal + Open.
+        val j = wire().toJson().decodeToString()
+        fun candidates(rep: String) = FetchResponse.parse(
+            j.replace("\"candidates\":[17,42,86]", "\"candidates\":[17,42,86],$rep").encodeToByteArray(),
+        ).open().challenge.candidates
+        assertEquals(listOf(17, 42, 86), candidates("\"candidates\":[null,null,null]"))
+        assertEquals(listOf(17, 42, 99), candidates("\"candidates\":[null,null,99]"))
+        assertEquals(listOf(5, 42, 86), candidates("\"candidates\":[5,null,null]"))
+        assertEquals(listOf(17, 1, 86), candidates("\"CANDIDATES\":[null,1,null]"))
+        for (rep in listOf(
+            "\"candidates\":[null,null]",
+            "\"candidates\":[null,null,null,null]",
+            "\"candidates\":null,\"candidates\":[null,null,null]",
+            "\"candidates\":[],\"candidates\":[null,null,null]",
+            "\"candidates\":[null,\"x\",null]",
+        )) {
+            assertEquals(Failure.MALFORMED, failure { candidates(rep) }, rep)
+        }
+    }
+
+    @Test
     fun goUtf8ReplacesEachInvalidByte() {
         val b = byteArrayOf(
             0x41, 0xE2.toByte(), 0x82.toByte(), 0x41, 0xED.toByte(), 0xA0.toByte(), 0x80.toByte(),

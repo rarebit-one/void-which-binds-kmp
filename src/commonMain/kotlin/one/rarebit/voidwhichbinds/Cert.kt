@@ -20,18 +20,23 @@ import one.rarebit.voidwhichbinds.crypto.MiniJson
  * | `typ`  | ADR-0009 token type ([TokenType.CERT])    | `void-which-binds.cert` |
  * | `usr`  | user identity key                         | `ed25519:<hex>`    |
  * | `dev`  | device signing key                        | `ed25519:<hex>`    |
- * | `denc` | device encryption key                     | `x25519:<hex>`     |
+ * | `denc` | device encryption key (omitted when empty) | `x25519:<hex>`     |
  * | `iat`  | issued-at (unix seconds)                  | int                |
  * | `exp`  | expiry (unix seconds)                     | int                |
  *
  * The signature is produced by the *user identity* key over the raw payload
  * JSON bytes.
+ *
+ * [deviceEnc] is the rendered key exactly as the cert carries it, opaque as
+ * void-which-binds-go's `Cert.DeviceEnc` is: empty for a cert that binds none (a v1
+ * cert), and not parsed here, since whatever seals to it validates it (#113). [encode]
+ * still mints only a canonical `x25519:<hex>`.
  */
 data class Cert(
     val version: Int,
     val user: KeyRef,
     val device: KeyRef,
-    val deviceEnc: KeyRef,
+    val deviceEnc: String,
     val issuedAt: Long,
     val expiresAt: Long,
 ) {
@@ -44,24 +49,32 @@ data class Cert(
     init {
         require(user.alg == Labels.ALG_ED25519) { "usr must be ed25519, got ${user.alg}" }
         require(device.alg == Labels.ALG_ED25519) { "dev must be ed25519, got ${device.alg}" }
-        require(deviceEnc.alg == Labels.ALG_X25519) { "denc must be x25519, got ${deviceEnc.alg}" }
     }
 
     /** The exact JSON bytes that are signed (and that `base64url` wraps). */
     fun signingBytes(): ByteArray = MiniJson.encodeObject(
-        listOf(
+        listOfNotNull(
             "v" to version,
             "typ" to typ,
             "usr" to user.render(),
             "dev" to device.render(),
-            "denc" to deviceEnc.render(),
+            // Go's `denc,omitempty`.
+            if (deviceEnc.isEmpty()) null else "denc" to deviceEnc,
             "iat" to issuedAt,
             "exp" to expiresAt,
         ),
     ).encodeToByteArray()
 
-    /** Sign the payload with the user identity key and render the token. */
+    /**
+     * Sign the payload with the user identity key and render the token. [deviceEnc] must
+     * be a canonical `x25519:<hex>` key.
+     */
+    @Throws(Exception::class)
     fun encode(signer: Ed25519Signer): String {
+        val enc = runCatching { KeyRef.parse(deviceEnc) }.getOrNull()
+        require(enc?.alg == Labels.ALG_X25519 && enc.render() == deviceEnc) {
+            "denc must be a canonical x25519 key, got '$deviceEnc'"
+        }
         val payload = signingBytes()
         val sig = signer.sign(payload)
         return Base64Url.encode(payload) + "." + Base64Url.encode(sig)
@@ -96,6 +109,7 @@ data class Cert(
          *
          * The body is decoded as Go's `json.Unmarshal` into the cert `payload` (#107): an
          * absent or `null` `iat`/`exp` is 0, and an unknown member may hold any JSON.
+         * `denc` is kept as it is, absent being empty (Go `VerifyCert`, #113).
          */
         @Suppress("ThrowsCount") // one refusal per Go decode step
         fun parse(token: String): Parsed {
@@ -145,7 +159,7 @@ data class Cert(
                 version = v.toInt(),
                 user = KeyRef.parse(usr),
                 device = KeyRef.parse(dev),
-                deviceEnc = KeyRef.parse(denc),
+                deviceEnc = denc,
                 issuedAt = iat,
                 expiresAt = exp,
             )

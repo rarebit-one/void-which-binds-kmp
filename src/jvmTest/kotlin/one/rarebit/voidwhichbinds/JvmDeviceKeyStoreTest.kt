@@ -27,7 +27,7 @@ class JvmDeviceKeyStoreTest {
             version = Labels.CERT_VERSION,
             user = deviceKey,
             device = deviceKey,
-            deviceEnc = KeyRef.x25519(ByteArray(32) { (it + 4).toByte() }),
+            deviceEnc = KeyRef.x25519(ByteArray(32) { (it + 4).toByte() }).render(),
             issuedAt = 1_724_700_000L,
             expiresAt = 1_756_236_000L,
         )

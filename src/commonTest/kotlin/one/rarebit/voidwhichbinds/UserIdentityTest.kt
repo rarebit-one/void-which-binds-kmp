@@ -112,7 +112,7 @@ class UserIdentityTest {
         assertTrue(parsed.verify(Ed25519Engine.verifier()), "self-enrolled cert must verify")
         assertEquals(id.userId, parsed.cert.user)
         assertEquals(KeyRef.ed25519(device.signPublicKey), parsed.cert.device)
-        assertEquals(KeyRef.x25519(enc.publicKey), parsed.cert.deviceEnc)
+        assertEquals(KeyRef.x25519(enc.publicKey).render(), parsed.cert.deviceEnc)
         assertEquals(Labels.CERT_VERSION, parsed.cert.version)
         assertEquals(1_800_000_000L + 3600, parsed.cert.expiresAt)
     }

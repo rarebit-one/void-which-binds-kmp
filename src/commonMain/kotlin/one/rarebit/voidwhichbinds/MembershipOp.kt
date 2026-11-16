@@ -221,6 +221,10 @@ data class MembershipOp(
                 throw OpException(Failure.MALFORMED, "$typ at v${p.v}")
             }
             val v = p.v.toInt()
+            // Go builds its Op with whatever kind the body names and refuses an unknown one
+            // only in validate's kind switch, after the binding, genesis, key, issued-at and
+            // prev checks (#113). An unknown kind is held as ADD until validate refuses it.
+            val unknownKind = if (v == VERSION && Kind.fromWire(p.op) == null) p.op else null
             val op: MembershipOp = if (v < VERSION) {
                 // A cert: genesis add, no prev. Its payload has no op/by/prev fields.
                 if (p.usr.isEmpty() || p.dev.isEmpty()) throw OpException(Failure.MALFORMED, "a binding is empty")
@@ -233,7 +237,7 @@ data class MembershipOp(
             } else {
                 MembershipOp(
                     hash = hash(token), token = token, version = v, user = p.usr,
-                    kind = Kind.fromWire(p.op) ?: throw OpException(Failure.MALFORMED, "op \"${p.op}\""),
+                    kind = Kind.fromWire(p.op) ?: Kind.ADD,
                     device = p.dev,
                     deviceEnc = p.denc,
                     by = p.by,
@@ -244,7 +248,7 @@ data class MembershipOp(
                     typ = typ,
                 )
             }
-            op.validate()
+            op.validate(unknownKind)
             // The signature is checked under `by` — the claimed signer. That `by` is a
             // member (or genesis) is Evaluate's job; here we only establish that the
             // holder of `by` signed these bytes.
@@ -486,9 +490,10 @@ data class MembershipOp(
     /**
      * The structural check shared by every version once parsed: bindings present,
      * kinds sane, an add has a window that advances, a remove has none, and genesis
-     * is never a device. Mirrors Go's `Op.validate`.
+     * is never a device. Mirrors Go's `Op.validate`, whose kind switch refuses an
+     * [unknownKind] the body named.
      */
-    private fun validate() {
+    private fun validate(unknownKind: String?) {
         if (user.isEmpty() || device.isEmpty() ||
             by.isEmpty()
         ) {
@@ -503,6 +508,7 @@ data class MembershipOp(
                 throw OpException(Failure.MALFORMED, "prev \"$h\" is not an op hash")
             }
         }
+        if (unknownKind != null) throw OpException(Failure.MALFORMED, "op \"$unknownKind\"")
         when (kind) {
             Kind.ADD -> if (expiresAt == 0L || expiresAt <= issuedAt) {
                 throw OpException(Failure.MALFORMED, "an add needs an expiry after its issued-at")

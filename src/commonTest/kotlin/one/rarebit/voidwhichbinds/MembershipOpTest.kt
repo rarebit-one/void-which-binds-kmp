@@ -99,7 +99,7 @@ class MembershipOpTest {
             version = Labels.CERT_VERSION,
             user = user.userId,
             device = KeyRef.ed25519(dev.publicKey),
-            deviceEnc = KeyRef.x25519(enc),
+            deviceEnc = KeyRef.x25519(enc).render(),
             issuedAt = 1_788_264_000L,
             expiresAt = 1_796_040_000L,
         ).encode(user.signer())

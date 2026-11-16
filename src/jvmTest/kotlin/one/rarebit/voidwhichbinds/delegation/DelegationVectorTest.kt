@@ -287,6 +287,29 @@ class DelegationVectorTest {
     }
 
     @Test
+    fun tokensAreTrimmedAsGoTrimSpaceTrims() {
+        // Go's strings.TrimSpace (unicode.IsSpace), not Kotlin's trim(): U+0085 is
+        // trimmed, U+001C..U+001F are not (#113). Each verdict was checked against
+        // void-which-binds-go v0.28.1's Parse, BodyHash and SignProofWith on this vector's token.
+        val f = fixture()
+        val now = f.d.issuedAt + 60
+        val hash = Delegation.bodyHash(f.token)
+        val proof = Delegation.signProofWith(f.agent.signer, f.agent.pub, f.token, f.d.audience, now)
+        for (pad in listOf(" ", "\u0085", "\u00a0", "\u3000")) {
+            val t = pad + f.token + pad
+            assertEquals(Delegation.parse(f.token), Delegation.parse(t))
+            assertEquals(hash, Delegation.bodyHash(t))
+            assertEquals(proof, Delegation.signProofWith(f.agent.signer, f.agent.pub, t, f.d.audience, now))
+        }
+        for (pad in listOf("\u001c", "\u001f", "\u200b", "\ufeff")) {
+            val t = pad + f.token + pad
+            refused(Failure.MALFORMED) { Delegation.parse(t) }
+            refused(Failure.MALFORMED) { Delegation.bodyHash(t) }
+            refused(Failure.MALFORMED) { Delegation.signProofWith(f.agent.signer, f.agent.pub, t, f.d.audience, now) }
+        }
+    }
+
+    @Test
     fun goHtmlEscapingIsReproduced() {
         val v = load("aud-with-ampersand")
         val m = (v["mints"] as List<Map<String, Any>>).first { it["kind"] == "ed25519" }
